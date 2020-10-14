@@ -1,0 +1,128 @@
+@charset "UTF-8";
+/* secssion 관련 css 추가할꺼 넣기*/
+/* carousel */
+div#carouselField{
+	position: relative;
+	width:100%;
+	text-align: center;
+}
+
+/* cardSection */
+div#hotContents{
+	position: relative;
+	max-width: 100%;
+	margin: 0 auto 100px;
+	padding: 10px 45px 20px 45px;
+	text-align:center;
+}
+div>h2{
+	position:relateve;
+	margin: 0 auto 20px;
+}
+div.card{
+	position:relative;
+	width:70px;
+	margin:10px 10px 10px 10px;
+	display:inline-block;
+	padding: 10px 45px 20px 45px;
+}
+/* footer */
+footer{
+	clear:both;
+	text-align:center;
+}
+
+/* 배경구분용 */
+/* section{ */
+/* 	background-color:black; */
+/* } */
+
+
+/* memberList */
+
+section#memberList-container {
+	text-align: center;
+}
+
+section#memberList-container table#tbl-member {
+	width: 100%;
+	border: 1px solid gray;
+	border-collapse: collapse;
+}
+
+section#memberList-container table#tbl-member th, table#tbl-member td {
+	border: 1px solid gray;
+	padding: 10px;
+}
+
+div#search-container {
+	margin: 0 0 10px 0;
+	padding: 3px;
+	background-color: rgba(0, 188, 212, 0.3);
+}
+
+div#search-userId {
+	display: inline-block;
+}
+
+div#search-userName {
+	display: none;
+}
+
+div#search-gender {
+	display: none;
+}
+
+div#nusection#memberList-container {
+	text-align: center;
+}
+
+section#memberList-container table#tbl-member {
+	width: 100%;
+	border: 1px solid gray;
+	border-collapse: collapse;
+}
+
+section#memberList-container table#tbl-member th, table#tbl-member td {
+	border: 1px solid gray;
+	padding: 10px;
+}
+
+div#search-container {
+	margin: 0 0 10px 0;
+	padding: 3px;
+	background-color: rgba(0, 188, 212, 0.3);
+}
+
+div#search-userId {
+	display: inline-block;
+}
+
+div#search-userName {
+	display: none;
+}
+
+div#search-gender {
+	display: none;
+}
+
+div#numPerpage-container {
+	float: right;
+}mPerpage-container {
+	float: right;
+}
+
+/* 마이페이지 사이드바 */
+div#myPageSideBar{
+	position: relative;
+	background: #FFFFFF;
+	text-align: center;
+	margin: 3%;
+	/* 세로정렬꽉차게 가운데:center */
+	align-items: stretch;
+	/* 가로정렬꽉차게 가운데:center */
+	justify-items: stretch;
+	width: 14%;
+	float: left;
+}
+

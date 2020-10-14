@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="notice">
+	<select id="selectNoticeList" parameterType="hashmap" resultType="hashmap"> 
+	<![CDATA[SELECT * FROM (SELECT ROWNUM R, A.* FROM (SELECT * FROM NOTICE ORDER BY NOTICE_DATE DESC) A) WHERE R BETWEEN ((#{cPage}-1) * #{numPerPage} + 1) AND (#{cPage} * #{numPerPage})]]>
+	</select>
+	<select id="getNoticeCount" resultType="_int">
+	<![CDATA[SELECT COUNT(*) FROM NOTICE]]>
+	</select>
+</mapper>

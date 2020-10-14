@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	<select id="selectBoardList" parameterType="hashmap" resultType="hashmap"> 
+	<![CDATA[SELECT * FROM (SELECT ROWNUM AS RNUM, N.* FROM (SELECT * FROM BOARD JOIN (SELECT BF_FILE_ID, LISTAGG(FILE_NAME,',') WITHIN GROUP(ORDER BY FILE_NAME) AS FILE_NAME FROM BOARD_FILE GROUP BY BF_FILE_ID) ON BOARD_ID=BF_FILE_ID WHERE PRODUCT_CATEGORY = #{boardTitle} ORDER BY ENROLL_DATE DESC) N ) WHERE RNUM BETWEEN ((#{cPage}-1) * #{numPerPage} + 1) AND (#{cPage} * #{numPerPage})]]>
+	</select>
+	<select id="getBoardCount"  parameterType="hashmap"  resultType="_int">
+	<![CDATA[SELECT COUNT(*) FROM BOARD WHERE PRODUCT_CATEGORY = #{boardTitle}]]>
+	</select>
+</mapper>

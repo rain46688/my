@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.cms.common.exception.BoardPageNotFoundException;
 import com.cms.common.exception.IdPasswordNotMatchingException;
 import com.cms.common.exception.MemberInsertFailedException;
 import com.cms.model.dao.TestDao;
@@ -30,14 +31,14 @@ public class TestServiceImpl implements TestService {
 	}
 
 	@Override
-	public int getNoticeCount() {
+	public int getNoticeCount() throws Exception {
 		// TODO Auto-generated method stub
 		return testDAO.getNoticeCount();
 	}
 
 	@SuppressWarnings("unused")
 	@Override
-	public SessionVo loginCheck(Login login) {
+	public SessionVo loginCheck(Login login) throws Exception {
 		// TODO Auto-generated method stub
 		Login lo = testDAO.loginCheck(login.getMemberId());
 		SessionVo sv = new SessionVo();
@@ -56,7 +57,7 @@ public class TestServiceImpl implements TestService {
 	}
 
 	@Override
-	public void joinMember(Member member) {
+	public void joinMember(Member member) throws Exception {
 		// TODO Auto-generated method stub
 		if (member != null)
 			testDAO.joinMember(member);
@@ -66,15 +67,37 @@ public class TestServiceImpl implements TestService {
 	}
 
 	@Override
-	public int getBoardCount(Map<String, Object> commandMap) {
+	public int getBoardCount(Map<String, Object> commandMap) throws Exception {
 		// TODO Auto-generated method stub
 		return testDAO.getBoardCount(commandMap);
 	}
 
 	@Override
-	public List<Map<String, Object>> selectBoardList(Map<String, Object> commandMap) {
+	public List<Map<String, Object>> selectBoardList(Map<String, Object> commandMap) throws Exception {
 		// TODO Auto-generated method stub
 		return testDAO.selectBoardList(commandMap);
+	}
+
+	@Override
+	public Map<String, Object> boardPage(Map<String, Object> commandMap) throws Exception {
+		// TODO Auto-generated method stub
+		Map<String, Object> map = testDAO.boardPage(commandMap);
+		if (map == null) {
+			throw new BoardPageNotFoundException();
+		} else if (!(Boolean) commandMap.get("hasRead")) {
+			try {
+				testDAO.updateReadCount(commandMap);
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		return map;
+	}
+
+	@Override
+	public List<Integer> tradeUserList(Map<String, Object> commandMap) throws Exception {
+		// TODO Auto-generated method stub
+		return testDAO.tradeUserList(commandMap);
 	}
 
 }

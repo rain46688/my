@@ -1,6 +1,7 @@
 package com.cms.controller;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -237,7 +238,7 @@ public class TestController {
 		return mv;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/board")
 	public ModelAndView boardList(Map<String, Object> commandMap, String cPage, String boardTitle) throws Exception {
 		log.info(" ===== boardList 실행 ===== ");
@@ -266,6 +267,72 @@ public class TestController {
 		mv.addObject("totalData", totalData);
 		mv.addObject("list", list);
 		mv.addObject("boardTitle", boardTitle);
+		return mv;
+	}
+
+	@RequestMapping(value = "/boardPage")
+	public ModelAndView boardPage(Map<String, Object> commandMap, String boardId, int writerUsid,
+			HttpServletRequest request, HttpServletResponse response) {
+//		ModelAndView mv = new ModelAndView("/board/boardPage");
+
+		Cookie[] cookies = request.getCookies();
+		String boardHistory = "";
+		boolean hasRead = false;
+		if (cookies != null) {
+			for (Cookie c : cookies) {
+				String name = c.getName();
+				String value = c.getValue();
+
+				if ("boardHistory".equals(name)) {
+					boardHistory = value;
+					if (value.contains("|" + boardId + "|")) {
+						// 읽은 게시글
+						hasRead = true;
+						break;
+					}
+				}
+			}
+		}
+
+		// 읽지 않은 게시물
+		if (!hasRead) {
+			Cookie c = new Cookie("boardHistory", boardHistory + "|" + boardId + "|");
+			c.setMaxAge(-1);
+			response.addCookie(c);
+		}
+		commandMap.put("boardId", boardId);
+		commandMap.put("writerUsid", writerUsid);
+		commandMap.put("hasRead", hasRead);
+		List<Integer> tradeUserList = new ArrayList<Integer>();
+		List<Integer> paidUsersList = new ArrayList<Integer>();
+		List<Integer> deliveryUsersList = new ArrayList<Integer>();
+		int likeCount = 0;
+		try {
+			Map<String, Object> map = testService.boardPage(commandMap);
+			log.info("=============== Page Map ==================");
+			Set set = map.keySet();
+			Iterator<String> it = set.iterator();
+			while (it.hasNext()) {
+				String key = it.next();
+				log.info(key + " : " + map.get(key));
+			}
+			log.info("=============== Page Map ==================");
+			tradeUserList = testService.tradeUserList(commandMap);
+			for (int i : tradeUserList) {
+				log.info("i : " + i);
+			}
+//			likeCount = testService.requestCount(commandMap);
+//			paidUsersList = testService.paidUsersList(commandMap);
+//			deliveryUsersList = testService.deliveryUsersList(commandMap);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			ModelAndView mv = new ModelAndView("/common/msg");
+			mv.addObject("loc", "/");
+			mv.addObject("msg", "페이지를 불러오는데 실패하였습니다.");
+			log.info(" ===== 상세 페이지 진입 실패 로그 ===== ");
+			return mv;
+		}
+		ModelAndView mv = new ModelAndView("/");
 		return mv;
 	}
 

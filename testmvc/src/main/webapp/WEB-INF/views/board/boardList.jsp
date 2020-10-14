@@ -125,7 +125,7 @@
 		<c:choose>
 			<c:when test="${fn:length(list) > 0}">
 				<c:forEach items="${list}" var="b">
-					<div class="card" onclick="location.href='${path}/board/boardPage?boardId=${b.BOARD_ID}&writerUsid=${b.WRITER_USID}'"
+					<div class="card" onclick="location.href='${path}/boardPage?boardId=${b.BOARD_ID}&writerUsid=${b.WRITER_USID}'"
 						style="width: 15rem; cursor: pointer; padding: 0px">
 						<!-- file의 갯수 분기처리 -->
 						<div class="image-wrapper">
@@ -213,7 +213,7 @@
 		return false;
 	}
 	function fn_boWrite(){
-		location.assign("<%=request.getContextPath()%>/board/boWrite?category=<%=request.getAttribute("category")%>
+		location.assign("${path}/board/boWrite?category=${category}")%>
 	");
 	}
 </script>

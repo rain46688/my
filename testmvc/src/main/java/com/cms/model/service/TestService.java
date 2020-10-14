@@ -11,14 +11,18 @@ public interface TestService {
 
 	List<Map<String, Object>> selectNoticeList(Map<String, Object> map) throws Exception;
 
-	int getNoticeCount();
+	int getNoticeCount() throws Exception;
 
-	SessionVo loginCheck(Login login);
+	SessionVo loginCheck(Login login) throws Exception;
 
-	void joinMember(Member member);
+	void joinMember(Member member) throws Exception;
 
-	List<Map<String, Object>> selectBoardList(Map<String, Object> commandMap);
+	List<Map<String, Object>> selectBoardList(Map<String, Object> commandMap) throws Exception;
 
-	int getBoardCount(Map<String, Object> commandMap);
+	int getBoardCount(Map<String, Object> commandMap) throws Exception;
+
+	Map<String, Object> boardPage(Map<String, Object> commandMap) throws Exception;
+
+	List<Integer> tradeUserList(Map<String, Object> commandMap) throws Exception;
 
 }

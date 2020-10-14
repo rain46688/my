@@ -3,6 +3,7 @@ package com.cms.model.dao;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.session.RowBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -19,7 +20,10 @@ public class TestDaoImpl extends AbstractDAO implements TestDao {
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> selectNoticeList(Map<String, Object> map) {
 		// TODO Auto-generated method stub
-		return selectList("notice.selectNoticeList", map);
+		int cPage = Integer.parseInt(String.valueOf(map.get("cPage")));
+		int numPerPage = Integer.parseInt(String.valueOf(map.get("numPerPage")));
+		RowBounds r = new RowBounds((cPage - 1) * numPerPage, numPerPage);
+		return selectList("notice.selectNoticeList", null, r);
 	}
 
 	@Override
@@ -50,7 +54,29 @@ public class TestDaoImpl extends AbstractDAO implements TestDao {
 	@Override
 	public List<Map<String, Object>> selectBoardList(Map<String, Object> map) {
 		// TODO Auto-generated method stub
-		return selectList("board.selectBoardList", map);
+		int cPage = Integer.parseInt(String.valueOf(map.get("cPage")));
+		int numPerPage = Integer.parseInt(String.valueOf(map.get("numPerPage")));
+		RowBounds r = new RowBounds((cPage - 1) * numPerPage, numPerPage);
+		return selectList("board.selectBoardList", map, r);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, Object> boardPage(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return (Map<String, Object>) selectOne("board.boardPage", commandMap);
+	}
+
+	@Override
+	public void updateReadCount(Map<String, Object> commandMap) throws Exception {
+		// TODO Auto-generated method stub
+		update("board.updateReadCount", commandMap);
+	}
+
+	@Override
+	public List<Integer> tradeUserList(Map<String, Object> commandMap) throws Exception {
+		// TODO Auto-generated method stub
+		return selectList("board.tradeUserList", commandMap);
 	}
 
 }

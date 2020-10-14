@@ -73,10 +73,31 @@ public class TestDaoImpl extends AbstractDAO implements TestDao {
 		update("board.updateReadCount", commandMap);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Integer> tradeUserList(Map<String, Object> commandMap) throws Exception {
 		// TODO Auto-generated method stub
 		return selectList("board.tradeUserList", commandMap);
+	}
+
+	@Override
+	public int likeCount(Map<String, Object> commandMap) throws Exception {
+		// TODO Auto-generated method stub
+		return (int) selectOne("board.likeCount", commandMap);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Integer> paidUsersList(Map<String, Object> commandMap) throws Exception {
+		// TODO Auto-generated method stub
+		return selectList("board.paidUsersList", commandMap);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Integer> deliveryUsersList(Map<String, Object> commandMap) throws Exception {
+		// TODO Auto-generated method stub
+		return selectList("board.deliveryUsersList", commandMap);
 	}
 
 }

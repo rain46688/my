@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="member">
 	<select id="loginCheck" parameterType="com.cms.model.vo.Login" resultType="com.cms.model.vo.Login"> 
-	<![CDATA[SELECT MEMBER_ID AS MEMBERID,MEMBER_PWD AS MEMBERPW FROM MEMBER WHERE MEMBER_ID = #{memberId}]]>
+	<![CDATA[SELECT MEMBER_ID AS MEMBERID,MEMBER_PWD AS MEMBERPW,NICKNAME,USID FROM MEMBER WHERE MEMBER_ID = #{memberId}]]>
 	</select>
 	<insert id="joinMember" parameterType="com.cms.model.vo.Member" >
 	<![CDATA[INSERT INTO MEMBER VALUES 

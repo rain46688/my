@@ -25,4 +25,10 @@ public interface TestService {
 
 	List<Integer> tradeUserList(Map<String, Object> commandMap) throws Exception;
 
+	int likeCount(Map<String, Object> commandMap) throws Exception;
+
+	List<Integer> paidUsersList(Map<String, Object> commandMap) throws Exception;
+
+	List<Integer> deliveryUsersList(Map<String, Object> commandMap) throws Exception;
+
 }

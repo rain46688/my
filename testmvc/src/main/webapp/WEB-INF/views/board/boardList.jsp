@@ -96,7 +96,6 @@
 		<div id="writeBoard">
 			<c:if test="${!(empty oriCategory)}">
 				<c:if test="${oriCategory ne 'overall'}">
-					<!-- if문 처리해야됨 아직안함 -->
 					<input id="searchInHere" onkeypress="searchEnter();" type="text" placeholder="게시판 내에서 검색">
 					<button id="searchInHereBtn" onclick="fn_search('${oriCategory}');">검색</button>
 				</c:if>
@@ -106,7 +105,7 @@
 				<button id="searchInHereBtn" onclick="fn_search('${category}');">검색</button>
 			</c:if>
 			<c:if test="${(category eq '특가')}">
-				<c:if test="${(empty loginnedMember && loginnedMember.getNickName eq 'ADMIN')}">
+				<c:if test="${(empty loginnedMember && loginnedMember.nickname eq 'ADMIN')}">
 					<button id="writeBtn" onclick="fn_boWrite();">글쓰기</button>
 				</c:if>
 			</c:if>
@@ -179,11 +178,19 @@
 			</c:if>
 
 
-			<c:forEach var="i" begin="0" end="${numPerPage - 1 }">
-				<c:if test="${(pageNo+i) <= pageEnd}">
-					<li class="page-item"><a href="?cPage=${pageNo+i}" class="page-link">${pageNo+i}</a></li>
-				</c:if>
+				<c:forEach var="i" begin="0" end="${numPerPage - 1 }">
+				<c:choose>
+					<c:when test="${pageNo+i eq cPage}">
+						<li class="page-item disabled"><a href="?cPage=${pageNo+i}" class="page-link">${pageNo+i}</a></li>
+					</c:when>
+					<c:otherwise>
+						<c:if test="${(pageNo+i) <= pageEnd}">
+							<li class="page-item"><a href="?cPage=${pageNo+i}" class="page-link">${pageNo+i}</a></li>
+						</c:if>
+					</c:otherwise>
+				</c:choose>
 			</c:forEach>
+
 
 
 			<c:if test="${pageNo < pageEnd-4}">

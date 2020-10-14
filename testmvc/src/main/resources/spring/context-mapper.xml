@@ -34,7 +34,7 @@
 	</tx:advice>
 
 	<aop:config>
-		<aop:pointcut id="transactionPointcut" expression="within(hs.spring.hsweb..*)" />
+		<aop:pointcut id="transactionPointcut" expression="within(com.cms.model..*)" />
 		<aop:advisor id="transactionAdvisor" pointcut-ref="transactionPointcut" advice-ref="txAdvice" />
 	</aop:config>
 

@@ -20,4 +20,13 @@
 	<select id="tradeUserList" parameterType="hashmap" resultType="_int">
 	<![CDATA[SELECT TRADE_USID FROM TRADE_LIST WHERE TRADE_BOARD_ID = #{boardId}]]>
 	</select>
+	<select id="likeCount" parameterType="hashmap" resultType="_int">
+	<![CDATA[SELECT COUNT(*) FROM TRADE_LIST WHERE TRADE_BOARD_ID =  #{boardId}]]>
+	</select>
+	<select id="paidUsersList" parameterType="hashmap" resultType="_int">
+	<![CDATA[SELECT TRADE_USID FROM TRADE_LIST WHERE TRADE_BOARD_ID = #{boardId} AND PAY_STATUS = 1]]>
+	</select>
+	<select id="deliveryUsersList" parameterType="hashmap" resultType="_int">
+	<![CDATA[SELECT TRADE_USID FROM TRADE_LIST WHERE TRADE_BOARD_ID = #{boardId} AND DELIVERY_STATUS = 1]]>
+	</select>
 </mapper>

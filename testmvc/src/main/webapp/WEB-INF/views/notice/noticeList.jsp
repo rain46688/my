@@ -126,14 +126,12 @@ h2 {
 			<br>
 		</div>
 	</div>
-	
+
 	<c:set var="cPage" value="${(empty param.cPage)?1:param.cPage}" />
 	<c:set var="pageNo" value="${cPage - (cPage - 1)%5}" />
 	<fmt:parseNumber var="pageEnd" value="${Math.ceil(totalData/numPerPage)}" integerOnly="true" />
-
 	<nav aria-lable="Page navigation" id="pagebar">
 		<ul class="pagination justify-content-center">
-
 
 			<c:if test="${pageNo > 1}">
 				<li class="page-item"><a class="page-link" href="?cPage=${pageNo-1}" tabindex="-1" aria-disabled="true">이전</a></li>
@@ -144,11 +142,17 @@ h2 {
 
 
 			<c:forEach var="i" begin="0" end="${numPerPage - 1 }">
-				<c:if test="${(pageNo+i) <= pageEnd}">
-					<li class="page-item"><a href="?cPage=${pageNo+i}" class="page-link">${pageNo+i}</a></li>
-				</c:if>
+				<c:choose>
+					<c:when test="${pageNo+i eq cPage}">
+						<li class="page-item disabled"><a href="?cPage=${pageNo+i}" class="page-link">${pageNo+i}</a></li>
+					</c:when>
+					<c:otherwise>
+						<c:if test="${(pageNo+i) <= pageEnd}">
+							<li class="page-item"><a href="?cPage=${pageNo+i}" class="page-link">${pageNo+i}</a></li>
+						</c:if>
+					</c:otherwise>
+				</c:choose>
 			</c:forEach>
-
 
 			<c:if test="${pageNo < pageEnd-4}">
 				<li class="page-item"><a class="page-link" href="?cPage=${pageNo+5}" tabindex="-1" aria-disabled="true">다음</a></li>

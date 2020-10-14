@@ -7,10 +7,12 @@ import javax.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
+@ToString
 @EqualsAndHashCode
 public class Login {
 
@@ -23,6 +25,9 @@ public class Login {
 	private String memberPw;
 
 	private boolean rememberMe;
+
+	private String nickname;
+	private int usid;
 
 	public boolean checkPassword(String pw) {
 		return this.memberPw.equals(pw);

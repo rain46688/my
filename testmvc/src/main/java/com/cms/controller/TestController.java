@@ -2,6 +2,7 @@ package com.cms.controller;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,8 @@ public class TestController {
 		log.info("login :  " + login.getMemberId() + " " + login.getMemberPw() + " " + login.isRememberMe());
 		try {
 			SessionVo sv = testService.loginCheck(login);
+			log.info("sv : " + sv.toString());
+
 			session.setAttribute("loginnedMember", sv);
 
 			Cookie c = new Cookie("saveId", login.getMemberId());
@@ -252,17 +255,17 @@ public class TestController {
 		for (Map m : list) {
 			Set<String> s = m.keySet();
 			Iterator<String> it = s.iterator();
-			log.info("===============Map==================");
+			// log.info("===============Map==================");
 			while (it.hasNext()) {
 				String key = it.next();
 				if (key.equals("TRADE_AREA")) {
 					String trade = String.valueOf(m.get(key));
 					m.put(key, AESCrypto.decrypt(trade));
 				}
-				log.info(key + " : " + m.get(key));
+				// log.info(key + " : " + m.get(key));
 			}
 		}
-		log.info("================Map=================");
+		// log.info("================Map=================");
 		int totalData = testService.getBoardCount(commandMap);
 		mv.addObject("totalData", totalData);
 		mv.addObject("list", list);
@@ -270,32 +273,27 @@ public class TestController {
 		return mv;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/boardPage")
 	public ModelAndView boardPage(Map<String, Object> commandMap, String boardId, int writerUsid,
-			HttpServletRequest request, HttpServletResponse response) {
-//		ModelAndView mv = new ModelAndView("/board/boardPage");
+			HttpServletRequest request, HttpServletResponse response,
+			@CookieValue(value = "boardHistory", required = false) Cookie history) {
 
-		Cookie[] cookies = request.getCookies();
-		String boardHistory = "";
 		boolean hasRead = false;
-		if (cookies != null) {
-			for (Cookie c : cookies) {
-				String name = c.getName();
-				String value = c.getValue();
-
-				if ("boardHistory".equals(name)) {
-					boardHistory = value;
-					if (value.contains("|" + boardId + "|")) {
-						// 읽은 게시글
-						hasRead = true;
-						break;
-					}
-				}
+		String boardHistory = "";
+		if (history != null) {
+			String value = history.getValue();
+			boardHistory = value;
+			log.info("boardHistory : " + value);
+			if (value.contains("|" + boardId + "|")) {
+				hasRead = true;
 			}
 		}
 
-		// 읽지 않은 게시물
+		log.info("hasRead : " + hasRead);
+
 		if (!hasRead) {
+			log.info("! hasRead");
 			Cookie c = new Cookie("boardHistory", boardHistory + "|" + boardId + "|");
 			c.setMaxAge(-1);
 			response.addCookie(c);
@@ -306,24 +304,52 @@ public class TestController {
 		List<Integer> tradeUserList = new ArrayList<Integer>();
 		List<Integer> paidUsersList = new ArrayList<Integer>();
 		List<Integer> deliveryUsersList = new ArrayList<Integer>();
+		Map<String, Object> map = new HashMap<String, Object>();
 		int likeCount = 0;
 		try {
-			Map<String, Object> map = testService.boardPage(commandMap);
+			map = testService.boardPage(commandMap);
 			log.info("=============== Page Map ==================");
 			Set set = map.keySet();
 			Iterator<String> it = set.iterator();
 			while (it.hasNext()) {
 				String key = it.next();
+				if (key.equals("TRADE_AREA")) {
+					String trade = String.valueOf(map.get(key));
+					map.put(key, AESCrypto.decrypt(trade));
+				}
 				log.info(key + " : " + map.get(key));
 			}
 			log.info("=============== Page Map ==================");
+
 			tradeUserList = testService.tradeUserList(commandMap);
 			for (int i : tradeUserList) {
 				log.info("i : " + i);
 			}
-//			likeCount = testService.requestCount(commandMap);
-//			paidUsersList = testService.paidUsersList(commandMap);
-//			deliveryUsersList = testService.deliveryUsersList(commandMap);
+			likeCount = testService.likeCount(commandMap);
+			log.info("likeCount : " + likeCount);
+
+			if (map.get("TRADE_STAGE") == "2") {
+				paidUsersList = testService.paidUsersList(commandMap);
+				for (int i2 : paidUsersList) {
+					log.info("i2 : " + i2);
+				}
+			}
+			if (map.get("TRADE_STAGE") == "3") {
+				deliveryUsersList = testService.deliveryUsersList(commandMap);
+				for (int i3 : deliveryUsersList) {
+					log.info("i3 : " + i3);
+				}
+			}
+
+			String temp = (String) map.get("TRADE_AREA");
+			if (temp != null) {
+				if (temp.length() > 8) {
+					String newTemp = temp.substring(0, temp.indexOf(" ", temp.indexOf(" ") + 1));
+					map.put("TRADE_AREA", newTemp);
+				}
+			}
+			log.info("TRADE_AREA : " + map.get("TRADE_AREA"));
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			ModelAndView mv = new ModelAndView("/common/msg");
@@ -332,7 +358,15 @@ public class TestController {
 			log.info(" ===== 상세 페이지 진입 실패 로그 ===== ");
 			return mv;
 		}
-		ModelAndView mv = new ModelAndView("/");
+		ModelAndView mv = new ModelAndView("/board/boardPage");
+//		ModelAndView mv = new ModelAndView("../../index");
+		if (paidUsersList != null)
+			mv.addObject("paidUsersList", paidUsersList);
+		if (tradeUserList != null)
+			mv.addObject("tradeUserList", tradeUserList);
+		mv.addObject("likeCount", likeCount);
+		if (map != null)
+			mv.addObject("map", map);
 		return mv;
 	}
 

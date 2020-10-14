@@ -1,8 +1,8 @@
-<%@page import="java.text.SimpleDateFormat"%>
+<%-- <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.util.List"%>
 <%@page import="com.nbbang.board.model.vo.Card"%>
-<%@page import="com.nbbang.board.model.vo.Board"%>
+<%@page import="com.nbbang.board.model.vo.Board"%> --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
 <%-- <% 
@@ -40,9 +40,7 @@
 <style>
   #wrapper {
     margin: 0 auto;
-    <% if(!(loginnedMember.getUsid()==c.getCardBoard().getWriterUsid()&&c.getCardBoard().getTradeStage()==1)){ %>
     margin-top: 5em;
-    <% } %>
     padding-top: 1em;
     width: 45em;
     text-align: center;
@@ -321,29 +319,37 @@ color:darkgray;
 
 </style>
 <section>
-	<% if(loginnedMember.getUsid()==c.getCardBoard().getWriterUsid()&&c.getCardBoard().getTradeStage()==1){ %>
+	<c:if test="${ loginnedMember.usid eq map.get('WRITER_USID') && map.get('TRADE_STAGE') eq 1}">
 	<div id="btnForWriter"> 
     <button onclick="fn_modifyBoard();">수정하기</button>
     <button onclick="fn_deleteBoard();">삭제하기</button>
   </div>
-  <%} %>
-  <% if(loginnedMember.getUsid()==9999) {%>
+  </c:if>
+  
+  <c:if test="${loginnedMember.usid eq 9999 }">
   <div id="btnForWriter"> 
     <button onclick="fn_deleteBoard();">삭제하기</button>
   </div>
-  <%} %>
+  </c:if>
+  
+  
   <div id="wrapper">
     <div id="imageWrapper">
       <div id="carouselField" name="carouselField" >
         <div id="carouselNB" class="carousel slide " data-ride="carousel" data-interval="false">
           <ol class="carousel-indicators">
-            <% for(int i = 0; i < c.getCardFile().getFileName().length; i++)  {%>
-            <% if(i==0) { %>
-              <li data-target="#carouselInhee" data-slide-to="<%= i %>" class="active"></li>
-            <% }else { %>
-              <li data-target="#carouselInhee" data-slide-to="<%= i %>"></li>
-            <% }} %>
-          </ol>
+          <!-- 잘되는듯함 아래 주석하고 확인해봤음 -->
+            <c:forTokens items="${map.get('FILE_NAME') }" delims="," varStatus="status">
+            <c:if test="${status.first}">
+              <li data-target="#carouselInhee" data-slide-to="${status.index}" class="active"></li>
+            </c:if>
+            <c:if test="${!(status.first)}">
+              <li data-target="#carouselInhee" data-slide-to="${status.index}"></li>
+            </c:if>
+            </c:forTokens>
+
+
+ <%--        </ol>
           <div class="carousel-inner" role="listbox">
             <% for(int i = 0; i < c.getCardFile().getFileName().length; i++)  {%>
               <% if(i==0) { %>
@@ -476,11 +482,11 @@ color:darkgray;
               <input type="hidden" name="writerUsid" value="${loginnedMember.usid}">
               <!-- MEMBER 컬럼의  MEMBER_PICTURE -->
               <input type="hidden" name="memberPicture" value="${loginnedMember.memberPicture}">
-              <!-- <%-- <% if(c.getCardBoard().getTradeStage()>1) {%> --%> -->
+              <!-- <% if(c.getCardBoard().getTradeStage()>1) {%> -->
                 <input type="hidden" name="boardTitle" value="${curCard.cardBoard.boardTitle}">
 
               <button id="hiddenEnterBtn" onclick="nbbang(this.form)" >채팅방 접속하기</button>	
-              <!-- <%-- <%}%> --%> -->
+              <!-- <%}%> -->
             </form>
           <li><div id="likeFunc" >
           <% if(!likelist.contains(c.getCardBoard().getBoardId())) {%>
@@ -564,6 +570,11 @@ color:darkgray;
     </div>
     </div>
   </div>
+  
+  
+  
+  <!--  -->
+  <!--  -->
 </section>
 <script>
 <% if(reply.equals("success")) { %>
@@ -1191,5 +1202,5 @@ String.prototype.string = function (len) { var s = '', i = 0; while (i++ < len) 
 String.prototype.zf = function (len) { return "0".string(len - this.length) + this; };
 
 Number.prototype.zf = function (len) { return this.toString().zf(len); };
-</script>
+</script> --%>
 <%@ include file="/WEB-INF/views/common/footer.jsp" %>

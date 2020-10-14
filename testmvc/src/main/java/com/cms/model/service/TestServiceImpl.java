@@ -41,8 +41,13 @@ public class TestServiceImpl implements TestService {
 	public SessionVo loginCheck(Login login) throws Exception {
 		// TODO Auto-generated method stub
 		Login lo = testDAO.loginCheck(login.getMemberId());
-		SessionVo sv = new SessionVo();
-
+		SessionVo svv = new SessionVo();
+		log.info("lo : " + lo.toString());
+		svv.setMemberPw(lo.getMemberPw());
+		svv.setMemberId(lo.getMemberId());
+		svv.setNickname(lo.getNickname());
+		svv.setUsid(lo.getUsid());
+		log.info("svv : " + svv.toString());
 		if (lo == null) {
 			throw new IdPasswordNotMatchingException();
 		}
@@ -51,9 +56,7 @@ public class TestServiceImpl implements TestService {
 			log.debug("lo : " + lo.getMemberId() + " " + lo.getMemberPw());
 			throw new IdPasswordNotMatchingException();
 		}
-		sv.setMemberPw(login.getMemberPw());
-		sv.setMemberId(login.getMemberId());
-		return sv;
+		return svv;
 	}
 
 	@Override
@@ -98,6 +101,24 @@ public class TestServiceImpl implements TestService {
 	public List<Integer> tradeUserList(Map<String, Object> commandMap) throws Exception {
 		// TODO Auto-generated method stub
 		return testDAO.tradeUserList(commandMap);
+	}
+
+	@Override
+	public int likeCount(Map<String, Object> commandMap) throws Exception {
+		// TODO Auto-generated method stub
+		return testDAO.likeCount(commandMap);
+	}
+
+	@Override
+	public List<Integer> paidUsersList(Map<String, Object> commandMap) throws Exception {
+		// TODO Auto-generated method stub
+		return testDAO.paidUsersList(commandMap);
+	}
+
+	@Override
+	public List<Integer> deliveryUsersList(Map<String, Object> commandMap) throws Exception {
+		// TODO Auto-generated method stub
+		return testDAO.deliveryUsersList(commandMap);
 	}
 
 }

@@ -281,7 +281,7 @@ public class TestController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/boardPage")
 	public ModelAndView boardPage(Map<String, Object> commandMap, String boardId, int writerUsid,
-			HttpServletRequest request, HttpServletResponse response,
+			HttpServletRequest request, HttpServletResponse response, HttpSession session,
 			@CookieValue(value = "boardHistory", required = false) Cookie history) {
 
 		boolean hasRead = false;
@@ -363,15 +363,21 @@ public class TestController {
 			log.info(" ===== 상세 페이지 진입 실패 로그 ===== ");
 			return mv;
 		}
-//		ModelAndView mv = new ModelAndView("/board/boardPage");
-		ModelAndView mv = new ModelAndView("../../index");
+		List<Integer> likelist = new ArrayList<Integer>();
+		if (session.getAttribute("likeList") != null) {
+			likelist = (List<Integer>) session.getAttribute("likeList");
+		}
+		ModelAndView mv = new ModelAndView("/board/boardPage");
+//		ModelAndView mv = new ModelAndView("../../index");
 		if (paidUsersList != null)
 			mv.addObject("paidUsersList", paidUsersList);
 		if (tradeUserList != null)
 			mv.addObject("tradeUserList", tradeUserList);
 		mv.addObject("likeCount", likeCount);
+		mv.addObject("max", map.get("MAX_MEMS"));
 		if (map != null)
 			mv.addObject("map", map);
+		mv.addObject("likelist", likelist);
 		request.setAttribute("date", map.get("ENROLL_DATE"));
 		return mv;
 	}

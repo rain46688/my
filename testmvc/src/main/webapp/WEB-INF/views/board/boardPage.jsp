@@ -1,48 +1,44 @@
-<%-- 
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
-<%@page import="com.nbbang.board.model.vo.Card"%>
-<%@page import="com.nbbang.board.model.vo.Board"%> --%>
-<%@page import="java.util.Map"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@page import="java.util.Date"%>
 <%@page import="java.text.SimpleDateFormat"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%@ include file="/WEB-INF/views/common/header.jsp"%>
 <%
-Date enrollDate = (Date)request.getAttribute("date");
+	Date enrollDate = (Date) request.getAttribute("date");
 SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm");
 String newDate = sdf.format(enrollDate);
+
+List<Integer> tradeUserList = new ArrayList<Integer>();
+List<Integer> paidUsers = new ArrayList<Integer>();
+List<Integer> deliveryUsers = new ArrayList<Integer>();
+if (request.getAttribute("tradeUserList") != null) {
+	tradeUserList = (List<Integer>) request.getAttribute("tradeUserList");
+}
+if (request.getAttribute("paidUsers") != null) {
+	paidUsers = (List<Integer>) request.getAttribute("paidUsers");
+}
+if (request.getAttribute("deliveryUsers") != null) {
+	deliveryUsers = (List<Integer>) request.getAttribute("deliveryUsers");
+}
+
+int requestCount = Integer.parseInt(String.valueOf(request.getAttribute("likeCount")));
+int maxMems = Integer.parseInt(String.valueOf(request.getAttribute("max")));
+int stage1percent = Math.round((requestCount / (float) maxMems * 100));
+int stage2percent = Math.round((paidUsers.size() / (float) maxMems * 100));
+int stage3percent = Math.round((deliveryUsers.size() / (float) maxMems * 100));
+int stage1target = maxMems - requestCount;
+int stage2target = maxMems - paidUsers.size();
+int stage3target = maxMems - deliveryUsers.size();
+
+String reply = new String();
+if(request.getAttribute("reply")!=null){
+	reply = (String)request.getAttribute("reply");
+}
+
 %>
 
-
-
-<%-- <% 
-	Card c = (Card)request.getAttribute("curCard");
-
-	List<Integer> tradeUserList = new ArrayList<Integer>();
-  	List<Integer> paidUsers = new ArrayList<Integer>();
-  	List<Integer> deliveryUsers = new ArrayList<Integer>();
-	if(request.getAttribute("tradeUserList")!=null){
-		tradeUserList = (List<Integer>)request.getAttribute("tradeUserList");
-  	}
-  	if(request.getAttribute("paidUsers")!=null){
-		paidUsers = (List<Integer>)request.getAttribute("paidUsers");
-  	}
-  	if(request.getAttribute("deliveryUsers")!=null){
-		deliveryUsers = (List<Integer>)request.getAttribute("deliveryUsers");
-	}
-	String reply = new String();
-	if(request.getAttribute("reply")!=null){
-  	reply = (String)request.getAttribute("reply");
-	}
-	Integer requestCount = (Integer)request.getAttribute("requestCount");
-	int maxMems = c.getCardBoard().getMaxMems();
-	int stage1percent = Math.round(((requestCount/(float)c.getCardBoard().getMaxMems())*100));
-	int stage2percent = Math.round(((paidUsers.size()/(float)c.getCardBoard().getMaxMems())*100));
-	int stage3percent = Math.round(((deliveryUsers.size()/(float)c.getCardBoard().getMaxMems())*100));
-	int stage1target = maxMems - requestCount;
-	int stage2target = maxMems - paidUsers.size();
-	int stage3target = maxMems - deliveryUsers.size();
-%> --%>
 
 
 
@@ -422,11 +418,10 @@ span.title {
 				</div>
 			</div>
 
-			<div id="date"><%= newDate %>
+			<div id="date"><%=newDate%>
 				&nbsp&nbsp 관심 ${map.get('LIKE_COUNT')} 조회수 ${map.get('HIT')}
 				<p>
-					<c:if test="${map.get('TRADE_AREA') eq 1 ||  map.get('TRADE_STAGE') eq 2 || map.get('TRADE_STAGE') eq 3}">
-						<c:set var="contains" value="false" />
+					<c:if test="${map.get('TRADE_STAGE') eq 1 ||  map.get('TRADE_STAGE') eq 2 || map.get('TRADE_STAGE') eq 3}">
 						<c:forEach var="item" items="${tradeUserList}">
 							<c:if test="${item eq map.get('USID')}">
 						현재 참여중인 N빵입니다.
@@ -442,178 +437,206 @@ span.title {
 			</div>
 			<!-- 가격 -->
 			<div id="priceAndLikeBtn">
-				<h5>${map.get('PRODUCT_PRICE')}원
-				</h5>
+				<h5>${map.get('PRODUCT_PRICE')}원</h5>
 			</div>
 			<div id="contentText">${map.get('CONTENT')}</div>
 			<!-- 프로그래스바 -->
-			<c:if test="${map.get('TRADE_AREA') eq 1}">
-			<div class="chart chart1" data-percent="<%=stage1percent%>">
-				<span class="title">N빵 완성까지 <br><%= stage1target %>명!
-				</span>
-			</div>
-			<%}else if(c.getCardBoard().getTradeStage()==2) {%>
-			<div class="chart chart2" data-percent="<%=stage2percent%>">
-				<span class="title">결제 완료까지 <br><%= stage2target %>명!
-				</span>
-			</div>
-			<%}else if(c.getCardBoard().getTradeStage()==3) {%>
-			<div class="chart chart3" data-percent="<%=stage3percent%>">
-				<span class="title">물품수령 완료까지 <br><%= stage3target %>명!
-				</span>
-			</div>
-			<%}else if(c.getCardBoard().getTradeStage()==4) {%>
-			<div class="chart chart4" data-percent="100">
-				<span class="title">종료된 N빵입니다.<br></span>
-			</div>
-			<%} %>
+			<c:if test="${map.get('TRADE_STAGE') eq 1}">
+				<div class="chart chart1" data-percent="<%=stage1percent%>">
+					<span class="title">N빵 완성까지 <br><%=stage1target%>명!
+					</span>
+				</div>
+			</c:if>
+			<c:if test="${map.get('TRADE_STAGE') eq 2}">
+				<div class="chart chart2" data-percent="<%=stage2percent%>">
+					<span class="title">결제 완료까지 <br><%=stage2target%>명!
+					</span>
+				</div>
+			</c:if>
+			<c:if test="${map.get('TRADE_STAGE') eq 3}">
+				<div class="chart chart3" data-percent="<%=stage3percent%>">
+					<span class="title">물품수령 완료까지 <br><%=stage3target%>명!
+					</span>
+				</div>
+			</c:if>
+			<c:if test="${map.get('TRADE_STAGE') eq 4}">
+				<div class="chart chart4" data-percent="100">
+					<span class="title">종료된 N빵입니다.<br></span>
+				</div>
+			</c:if>
 			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-			<script src="<%=request.getContextPath()%>/js/easy-pie/dist/easypiechart.js"></script>
-			<script src="<%=request.getContextPath()%>/js/easy-pie/dist/jquery.easypiechart.js"></script>
+			<script src="${path }/resources/js/easy-pie/dist/easypiechart.js"></script>
+			<script src="${path }/resources/js/easy-pie/dist/jquery.easypiechart.js"></script>
 			<script>
-        $('.chart1').easyPieChart({
-        barColor: '#f16529',
-        trackColor: '#ccc',
-        scaleColor: '#fff',
-        lineCap: 'butt',
-        lineWidth: 30,
-        size: 200,
-        animate: 1000,
-        onStart: $.noop,
-        onStop: $.noop
-        });
-        $('.chart2').easyPieChart({
-        barColor: 'green',
-        trackColor: '#ccc',
-        scaleColor: '#fff',
-        lineCap: 'butt',
-        lineWidth: 30,
-        size: 200,
-        animate: 1000,
-        onStart: $.noop,
-        onStop: $.noop
-        });
-        $('.chart3').easyPieChart({
-        barColor: 'skyblue',
-        trackColor: '#ccc',
-        scaleColor: '#fff',
-        lineCap: 'butt',
-        lineWidth: 30,
-        size: 200,
-        animate: 1000,
-        onStart: $.noop,
-        onStop: $.noop
-        });
-        $('.chart4').easyPieChart({
-          barColor: 'gray',
-          trackColor: '#ccc',
-          scaleColor: '#fff',
-          lineCap: 'butt',
-          lineWidth: 30,
-          size: 200,
-          animate: 1000,
-          onStart: $.noop,
-          onStop: $.noop
-         });
-      </script>
+				$('.chart1').easyPieChart({
+					barColor : '#f16529',
+					trackColor : '#ccc',
+					scaleColor : '#fff',
+					lineCap : 'butt',
+					lineWidth : 30,
+					size : 200,
+					animate : 1000,
+					onStart : $.noop,
+					onStop : $.noop
+				});
+				$('.chart2').easyPieChart({
+					barColor : 'green',
+					trackColor : '#ccc',
+					scaleColor : '#fff',
+					lineCap : 'butt',
+					lineWidth : 30,
+					size : 200,
+					animate : 1000,
+					onStart : $.noop,
+					onStop : $.noop
+				});
+				$('.chart3').easyPieChart({
+					barColor : 'skyblue',
+					trackColor : '#ccc',
+					scaleColor : '#fff',
+					lineCap : 'butt',
+					lineWidth : 30,
+					size : 200,
+					animate : 1000,
+					onStart : $.noop,
+					onStop : $.noop
+				});
+				$('.chart4').easyPieChart({
+					barColor : 'gray',
+					trackColor : '#ccc',
+					scaleColor : '#fff',
+					lineCap : 'butt',
+					lineWidth : 30,
+					size : 200,
+					animate : 1000,
+					onStart : $.noop,
+					onStop : $.noop
+				});
+			</script>
 			<div id="etcInfo">
-				<a
-					href="<%= request.getContextPath() %>/member/report?userId=<%= loginnedMember.getUsid() %>&boardId=<%= c.getCardBoard().getBoardId() %>&writerUsid=<%=c.getCardBoard().getWriterUsid()%>">신고하기</a>
-				<%if(c.getCardBoard().getProductUrl()!=null){ %><a id="urlh" href="http://<%= c.getCardBoard().getProductUrl() %>" target="_blank">제품 페이지</a>
-				<%} else { %>제품 페이지<%} %>
+				<a href="${path }/member/report?userId=${loginnedMember.usid}&boardId=${map.get('BOARD_ID')}&writerUsid=${map.get('WRITER_USID')}">신고하기</a>
+				<c:if test="${!empty (map.get('PRODUCT_URL'))}">
+					<a id="urlh" href="http://${map.get('PRODUCT_URL')}" target="_blank">제품 페이지</a>
+				</c:if>
+				<c:if test="${empty (map.get('PRODUCT_URL'))}">
+					제품 페이지
+				</c:if>
 			</div>
 			<hr>
 			<div id="funcBtns">
 				<ul>
 					<form style="display: none;" name="form">
-						<!-- 디비에서 객체를 받아와서 다시 넣어야됨 일단은 리터럴로 넘김 -->
-						<!-- BOARD 컬럼의  BOARD_ID -->
-						<input type="hidden" name="boardId" value="${curCard.cardBoard.boardId}">
-						<!-- BOARD 컬럼의  MAX_MEMS -->
-						<input type="hidden" name="maxMems" value="${curCard.cardBoard.maxMems}">
-						<!-- BOARD 컬럼의  TRADE_STAGE -->
-						<input type="hidden" name="tradeStage" value="${curCard.cardBoard.tradeStage}">
-						<!-- BOARD 컬럼의  WRITER_USID -->
-						<input type="hidden" name="writerUsid" value="${loginnedMember.usid}">
-						<!-- MEMBER 컬럼의  MEMBER_PICTURE -->
-						<input type="hidden" name="memberPicture" value="${loginnedMember.memberPicture}">
-						<!-- <% if(c.getCardBoard().getTradeStage()>1) {%> -->
-						<input type="hidden" name="boardTitle" value="${curCard.cardBoard.boardTitle}">
+						<input type="hidden" name="boardId" value="${map.get('BOARD_ID')}"> <input type="hidden" name="maxMems" value="${map.get('MAX_MEMS')}">
+						<input type="hidden" name="tradeStage" value="${map.get('TRADE_STAGE')}"> <input type="hidden" name="writerUsid"
+							value="${map.get('USID')}"> <input type="hidden" name="memberPicture" value="${map.get('MEMBER_PICTURE')}"> <input
+							type="hidden" name="boardTitle" value="${map.get('BOARD_TITLE')}">
 
 						<button id="hiddenEnterBtn" onclick="nbbang(this.form)">채팅방 접속하기</button>
-						<!-- <%}%> -->
 					</form>
-					<li><div id="likeFunc">
-							<% if(!likelist.contains(c.getCardBoard().getBoardId())) {%>
-							<img src="<%= request.getContextPath() %>/images/heart.png" width="40px" height="40px">
-							<%}if(likelist.contains(c.getCardBoard().getBoardId())) { %>
-							<img src="<%= request.getContextPath() %>/images/fullheart.png" width="40px" height="40px">
-							<%} %>
+					<li>
+					<div id="likeFunc">
+							<c:forEach var="item" items="${likelist}">
+							<!-- 여기 왜 안나옴??? ㄷ -->
+								<c:if test="${item == map.get('BOARD_ID')}">
+									<img src="${path }/resources/images/fullheart.png" width="40px" height="40px">
+								</c:if>
+								<c:if test="${item != map.get('BOARD_ID')}">
+									<img src="${path }/resources/images/heart.png" width="40px" height="40px">
+								</c:if>
+							</c:forEach>
 							<p>찜하기</p>
-						</div></li>
-					<% if(c.getCardBoard().getTradeStage()==1) {%>
-					<% if(c.getCardBoard().getWriterUsid()!=loginnedMember.getUsid()) {%>
-					<li><div id="startFuncBtn" onclick="fun_decidebuy();">
-							<% if(tradeUserList.contains(loginnedMember.getUsid())){ %>
-							<img src="<%= request.getContextPath() %>/images/cancel.png" width="40px" height="40px">
-							<p>N빵취소</p>
-						</div></li>
-					<% }else { %>
-					<img src="<%= request.getContextPath() %>/images/onebyn.png" width="40px" height="40px">
-					<p>N빵신청</p>
+						</div>
+						</li>
+
+
+					<c:if test="${map.get('TRADE_STAGE') eq 1}">
+						<c:if test="${map.get('WRITER_USID') ne loginnedMember.usid}">
+							<li><div id="startFuncBtn" onclick="fun_decidebuy();">
+									<c:forEach var="item" items="${tradeUserList}">
+										<c:if test="${item eq loginnedMember.usid}">
+											<img src="${path }/resources/images/cancel.png" width="40px" height="40px">
+											<p>N빵취소</p>
+								</div></li>
+						</c:if>
+						<c:if test="${item ne loginnedMember.usid}">
+							<img src="${path }/resources/images/onebyn.png" width="40px" height="40px">
+							<p>N빵신청</p>
 			</div>
 			</li>
-			<% } %>
-			<% } %>
-			<% } %>
-			<% if(tradeUserList.contains(loginnedMember.getUsid())&&c.getCardBoard().getTradeStage()>1) {%>
-			<li><div id="enterFuncBtn" onclick="fn_enterBtn();">
-					<img src="<%= request.getContextPath() %>/images/enter.png" width="40px" height="40px">
-					<p>채팅방접속</p>
-				</div></li>
-			<%} %>
-			<%if(c.getCardBoard().getWriterUsid()!=loginnedMember.getUsid()){ %>
-			<%if(c.getCardBoard().getTradeStage()==2&&tradeUserList.contains(loginnedMember.getUsid())) {%>
-			<%if(paidUsers!=null&&!paidUsers.contains(loginnedMember.getUsid())) {%>
-			<li><div id="openFuncBtn" onclick="fn_pay();">
-					<img src="<%= request.getContextPath() %>/images/dollar.png" width="40px" height="40px">
-					<p>결제하기</p>
-				</div></li>
-			<%} %>
-			<%} %>
-			<%} %>
-			<% if(c.getCardBoard().getTradeStage()==2) {%>
-			<% if(c.getCardBoard().getWriterUsid()==loginnedMember.getUsid()){ %>
-			<li><div onclick="fn_shipping();">
-					<img src="<%= request.getContextPath() %>/images/shipping.png" width="40px" height="40px">
-					<p>배송시작하기</p>
-				</div></li>
-			<%} %>
-			<%} %>
-			<% if(c.getCardBoard().getTradeStage()==3) {%>
-			<% if(c.getCardBoard().getWriterUsid()!=loginnedMember.getUsid()&&!deliveryUsers.contains(loginnedMember.getUsid())){ %>
-			<li><div onclick="fn_delivery();">
-					<img src="<%= request.getContextPath() %>/images/box.png" width="40px" height="40px">
-					<p>수령확인</p>
-				</div></li>
-			<%} %>
-			<%} %>
-			<% if(c.getCardBoard().getTradeStage()==1) {%>
-			<% if(c.getCardBoard().getWriterUsid()==loginnedMember.getUsid()){ %>
-			<li><div id="openFuncBtn" onclick="fun_createroom();">
-					<img src="<%= request.getContextPath() %>/images/open.png" width="40px" height="40px">
-					<p>방열기</p>
-				</div></li>
-			<%} %>
-			<%} %>
-			<% if(c.getCardBoard().getTradeStage()==3) {%>
-			<% if(c.getCardBoard().getWriterUsid()==loginnedMember.getUsid()){ %>
-			<li><div onclick="fn_end();">
-					<img src="<%= request.getContextPath() %>/images/end.png" width="40px" height="40px">
-					<p>N빵종료하기</p>
-				</div></li>
-			<%} %>
-			<%} %>
+			</c:if>
+			</c:forEach>
+			</c:if>
+			</c:if>
+
+			<c:forEach var="item" items="${tradeUserList}">
+				<c:if test="${item eq loginnedMember.usid && map.get('TRADE_STAGE') > 1}">
+					<li><div id="enterFuncBtn" onclick="fn_enterBtn();">
+							<img src="${path }/resources/images/enter.png" width="40px" height="40px">
+							<p>채팅방접속</p>
+						</div></li>
+				</c:if>
+			</c:forEach>
+
+
+			<c:if test="${map.get('WRITER_USID') ne loginnedMember.usid}">
+				<c:forEach var="item" items="${tradeUserList}">
+					<c:if test="${item eq loginnedMember.usid && map.get('TRADE_STAGE') == 2}">
+						<c:forEach var="item2" items="${paidUsers}">
+							<c:if test="${item2 ne loginnedMember.usid && !(empty paidUsers)}">
+								<li><div id="openFuncBtn" onclick="fn_pay();">
+										<img src="${path }/resources/images/dollar.png" width="40px" height="40px">
+										<p>결제하기</p>
+									</div></li>
+							</c:if>
+						</c:forEach>
+					</c:if>
+				</c:forEach>
+			</c:if>
+
+
+
+			<c:if test="${map.get('TRADE_STAGE') eq 2}">
+				<c:if test="${map.get('WRITER_USID') eq loginnedMember.usid}">
+					<li><div onclick="fn_shipping();">
+							<img src="${path }/resources/images/shipping.png" width="40px" height="40px">
+							<p>배송시작하기</p>
+						</div></li>
+				</c:if>
+			</c:if>
+
+
+			<c:if test="${map.get('TRADE_STAGE') eq 3}">
+				<c:forEach var="item" items="${deliveryUsers}">
+					<c:if test="${item eq loginnedMember.usid && map.get('WRITER_USID') ne loginnedMember.usid}">
+						<li><div onclick="fn_delivery();">
+								<img src="${path }/resources/images/box.png" width="40px" height="40px">
+								<p>수령확인</p>
+							</div></li>
+					</c:if>
+				</c:forEach>
+			</c:if>
+
+
+			<c:if test="${map.get('TRADE_STAGE') eq 1}">
+				<c:if test="${map.get('WRITER_USID') eq loginnedMember.usid}">
+					<li><div id="openFuncBtn" onclick="fun_createroom();">
+							<img src="${path }/resources/images/open.png" width="40px" height="40px">
+							<p>방열기</p>
+						</div></li>
+				</c:if>
+			</c:if>
+
+
+			<c:if test="${map.get('TRADE_STAGE') eq 3}">
+				<c:if test="${map.get('WRITER_USID') eq loginnedMember.usid}">
+					<li><div onclick="fn_end();">
+							<img src="${path }/resources/images/end.png" width="40px" height="40px">
+							<p>N빵종료하기</p>
+						</div></li>
+				</c:if>
+			</c:if>
+
+
 			</ul>
 		</div>
 		<hr>
@@ -640,7 +663,7 @@ span.title {
 	<!--  -->
 	<!--  -->
 </section>
-<script>
+ <script>
 <% if(reply.equals("success")) { %>
   function autoReple() {
     $("#commentContent").val("<p class='confirm'>결제했습니다.</p>");
@@ -667,43 +690,43 @@ function fn_replyToReply(comId){
 }
 
 function fn_modifyBoard(){
-  location.href = "<%=request.getContextPath()%>/board/boardModify?boardId=<%=c.getCardBoard().getBoardId()%>";
+  location.href = "${path}/board/boardModify?boardId=${map.get('BOARD_ID')}";
 }
 
 function fn_deleteBoard(){
   if(confirm('게시물을 삭제하시겠습니까?')){
-  location.href = "<%=request.getContextPath()%>/board/boardDelete?boardId=<%=c.getCardBoard().getBoardId()%>&category=<%=c.getCardBoard().getProductCategory()%>";
+  location.href = "${path}/board/boardDelete?boardId=${map.get('BOARD_ID')}&category=${map.get('PRODUCT_CATEGORY')}";
   }
 }
 
 function fn_pay(){//결제기능
   if(confirm('결제를 진행하시겠습니까?')) {
-    location.href="<%=request.getContextPath()%>/board/boardPay?buyerUsid=<%=loginnedMember.getUsid()%>&boardId=<%=c.getCardBoard().getBoardId()%>&productPrice=<%=c.getCardBoard().getProductPrice()%>&writerUsid=<%=c.getCardBoard().getWriterUsid()%>";
+    location.href="${path}/board/boardPay?buyerUsid=${loginnedMember.usid}&boardId=${map.get('BOARD_ID')}&productPrice=${map.get('PRODUCT_PRICE')}&writerUsid=${map.get('WRITER_USID')}";
   }
 }
 
 function fn_shipping(){//배송시작기능
   if(confirm('배송을 진행하시겠습니까?')) {
-		if("<%= paidUsers.size() %>"!="<%= maxMems %>") {
+		if("${fn:length(paidUsers)}" != "${map.get('MAX_MEMS')}") {
 			alert("결제 인원이 부족합니다.");
 		}else {
-	    location.href="<%=request.getContextPath()%>/board/boardShipStart?boardId=<%=c.getCardBoard().getBoardId()%>&writerUsid=<%=c.getCardBoard().getWriterUsid()%>";
+	    location.href="${path}/board/boardShipStart?boardId=${map.get('BOARD_ID')}&writerUsid=${map.get('WRITER_USID')}";
 		}
 	}
 }
 
 function fn_delivery(){
 	if(confirm('물품을 배송받으셨나요?')) {
-    	location.href="<%=request.getContextPath()%>/board/boardDelivery?buyerUsid=<%=loginnedMember.getUsid()%>&boardId=<%=c.getCardBoard().getBoardId()%>&writerUsid=<%=c.getCardBoard().getWriterUsid()%>";
+    	location.href="${path}/board/boardDelivery?buyerUsid=${loginnedMember.usid}&boardId=${map.get('BOARD_ID')}&writerUsid=${map.get('WRITER_USID')}";
   }
 }
 
 function fn_end(){
 	if(confirm('N빵을 끝내시겠습니까?')) {
-		if("<%= deliveryUsers.size() %>"!="<%= maxMems %>") {
+		if("${fn:length(deliveryUsers)}" != "${map.get('MAX_MEMS')}") {
 			alert("아직 배송 받지 못한 분이 있습니다.");
 		}else {
-	    	location.href="<%=request.getContextPath()%>/board/boardEnd?boardId=<%=c.getCardBoard().getBoardId()%>&writerUsid=<%=c.getCardBoard().getWriterUsid()%>";
+	    	location.href="${path}/board/boardEnd?boardId=${map.get('BOARD_ID')}&writerUsid=${map.get('WRITER_USID')}";
 		}
 	}
 }
@@ -725,7 +748,7 @@ function nbbang(f){
 	var cx = (window.screen.width / 2) - (x / 2);
 	var cy= (window.screen.height / 2) - (y / 2);
 
-	var url    ="<%=request.getContextPath()%>/chat/chatRoom";
+	var url    ="${path}/chat/chatRoom";
 	var title  = "chat";
 	var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width="+x+", height="+y+", top="+cy+",left="+cx;
 	pop =  window.open("", title,status);
@@ -741,10 +764,10 @@ $.ajax({
     type: "GET",
     /* "boardId":"2" 부분 게시판 id값을 객체로 받아와서 넣기로 변경해야됨 */
     data: {
-      "boardId": "${curCard.cardBoard.boardId}"
+      "boardId": "${map.get('BOARD_ID')}"
     },
       dataType: "json",
-      url: "<%=request.getContextPath()%>/chat/createRoom",
+      url: "${path}/chat/createRoom",
     success: function (data) {
       if (data == 1) {
           //방의 상태를 바꿔야되니 ajax로 갔따오자 방의 상태를 2로 변경함
@@ -759,18 +782,18 @@ $.ajax({
 
 function fun_decidebuy(){
 	/* 컨트롤 f주의 여기 틀어짐 컨텍스트 부분 */
-  if($("#startFuncBtn>img").attr("src")=="<%= request.getContextPath() %>/images/onebyn.png") {
+  if($("#startFuncBtn>img").attr("src")=="${path}/resources/images/onebyn.png") {
 	$.ajax({
 		type: "GET",
 		/* "boardId":"2" 부분 게시판 id값을 객체로 받아와서 넣기로 변경해야됨 */
-		data: {usid : "${loginnedMember.usid}",nickname : "${loginnedMember.nickname}","boardId":"${curCard.cardBoard.boardId}","flag":"1"},
-		url: "<%=request.getContextPath()%>/chat/decidebuy",
+		data: {usid : "${loginnedMember.usid}",nickname : "${loginnedMember.nickname}","boardId":"${map.get('BOARD_ID')}","flag":"1"},
+		url: "${path}/chat/decidebuy",
 			success : function(data) {
         if(data == 0){
          alert("현재 n빵 참여가 실패하였습니다.");
         }else if(data == 1){
          alert("n빵 참여에 성공했습니다.");
-        $("#startFuncBtn>img").attr("src","<%= request.getContextPath() %>/images/cancel.png");
+        $("#startFuncBtn>img").attr("src","${path}/resources/images/cancel.png");
         $("#startFuncBtn>p").text("N빵취소");
         $("#date p").text("현재 참여중인 N빵입니다.");
          location.reload();
@@ -785,15 +808,15 @@ function fun_decidebuy(){
 	}else {
     $.ajax({
 		/* "boardId":"2" 부분 게시판 id값을 객체로 받아와서 넣기로 변경해야됨 */
-		data: {usid : "${loginnedMember.usid}",nickname : "${loginnedMember.nickname}","boardId":"${curCard.cardBoard.boardId}","flag":"2"},
-		url: "<%=request.getContextPath()%>/chat/decidebuy",
+		data: {usid : "${loginnedMember.usid}",nickname : "${loginnedMember.nickname}","boardId":"${map.get('BOARD_ID')}","flag":"2"},
+		url: "${path}/chat/decidebuy",
 			success : function(data) {
         if(data == 0){
          alert("현재 n빵 취소에 실패하였습니다.");
         }else{
           //data 3 넘어옴
           alert("현재 n빵 참여가 취소되었습니다.");
-          $("#startFuncBtn>img").attr("src","<%= request.getContextPath() %>/images/onebyn.png");
+          $("#startFuncBtn>img").attr("src","${path}/resources/images/onebyn.png");
           $("#startFuncBtn>p").text("N빵신청");
           $("#date p").text("");
         }
@@ -806,8 +829,8 @@ function fun_decidebuy(){
 function fun_cancelbuy() {
 	$.ajax({
 		/* "boardId":"2" 부분 게시판 id값을 객체로 받아와서 넣기로 변경해야됨 */
-		data: {usid : "${loginnedMember.usid}",nickname : "${loginnedMember.nickname}","boardId":"${curCard.cardBoard.boardId}","flag":"2"},
-		url: "<%=request.getContextPath()%>/chat/decidebuy",
+		data: {usid : "${loginnedMember.usid}",nickname : "${loginnedMember.nickname}","boardId":"${map.get('BOARD_ID')}","flag":"2"},
+		url: "${path}/chat/decidebuy",
 			success : function(data) {
 				location.reload();
 			}
@@ -818,7 +841,7 @@ $(document).on('click', '.repleDelete', function(e){
   let comId = $(e.target).parent().parent().children('.comId').val();
   if(confirm('댓글을 삭제하시겠습니까?')) {
     $.ajax({
-        url: "<%=request.getContextPath()%>/board/commentDelete",
+        url: "${path}/board/commentDelete",
         type: "post",
         dataType: "text",
         data: {
@@ -856,7 +879,7 @@ $(document).on('keypress', '.commentModify', function(e){
 
 $(document).on('click','.commentModifyBtn',function(e){
   $.ajax({
-    url: "<%=request.getContextPath()%>/board/commentModify",
+    url: "${path}/board/commentModify",
     type: "post",
     dataType: "text",
     data: {
@@ -885,16 +908,16 @@ $(document).on('click','.commentInsertBtn',function (e){
   if ($(e.target).parent().children('.commentContent').val() != null) {
     if($(e.target).parent().children('input[name=commentLevel]').val()==1) {
       $.ajax({
-        url: "<%=request.getContextPath()%>/board/commentInsert",
+        url: "${path}/board/commentInsert",
         type: "post",
         dataType: "text",
         data: {
-          "cBoardId": "<%= c.getCardBoard().getBoardId() %>",
+          "cBoardId": "${map.get('BOARD_ID')}",
           "content": $(e.target).parent().children('input[name=commentContent]').val(),
           "secret": $(e.target).parent().children('select[name=commentTo]').val(),
-          "cWriterNickname": "<%= loginnedMember.getNickname() %>",
+          "cWriterNickname": "${loginnedMember.nickname}",
           "comLayer": $(e.target).parent().children('input[name=commentLevel]').val(),
-          "comProfile": "<%= loginnedMember.getMemberPicture() %>"
+          "comProfile": "${map.get('MEMBER_PICTURE')}"
         },
         success: function (data) {
           if (data != "success") {
@@ -906,15 +929,15 @@ $(document).on('click','.commentInsertBtn',function (e){
       })
     }else {
       $.ajax({
-        url: "<%=request.getContextPath()%>/board/commentInsert",
+        url: "${path}/board/commentInsert",
         type: "post",
         dataType: "text",
         data: {
-          "cBoardId": "<%= c.getCardBoard().getBoardId() %>",
+          "cBoardId": "${map.get('BOARD_ID')}",
           "content": $(e.target).parent().children('input[name=commentContent]').val(),
-          "cWriterNickname": "<%= loginnedMember.getNickname() %>",
+          "cWriterNickname": "${loginnedMember.nickname}",
           "comLayer": $(e.target).parent().children('input[name=commentLevel]').val(),
-          "comProfile": "<%= loginnedMember.getMemberPicture() %>",
+          "comProfile": "${map.get('MEMBER_PICTURE')}",
           "com_ref" : $(e.target).parent().children('input[name=com_ref]').val()
         },
         success: function (data) {
@@ -936,30 +959,30 @@ autoReple();
 <% } %>
 $("#hideButton").hide();
 $("#likeFunc").click(function (e) {
-    if ($("#likeFunc>img").attr("src") == "<%= request.getContextPath() %>/images/heart.png") {
+    if ($("#likeFunc>img").attr("src") == "${path}/resources/images/heart.png") {
       $.ajax({
-        url: "<%=request.getContextPath()%>/board/boardLike?key=insert",
+        url: "${path}/board/boardLike?key=insert",
         type: "post",
         dataType: "text",
         data: {
-          'userUsid': '<%= loginnedMember.getUsid() %>',
-          'boardId': '<%= c.getCardBoard().getBoardId() %>'
+          'userUsid': '${loginnedMember.usid}',
+          'boardId': "${map.get('BOARD_ID')}"
         },
         success: function (data) {
-            $("#likeFunc>img").attr("src", "<%= request.getContextPath() %>/images/fullheart.png");
+            $("#likeFunc>img").attr("src", "${path}/resources/images/fullheart.png");
         }
       })
     } else {
       $.ajax({
-        url: "<%=request.getContextPath()%>/board/boardLike?key=delete",
+        url: "${path}/board/boardLike?key=delete",
         type: "post",
         dataType: "text",
         data: {
-          'userUsid': '<%= loginnedMember.getUsid() %>',
-          'boardId': '<%= c.getCardBoard().getBoardId() %>'
+          'userUsid': '${loginnedMember.usid}',
+          'boardId': "${map.get('BOARD_ID')}"
         },
         success: function (data) {
-            $("#likeFunc>img").attr("src", "<%= request.getContextPath() %>/images/heart.png");
+            $("#likeFunc>img").attr("src", "${path}/resources/images/heart.png");
         }
       })
     }
@@ -970,25 +993,25 @@ $("#likeFunc").click(function (e) {
 
 function fn_commentList() {
   $.ajax({
-      url: "<%=request.getContextPath()%>/board/commentList",
+      url: "${path}/board/commentList",
       type: "post",
       dataType: "json",
       data: {
-          "cBoardId": "<%= c.getCardBoard().getBoardId() %>"
+          "cBoardId": "${map.get('BOARD_ID')}"
       },
       success: function (data) {
         let html = "";
         $.each(data, function (index, item) {
           let date = new Date(Date.parse(item.cenrollDate));
           let repleDate = date.format('yyyy-MM-dd(KS) HH:mm:ss');
-          if("<%=loginnedMember.getUsid()%>"!="<%=c.getCardBoard().getWriterUsid()%>"){
+          if("${loginnedMember.usid}"!="${map.get('WRITER_USID')}"){
             if(item.comLayer==1){
-              if(item.cwriterNickname=="<%=loginnedMember.getNickname()%>") {
+              if(item.cwriterNickname=="${loginnedMember.nickname}") {
                 html += "<li class='comment_item'>";
                 html += "<hr>";
                 html += "<div class='comment_area'>";
                 html += "<div class='comment_thumb'>";
-                html += "<img src='<%= memberPic %>/"+ item.comProfile +"' alt='' width='30px'" +
+                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
                         " height='30px' style='border-radius: 70%'>";
                 html += "</div>";
                 html += "<div class='comment_box'>";
@@ -1009,7 +1032,7 @@ function fn_commentList() {
                 html += "<hr>";
                 html += "<div class='comment_area'>";
                 html += "<div class='comment_thumb'>";
-                html += "<img src='<%= memberPic %>/"+ item.comProfile +"' alt='' width='30px'" +
+                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
                         " height='30px' style='border-radius: 70%'>";
                 html += "</div>";
                 html += "<div class='comment_box'>";
@@ -1029,7 +1052,7 @@ function fn_commentList() {
                 html += "<hr>";
                 html += "<div class='comment_area'>";
                 html += "<div class='comment_thumb'>";
-                html += "<img src='<%= memberPic %>/"+ item.comProfile +"' alt='' width='30px'" +
+                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
                         " height='30px' style='border-radius: 70%'>";
                 html += "</div>";
                 html += "<div class='comment_box'>";
@@ -1047,12 +1070,12 @@ function fn_commentList() {
                 }
               }
             }else {
-              if(item.cwriterNickname=="<%=loginnedMember.getNickname()%>") {
+              if(item.cwriterNickname=="${loginnedMember.nickname}") {
                 html += "<li class='comment_item'>";
                 // html += "<hr>";
                 html += "<div class='comment_area2'>";
                 html += "<div class='comment_thumb'>";
-                html += "<img src='<%= memberPic %>/"+ item.comProfile +"' alt='' width='30px'" +
+                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
                         " height='30px' style='border-radius: 70%'>";
                 html += "</div>";
                 html += "<div class='comment_box'>";
@@ -1072,7 +1095,7 @@ function fn_commentList() {
                 // html += "<hr>";
                 html += "<div class='comment_area2'>";
                 html += "<div class='comment_thumb'>";
-                html += "<img src='<%= memberPic %>/"+ item.comProfile +"' alt='' width='30px'" +
+                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
                         " height='30px' style='border-radius: 70%'>";
                 html += "</div>";
                 html += "<div class='comment_box'>";
@@ -1091,12 +1114,12 @@ function fn_commentList() {
             }
           }else {
             if(item.comLayer==1){
-              if(item.cwriterNickname=="<%=loginnedMember.getNickname()%>") {
+              if(item.cwriterNickname=="${loginnedMember.nickname}") {
                 html += "<li class='comment_item'>";
                 html += "<hr>";
                 html += "<div class='comment_area'>";
                 html += "<div class='comment_thumb'>";
-                html += "<img src='<%= memberPic %>/"+ item.comProfile +"' alt='' width='30px'" +
+                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
                         " height='30px' style='border-radius: 70%'>";
                 html += "</div>";
                 html += "<div class='comment_box'>";
@@ -1117,7 +1140,7 @@ function fn_commentList() {
                 html += "<hr>";
                 html += "<div class='comment_area'>";
                 html += "<div class='comment_thumb'>";
-                html += "<img src='<%= memberPic %>/"+ item.comProfile +"' alt='' width='30px'" +
+                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
                         " height='30px' style='border-radius: 70%'>";
                 html += "</div>";
                 html += "<div class='comment_box'>";
@@ -1137,7 +1160,7 @@ function fn_commentList() {
                 html += "<hr>";
                 html += "<div class='comment_area'>";
                 html += "<div class='comment_thumb'>";
-                html += "<img src='<%= memberPic %>/"+ item.comProfile +"' alt='' width='30px'" +
+                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
                         " height='30px' style='border-radius: 70%'>";
                 html += "</div>";
                 html += "<div class='comment_box'>";
@@ -1155,12 +1178,12 @@ function fn_commentList() {
                 }
               }
             }else {
-              if(item.cwriterNickname=="<%=loginnedMember.getNickname()%>") {
+              if(item.cwriterNickname=="${loginnedMember.nickname}") {
                 html += "<li class='comment_item'>";
                 // html += "<hr>";
                 html += "<div class='comment_area2'>";
                 html += "<div class='comment_thumb'>";
-                html += "<img src='<%= memberPic %>/"+ item.comProfile +"' alt='' width='30px'" +
+                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
                         " height='30px' style='border-radius: 70%'>";
                 html += "</div>";
                 html += "<div class='comment_box'>";
@@ -1180,7 +1203,7 @@ function fn_commentList() {
                 // html += "<hr>";
                 html += "<div class='comment_area2'>";
                 html += "<div class='comment_thumb'>";
-                html += "<img src='<%= memberPic %>/"+ item.comProfile +"' alt='' width='30px'" +
+                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
                         " height='30px' style='border-radius: 70%'>";
                 html += "</div>";
                 html += "<div class='comment_box'>";
@@ -1266,5 +1289,5 @@ String.prototype.string = function (len) { var s = '', i = 0; while (i++ < len) 
 String.prototype.zf = function (len) { return "0".string(len - this.length) + this; };
 
 Number.prototype.zf = function (len) { return this.toString().zf(len); };
-</script>
+</script> 
 <%@ include file="/WEB-INF/views/common/footer.jsp"%>

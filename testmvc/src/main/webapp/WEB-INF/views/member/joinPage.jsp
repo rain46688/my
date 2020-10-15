@@ -70,7 +70,7 @@ div.dividedText {
 		<div id="loginField">
 			<h2 style="margin-bottom: 50px;">회원가입</h2>
 
-			<form:form action="joinPage" method="post" commandName="member" id="memberEnrollFrm" name="memberEnrollFrm">
+			<form:form action="joinPage" method="post" modelAttribute="member" id="memberEnrollFrm" name="memberEnrollFrm">
 
 				<form:input path="memberId" size="20" id="id" class="input" name="memberId" minlength="4" maxlength="20" placeholder="이메일" style="width: 59%;" />
 				<input type="button" class="button" id="certibtn" value="인증번호 전송" style="text-align: center;">

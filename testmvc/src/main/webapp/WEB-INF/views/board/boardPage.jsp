@@ -1,15 +1,23 @@
-<%-- <%@page import="java.text.SimpleDateFormat"%>
-<%@page import="java.util.Date"%>
+<%-- 
 <%@page import="java.util.List"%>
 <%@page import="com.nbbang.board.model.vo.Card"%>
 <%@page import="com.nbbang.board.model.vo.Board"%> --%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.text.SimpleDateFormat"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ include file="/WEB-INF/views/common/header.jsp" %>
+<%@ include file="/WEB-INF/views/common/header.jsp"%>
+<%
+Date enrollDate = (Date)request.getAttribute("date");
+SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm");
+String newDate = sdf.format(enrollDate);
+%>
+
+
+
 <%-- <% 
 	Card c = (Card)request.getAttribute("curCard");
-	Date enrollDate = c.getCardBoard().getEnrollDate();
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy년 MM월 dd일 HH:mm");
-	String newDate = sdf.format(enrollDate);
+
 	List<Integer> tradeUserList = new ArrayList<Integer>();
   	List<Integer> paidUsers = new ArrayList<Integer>();
   	List<Integer> deliveryUsers = new ArrayList<Integer>();
@@ -37,390 +45,432 @@
 %> --%>
 
 
+
 <style>
-  #wrapper {
-    margin: 0 auto;
-    margin-top: 5em;
-    padding-top: 1em;
-    width: 45em;
-    text-align: center;
-    align-items: center;
-    margin-bottom: 3em;
-    border: 0.5px solid rgb(224, 224, 224);
-    border-radius: 1em;
-    overflow: auto;
-  }
+#wrapper {
+	margin: 0 auto;
+	margin-top: 5em;
+	padding-top: 1em;
+	width: 45em;
+	text-align: center;
+	align-items: center;
+	margin-bottom: 3em;
+	border: 0.5px solid rgb(224, 224, 224);
+	border-radius: 1em;
+	overflow: auto;
+}
 
-  #imageWrapper {
-    margin-bottom: 2em;
-  }
+#imageWrapper {
+	margin-bottom: 2em;
+}
 
-  #imageWrapper>img {
-    border-radius: 1em;
-  }
+#imageWrapper>img {
+	border-radius: 1em;
+}
 
-  #userInfo {
-    margin: 0 auto;
-  	width:34em;
-  	text-align:left;
-  	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-size: large;
-  }
+#userInfo {
+	margin: 0 auto;
+	width: 34em;
+	text-align: left;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	font-size: large;
+}
 
-  #userInfo>#level {
-    float: right;
-    margin-top: 0.5em;
-  }
+#userInfo>#level {
+	float: right;
+	margin-top: 0.5em;
+}
 
-  .content{
-    width: 40em;
-    margin: 0 auto;
-    padding: 0.5em;
-    overflow: auto;
-  }
+.content {
+	width: 40em;
+	margin: 0 auto;
+	padding: 0.5em;
+	overflow: auto;
+}
 
-  #title {
-    text-align: left;
-    width: 100%;
-    overflow: auto;
-    font-weight: bolder;
-    font-size: 1.7em;
-  }
+#title {
+	text-align: left;
+	width: 100%;
+	overflow: auto;
+	font-weight: bolder;
+	font-size: 1.7em;
+}
 
-  #priceAndLikeBtn {
-    text-align: left;
-    padding-top: 0.5em;
-    overflow: auto;
-  }
-  
-  #contentText {
-    float: left;
-    text-align: left;
-    position: relative;
-    width: 100%;
-    margin-bottom: 2.5em;
-  }
+#priceAndLikeBtn {
+	text-align: left;
+	padding-top: 0.5em;
+	overflow: auto;
+}
 
-  #etcInfo {
-    text-align: left;
-    font-size: small;
-  }
-  
-  #commentSection {
-    text-align: left;
-    margin: 0 auto;
-    width: 38em;
-    padding-left: 0.5em;
-    padding-right: 0.5em;
-    margin-bottom: 2em;
-  }
+#contentText {
+	float: left;
+	text-align: left;
+	position: relative;
+	width: 100%;
+	margin-bottom: 2.5em;
+}
 
-  #commentInsert {
-    width: fluid;
-    margin: 0 auto;
-    text-align: center;
-    height: 2em;
-    overflow: auto;
-  }
+#etcInfo {
+	text-align: left;
+	font-size: small;
+}
 
-  #commentInsert2 {
-    width: fluid;
-    margin: 0 auto;
-    margin-top: 10px;
-    text-align: left;
-    overflow: auto;
-  }
+#commentSection {
+	text-align: left;
+	margin: 0 auto;
+	width: 38em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	margin-bottom: 2em;
+}
 
-  #Comments {
-    width: 100%;
-  }
+#commentInsert {
+	width: fluid;
+	margin: 0 auto;
+	text-align: center;
+	height: 2em;
+	overflow: auto;
+}
 
-  #Comments>ul {
-    padding-left: 0.5em;
-    list-style: none;
-    margin: 0 auto;
-    overflow: auto;
-  }
+#commentInsert2 {
+	width: fluid;
+	margin: 0 auto;
+	margin-top: 10px;
+	text-align: left;
+	overflow: auto;
+}
 
-  .comment_area2{
-    width: 100%;
-    overflow: auto;
-    padding-left: 2em;
-    margin-top: 1em;
-    margin-bottom: 1em;
-  }
+#Comments {
+	width: 100%;
+}
 
-  .comment_area {
-    padding-top: 0.5em;
-    width: 100%;
-    overflow: auto;
-  }
-  .comment_thumb {
-    text-align: center;
-    position: relative;
-    width: 5em;
-    float: left;
-  }
-  .comment_box {
-    word-break: break-all;
-    width: 29em;
-    float: left;
-    position: relative;
-  }
-  .comment_id {
-    font-size: small;
-    font-weight: bold;
-  }
+#Comments>ul {
+	padding-left: 0.5em;
+	list-style: none;
+	margin: 0 auto;
+	overflow: auto;
+}
 
-  .comment_text {
-    font-size: 16px;
-  }
+.comment_area2 {
+	width: 100%;
+	overflow: auto;
+	padding-left: 2em;
+	margin-top: 1em;
+	margin-bottom: 1em;
+}
 
-  .comment_info {
-    font-size: small;
-    color: darkgray;
-    margin-top: 0.25em;
-  }
-  
-  #userThumb {
-    float: left;
-    margin-right: 4px;
-  }
-  #userIdAndAddress {
-    float: left;
-  }
-  #userId {
-    font-size: 18px;
-    font-weight: bold;
-  }
-  #userAddress {
-    font-size: 16px;
-  }
+.comment_area {
+	padding-top: 0.5em;
+	width: 100%;
+	overflow: auto;
+}
 
-  #date {
-    text-align: left;
-    color: darkgray;
-    overflow: auto;
-  }
-  
-  #date p {
-    color: darkgreen;
-    font-weight: bold;
-  }
-  #etcInfo a {
-  	color:black;
-  }
-  #titleContent {
-    width: 17em;
-    height: 2em;
-    float: left;
-  }
-  #titleContent>p {
-    font-size: 25px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  #startBtn {
-    margin-left: 2.5px;
-    float: left;
-    font-size: 18px;
-  }
-  .turnRed {
-    background-color: red;
-  }
-  #userThumb>img {
-  	border-radius: 70%;
-  }
-  #comment_thumb>img {
-  	border-radius: 70%;
-  }
-  #funcBtns {
-    padding-top: 0.5em;
-    padding-bottom: 0px;
-    padding-left: 0em;
-    font-size: 12px;
-  }
-  #funcBtns>ul {
-    padding-left: 0.25em;
-    list-style: none;
-    text-align: left;
-  }
-  #funcBtns>ul>li {
-    display: inline-block;
-    text-align: center;
-    margin-left:0.5em;
-    margin-right: 0.5em;
-    padding-bottom: 0px;
-    height: 4.5em;
-  }
-  #funcBtns>ul div {
-    cursor: pointer;
-  }
-  #funcBtns>ul div:hover {
-    transform:scale(1.1);
-    font-weight: bold;
-  }
-  #btnForWriter {
-   	margin: 0 auto;
-  	margin-top:3em;
-  	margin-bottom:5px;
-  	text-align:right;
-  	width:45em;
-    font-family:'Do Hyeon', sans-serif;
-  }
-  #btnForWriter>button {
+.comment_thumb {
+	text-align: center;
+	position: relative;
+	width: 5em;
+	float: left;
+}
+
+.comment_box {
+	word-break: break-all;
+	width: 29em;
+	float: left;
+	position: relative;
+}
+
+.comment_id {
+	font-size: small;
+	font-weight: bold;
+}
+
+.comment_text {
+	font-size: 16px;
+}
+
+.comment_info {
+	font-size: small;
+	color: darkgray;
+	margin-top: 0.25em;
+}
+
+#userThumb {
+	float: left;
+	margin-right: 4px;
+}
+
+#userIdAndAddress {
+	float: left;
+}
+
+#userId {
+	font-size: 18px;
+	font-weight: bold;
+}
+
+#userAddress {
+	font-size: 16px;
+}
+
+#date {
+	text-align: left;
+	color: darkgray;
+	overflow: auto;
+}
+
+#date p {
+	color: darkgreen;
+	font-weight: bold;
+}
+
+#etcInfo a {
+	color: black;
+}
+
+#titleContent {
+	width: 17em;
+	height: 2em;
+	float: left;
+}
+
+#titleContent>p {
+	font-size: 25px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+#startBtn {
+	margin-left: 2.5px;
+	float: left;
+	font-size: 18px;
+}
+
+.turnRed {
+	background-color: red;
+}
+
+#userThumb>img {
+	border-radius: 70%;
+}
+
+#comment_thumb>img {
+	border-radius: 70%;
+}
+
+#funcBtns {
+	padding-top: 0.5em;
+	padding-bottom: 0px;
+	padding-left: 0em;
+	font-size: 12px;
+}
+
+#funcBtns>ul {
+	padding-left: 0.25em;
+	list-style: none;
+	text-align: left;
+}
+
+#funcBtns>ul>li {
+	display: inline-block;
+	text-align: center;
+	margin-left: 0.5em;
+	margin-right: 0.5em;
+	padding-bottom: 0px;
+	height: 4.5em;
+}
+
+#funcBtns>ul div {
+	cursor: pointer;
+}
+
+#funcBtns>ul div:hover {
+	transform: scale(1.1);
+	font-weight: bold;
+}
+
+#btnForWriter {
+	margin: 0 auto;
+	margin-top: 3em;
+	margin-bottom: 5px;
+	text-align: right;
+	width: 45em;
+	font-family: 'Do Hyeon', sans-serif;
+}
+
+#btnForWriter>button {
 	height: 2em;
 	width: 5em;
 	font-size: 20px;
-	}
-
-	#btnForWriter>button:hover {
-	border: 2px black solid;
-  }
-  
-  .addToReple {
-    text-decoration: none;
-    color: gray;
-  }
-
-  .confirm {
-    font-family: 'Do Hyeon', sans-serif;
-  }
-  .chart { 
-    width: 33.33%; 
-    margin-left: 26em;
-    text-align: center;
-  }
-
-  .chart span.title{
-  position: relative; 
-  display: block; 
-  width: 100%; 
-  text-align: center; 
-  top: 130px;
-  }
-  
-  span.title {
-  	font-family: 'Do Hyeon', sans-serif;
-  	font-size:16px;
-  }
-
-  .card-img-top {
-        width: 100%;
-        height: 35vw;
-        object-fit: cover;
-    }
-    
-#urlh{
-text-decoration:none;
-color:darkgray;
 }
 
+#btnForWriter>button:hover {
+	border: 2px black solid;
+}
+
+.addToReple {
+	text-decoration: none;
+	color: gray;
+}
+
+.confirm {
+	font-family: 'Do Hyeon', sans-serif;
+}
+
+.chart {
+	width: 33.33%;
+	margin-left: 26em;
+	text-align: center;
+}
+
+.chart span.title {
+	position: relative;
+	display: block;
+	width: 100%;
+	text-align: center;
+	top: 130px;
+}
+
+span.title {
+	font-family: 'Do Hyeon', sans-serif;
+	font-size: 16px;
+}
+
+.card-img-top {
+	width: 100%;
+	height: 35vw;
+	object-fit: cover;
+}
+
+#urlh {
+	text-decoration: none;
+	color: darkgray;
+}
 </style>
 <section>
 	<c:if test="${ loginnedMember.usid eq map.get('WRITER_USID') && map.get('TRADE_STAGE') eq 1}">
-	<div id="btnForWriter"> 
-    <button onclick="fn_modifyBoard();">수정하기</button>
-    <button onclick="fn_deleteBoard();">삭제하기</button>
-  </div>
-  </c:if>
-  
-  <c:if test="${loginnedMember.usid eq 9999 }">
-  <div id="btnForWriter"> 
-    <button onclick="fn_deleteBoard();">삭제하기</button>
-  </div>
-  </c:if>
-  
-  
-  <div id="wrapper">
-    <div id="imageWrapper">
-      <div id="carouselField" name="carouselField" >
-        <div id="carouselNB" class="carousel slide " data-ride="carousel" data-interval="false">
-          <ol class="carousel-indicators">
-          <!-- 잘되는듯함 아래 주석하고 확인해봤음 -->
-            <c:forTokens items="${map.get('FILE_NAME') }" delims="," varStatus="status">
-            <c:if test="${status.first}">
-              <li data-target="#carouselInhee" data-slide-to="${status.index}" class="active"></li>
-            </c:if>
-            <c:if test="${!(status.first)}">
-              <li data-target="#carouselInhee" data-slide-to="${status.index}"></li>
-            </c:if>
-            </c:forTokens>
+		<div id="btnForWriter">
+			<button onclick="fn_modifyBoard();">수정하기</button>
+			<button onclick="fn_deleteBoard();">삭제하기</button>
+		</div>
+	</c:if>
+
+	<c:if test="${loginnedMember.usid eq 9999}">
+		<div id="btnForWriter">
+			<button onclick="fn_deleteBoard();">삭제하기</button>
+		</div>
+	</c:if>
 
 
- <%--        </ol>
-          <div class="carousel-inner" role="listbox">
-            <% for(int i = 0; i < c.getCardFile().getFileName().length; i++)  {%>
-              <% if(i==0) { %>
-            <div class="carousel-item active">
-              <img src="<%=request.getContextPath()%>/upload/images/<%= c.getCardFile().getFileName()[i] %>"
-                class="d-block w-90 card-img-top" alt="..." width="600em" height="500em">
-            </div>
-            <% }else { %>
-              <div class="carousel-item">
-                <img src="<%=request.getContextPath()%>/upload/images/<%= c.getCardFile().getFileName()[i] %>"
-                  class="d-block w-90 card-img-top" alt="..." width="600em" height="500em">
-              </div>
-            <% }} %>
-          </div>
-    
-          <a class="carousel-control-prev" href="#carouselNB" role="button"
-            data-slide="prev"> <span class="carousel-control-prev-icon"
-            aria-hidden="true"></span> <span class="sr-only">Previous</span>
-          </a> 
-          <a class="carousel-control-next" href="#carouselNB" role="button"
-            data-slide="next"> <span class="carousel-control-next-icon"
-            aria-hidden="true"></span> <span class="sr-only">Next</span>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div id="userInfo">
-    	<hr>
-      <div id="userThumb">
-        <img src="<%= memberPic + c.getWriterProfile() %>" alt="" width="40px" height="40px">
-      </div>
-        <div id="userIdAndAddress">
-          <div id="userId"><%= c.getCardBoard().getWriterNickname() %></div>
-          <div id="userAddress"><%= c.getCardBoard().getTradeArea()%></div>
-        </div>
-      <!-- 프로필 사진 + id -->
-      <h5 id="level"></h5>
-    </div>
-    <div class="content">
-      <hr>
-      <div id="title">
-        <div id="titleContent"><p><%= c.getCardBoard().getBoardTitle() %></p></div>
-      </div>
-      
-      <div id="date"><%= newDate %> &nbsp&nbsp 관심 <%= c.getCardBoard().getLikeCount() %>  조회수 <%= c.getCardBoard().getHit() %> 
-      <p>
-      	<% if(c.getCardBoard().getTradeStage()==1||c.getCardBoard().getTradeStage()==2||c.getCardBoard().getTradeStage()==3) {%>
-      	<% if(tradeUserList.contains(loginnedMember.getUsid())){ %>
-          	현재 참여중인 N빵입니다.
-            <% } %>
-            <% } %>
-      </p></div>
-      <!-- 가격 -->
-      <div id="priceAndLikeBtn">
-          <h5><%= c.getCardBoard().getProductPrice() %>원</h5>
-      </div>
-      <div id="contentText"><%= c.getCardBoard().getContent() %></div>
-      <!-- 프로그래스바 -->
-     	<%if(c.getCardBoard().getTradeStage()==1) {%>
-      <div class="chart chart1" data-percent="<%=stage1percent%>"><span class="title">N빵 완성까지 <br><%= stage1target %>명!</span></div>
-      <%}else if(c.getCardBoard().getTradeStage()==2) {%>
-      <div class="chart chart2" data-percent="<%=stage2percent%>"><span class="title">결제 완료까지 <br><%= stage2target %>명!</span></div>
-      <%}else if(c.getCardBoard().getTradeStage()==3) {%>
-      <div class="chart chart3" data-percent="<%=stage3percent%>"><span class="title">물품수령 완료까지 <br><%= stage3target %>명!</span></div>
-      <%}else if(c.getCardBoard().getTradeStage()==4) {%>
-      <div class="chart chart4" data-percent="100"><span class="title">종료된 N빵입니다.<br></span></div>
-      <%} %>
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-      <script src="<%=request.getContextPath()%>/js/easy-pie/dist/easypiechart.js"></script>
-      <script src="<%=request.getContextPath()%>/js/easy-pie/dist/jquery.easypiechart.js"></script>
-      <script>
+	<div id="wrapper">
+		<div id="imageWrapper">
+			<div id="carouselField" name="carouselField">
+				<div id="carouselNB" class="carousel slide " data-ride="carousel" data-interval="false">
+					<ol class="carousel-indicators">
+						<!-- 잘되는듯함 아래 주석하고 확인해봤음 -->
+						<c:forTokens items="${map.get('FILE_NAME')}" delims="," varStatus="status">
+							<c:if test="${status.first}">
+								<li data-target="#carouselInhee" data-slide-to="${status.index}" class="active"></li>
+							</c:if>
+							<c:if test="${!(status.first)}">
+								<li data-target="#carouselInhee" data-slide-to="${status.index}"></li>
+							</c:if>
+						</c:forTokens>
+
+
+					</ol>
+					<div class="carousel-inner" role="listbox">
+						<c:forTokens items="${map.get('FILE_NAME')}" delims="," varStatus="status">
+							<c:if test="${status.first}">
+								<div class="carousel-item active">
+									<img src="${path}/resources/images/${status.current}" class="d-block w-90 card-img-top" alt="..." width="600em" height="500em">
+								</div>
+							</c:if>
+							<c:if test="${!(status.first)}">
+								<div class="carousel-item">
+									<img src="${path}/resources/images/${status.current}" class="d-block w-90 card-img-top" alt="..." width="600em" height="500em">
+								</div>
+							</c:if>
+						</c:forTokens>
+					</div>
+
+					<a class="carousel-control-prev" href="#carouselNB" role="button" data-slide="prev"> <span class="carousel-control-prev-icon"
+						aria-hidden="true"></span> <span class="sr-only">Previous</span>
+					</a> <a class="carousel-control-next" href="#carouselNB" role="button" data-slide="next"> <span class="carousel-control-next-icon"
+						aria-hidden="true"></span> <span class="sr-only">Next</span>
+					</a>
+				</div>
+			</div>
+		</div>
+		<div id="userInfo">
+			<hr>
+			<div id="userThumb">
+				<img src="${path}/resources/profilePic/${map.get('MEMBER_PICTURE')}" alt="" width="40px" height="40px">
+			</div>
+			<div id="userIdAndAddress">
+				<div id="userId">${map.get('WRITER_NICKNAME')}</div>
+				<div id="userAddress">${map.get('TRADE_AREA')}</div>
+			</div>
+			<!-- 프로필 사진 + id -->
+			<h5 id="level"></h5>
+		</div>
+		<div class="content">
+			<hr>
+			<div id="title">
+				<div id="titleContent">
+					<p>${map.get('BOARD_TITLE')}</p>
+				</div>
+			</div>
+
+			<div id="date"><%= newDate %>
+				&nbsp&nbsp 관심 ${map.get('LIKE_COUNT')} 조회수 ${map.get('HIT')}
+				<p>
+					<c:if test="${map.get('TRADE_AREA') eq 1 ||  map.get('TRADE_STAGE') eq 2 || map.get('TRADE_STAGE') eq 3}">
+						<c:set var="contains" value="false" />
+						<c:forEach var="item" items="${tradeUserList}">
+							<c:if test="${item eq map.get('USID')}">
+						현재 참여중인 N빵입니다.
+						</c:if>
+						</c:forEach>
+					</c:if>
+
+
+
+
+
+				</p>
+			</div>
+			<!-- 가격 -->
+			<div id="priceAndLikeBtn">
+				<h5>${map.get('PRODUCT_PRICE')}원
+				</h5>
+			</div>
+			<div id="contentText">${map.get('CONTENT')}</div>
+			<!-- 프로그래스바 -->
+			<c:if test="${map.get('TRADE_AREA') eq 1}">
+			<div class="chart chart1" data-percent="<%=stage1percent%>">
+				<span class="title">N빵 완성까지 <br><%= stage1target %>명!
+				</span>
+			</div>
+			<%}else if(c.getCardBoard().getTradeStage()==2) {%>
+			<div class="chart chart2" data-percent="<%=stage2percent%>">
+				<span class="title">결제 완료까지 <br><%= stage2target %>명!
+				</span>
+			</div>
+			<%}else if(c.getCardBoard().getTradeStage()==3) {%>
+			<div class="chart chart3" data-percent="<%=stage3percent%>">
+				<span class="title">물품수령 완료까지 <br><%= stage3target %>명!
+				</span>
+			</div>
+			<%}else if(c.getCardBoard().getTradeStage()==4) {%>
+			<div class="chart chart4" data-percent="100">
+				<span class="title">종료된 N빵입니다.<br></span>
+			</div>
+			<%} %>
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+			<script src="<%=request.getContextPath()%>/js/easy-pie/dist/easypiechart.js"></script>
+			<script src="<%=request.getContextPath()%>/js/easy-pie/dist/jquery.easypiechart.js"></script>
+			<script>
         $('.chart1').easyPieChart({
         barColor: '#f16529',
         trackColor: '#ccc',
@@ -466,115 +516,129 @@ color:darkgray;
           onStop: $.noop
          });
       </script>
-      <div id="etcInfo"><a href="<%= request.getContextPath() %>/member/report?userId=<%= loginnedMember.getUsid() %>&boardId=<%= c.getCardBoard().getBoardId() %>&writerUsid=<%=c.getCardBoard().getWriterUsid()%>">신고하기</a> <%if(c.getCardBoard().getProductUrl()!=null){ %><a id="urlh" href="http://<%= c.getCardBoard().getProductUrl() %>" target="_blank">제품 페이지</a><%} else { %>제품 페이지<%} %></div>
-      <hr>
-      <div id="funcBtns">
-        <ul>
-          <form style="display: none;" name="form">
-            <!-- 디비에서 객체를 받아와서 다시 넣어야됨 일단은 리터럴로 넘김 -->
-              <!-- BOARD 컬럼의  BOARD_ID -->
-              <input type="hidden" name="boardId" value="${curCard.cardBoard.boardId}"> 
-              <!-- BOARD 컬럼의  MAX_MEMS -->
-              <input type="hidden" name="maxMems" value="${curCard.cardBoard.maxMems}"> 
-              <!-- BOARD 컬럼의  TRADE_STAGE -->
-              <input type="hidden" name="tradeStage" value="${curCard.cardBoard.tradeStage}"> 
-              <!-- BOARD 컬럼의  WRITER_USID -->
-              <input type="hidden" name="writerUsid" value="${loginnedMember.usid}">
-              <!-- MEMBER 컬럼의  MEMBER_PICTURE -->
-              <input type="hidden" name="memberPicture" value="${loginnedMember.memberPicture}">
-              <!-- <% if(c.getCardBoard().getTradeStage()>1) {%> -->
-                <input type="hidden" name="boardTitle" value="${curCard.cardBoard.boardTitle}">
+			<div id="etcInfo">
+				<a
+					href="<%= request.getContextPath() %>/member/report?userId=<%= loginnedMember.getUsid() %>&boardId=<%= c.getCardBoard().getBoardId() %>&writerUsid=<%=c.getCardBoard().getWriterUsid()%>">신고하기</a>
+				<%if(c.getCardBoard().getProductUrl()!=null){ %><a id="urlh" href="http://<%= c.getCardBoard().getProductUrl() %>" target="_blank">제품 페이지</a>
+				<%} else { %>제품 페이지<%} %>
+			</div>
+			<hr>
+			<div id="funcBtns">
+				<ul>
+					<form style="display: none;" name="form">
+						<!-- 디비에서 객체를 받아와서 다시 넣어야됨 일단은 리터럴로 넘김 -->
+						<!-- BOARD 컬럼의  BOARD_ID -->
+						<input type="hidden" name="boardId" value="${curCard.cardBoard.boardId}">
+						<!-- BOARD 컬럼의  MAX_MEMS -->
+						<input type="hidden" name="maxMems" value="${curCard.cardBoard.maxMems}">
+						<!-- BOARD 컬럼의  TRADE_STAGE -->
+						<input type="hidden" name="tradeStage" value="${curCard.cardBoard.tradeStage}">
+						<!-- BOARD 컬럼의  WRITER_USID -->
+						<input type="hidden" name="writerUsid" value="${loginnedMember.usid}">
+						<!-- MEMBER 컬럼의  MEMBER_PICTURE -->
+						<input type="hidden" name="memberPicture" value="${loginnedMember.memberPicture}">
+						<!-- <% if(c.getCardBoard().getTradeStage()>1) {%> -->
+						<input type="hidden" name="boardTitle" value="${curCard.cardBoard.boardTitle}">
 
-              <button id="hiddenEnterBtn" onclick="nbbang(this.form)" >채팅방 접속하기</button>	
-              <!-- <%}%> -->
-            </form>
-          <li><div id="likeFunc" >
-          <% if(!likelist.contains(c.getCardBoard().getBoardId())) {%>
-            <img src="<%= request.getContextPath() %>/images/heart.png" width="40px" height="40px">
-            <%}if(likelist.contains(c.getCardBoard().getBoardId())) { %>
-            <img src="<%= request.getContextPath() %>/images/fullheart.png" width="40px" height="40px">
-            <%} %>
-            <p>찜하기</p></div></li>
-            <% if(c.getCardBoard().getTradeStage()==1) {%>
-          	<% if(c.getCardBoard().getWriterUsid()!=loginnedMember.getUsid()) {%>
-          	<li><div id="startFuncBtn" onclick="fun_decidebuy();">
-            <% if(tradeUserList.contains(loginnedMember.getUsid())){ %>
-            <img src="<%= request.getContextPath() %>/images/cancel.png" width="40px" height="40px">
-            <p>N빵취소</p></div></li>
-            <% }else { %>
-            <img src="<%= request.getContextPath() %>/images/onebyn.png" width="40px" height="40px">
-            <p>N빵신청</p></div></li>
-            <% } %>
-            <% } %>
-            <% } %>
-            <% if(tradeUserList.contains(loginnedMember.getUsid())&&c.getCardBoard().getTradeStage()>1) {%>
-          <li><div id="enterFuncBtn" onclick="fn_enterBtn();">
-            <img src="<%= request.getContextPath() %>/images/enter.png" width="40px" height="40px">
-            <p>채팅방접속</p></div></li>
-            <%} %>
-            <%if(c.getCardBoard().getWriterUsid()!=loginnedMember.getUsid()){ %>
-            <%if(c.getCardBoard().getTradeStage()==2&&tradeUserList.contains(loginnedMember.getUsid())) {%>
-          	<%if(paidUsers!=null&&!paidUsers.contains(loginnedMember.getUsid())) {%>
-          	<li><div id="openFuncBtn" onclick="fn_pay();">
-            <img src="<%= request.getContextPath() %>/images/dollar.png" width="40px" height="40px">
-            <p>결제하기</p></div></li>
-            <%} %>
-            <%} %>
-            <%} %>
-            <% if(c.getCardBoard().getTradeStage()==2) {%>
-          	<% if(c.getCardBoard().getWriterUsid()==loginnedMember.getUsid()){ %>
-            <li><div onclick="fn_shipping();">
-            <img src="<%= request.getContextPath() %>/images/shipping.png" width="40px" height="40px">
-            <p>배송시작하기</p></div></li>
-            <%} %>
-            <%} %>
-            <% if(c.getCardBoard().getTradeStage()==3) {%>
-          	<% if(c.getCardBoard().getWriterUsid()!=loginnedMember.getUsid()&&!deliveryUsers.contains(loginnedMember.getUsid())){ %>
-            <li><div onclick="fn_delivery();">
-            <img src="<%= request.getContextPath() %>/images/box.png" width="40px" height="40px">
-            <p>수령확인</p></div></li>
-            <%} %>
-            <%} %>
-          	<% if(c.getCardBoard().getTradeStage()==1) {%>
-          	<% if(c.getCardBoard().getWriterUsid()==loginnedMember.getUsid()){ %>
-          	<li><div id="openFuncBtn" onclick="fun_createroom();">
-            <img src="<%= request.getContextPath() %>/images/open.png" width="40px" height="40px">
-            <p>방열기</p></div></li>
-            <%} %>
-            <%} %>
-            <% if(c.getCardBoard().getTradeStage()==3) {%>
-          	<% if(c.getCardBoard().getWriterUsid()==loginnedMember.getUsid()){ %>
-          	<li><div onclick="fn_end();">
-            <img src="<%= request.getContextPath() %>/images/end.png" width="40px" height="40px">
-            <p>N빵종료하기</p></div></li>
-            <%} %>
-            <%} %>
-        </ul>
-      </div>
-      <hr>
-    </div>
-    <div id="commentSection">
-      <div id="commentInsert">
-          <select name="commentTo" id="commentTo">
-            <option value="openComment" selected>전체댓글</option>
-            <option value="secretComment">비밀댓글</option>
-          </select>
-          <input type="text" name="commentContent" class="commentContent" id="commentContent" size="48">
-          <input type="hidden" name="commentLevel" id="commentLevel" value="1">
-          <button class="commentInsertBtn" id="commentInsertBtn">댓글입력</button>
-      </div>
-    <div id="Comments">
-      <ul class="comment_list">
-        <!-- 댓글이 들어갈 곳 -->
-      </ul>
-    </div>
-    </div>
-  </div>
-  
-  
-  
-  <!--  -->
-  <!--  -->
+						<button id="hiddenEnterBtn" onclick="nbbang(this.form)">채팅방 접속하기</button>
+						<!-- <%}%> -->
+					</form>
+					<li><div id="likeFunc">
+							<% if(!likelist.contains(c.getCardBoard().getBoardId())) {%>
+							<img src="<%= request.getContextPath() %>/images/heart.png" width="40px" height="40px">
+							<%}if(likelist.contains(c.getCardBoard().getBoardId())) { %>
+							<img src="<%= request.getContextPath() %>/images/fullheart.png" width="40px" height="40px">
+							<%} %>
+							<p>찜하기</p>
+						</div></li>
+					<% if(c.getCardBoard().getTradeStage()==1) {%>
+					<% if(c.getCardBoard().getWriterUsid()!=loginnedMember.getUsid()) {%>
+					<li><div id="startFuncBtn" onclick="fun_decidebuy();">
+							<% if(tradeUserList.contains(loginnedMember.getUsid())){ %>
+							<img src="<%= request.getContextPath() %>/images/cancel.png" width="40px" height="40px">
+							<p>N빵취소</p>
+						</div></li>
+					<% }else { %>
+					<img src="<%= request.getContextPath() %>/images/onebyn.png" width="40px" height="40px">
+					<p>N빵신청</p>
+			</div>
+			</li>
+			<% } %>
+			<% } %>
+			<% } %>
+			<% if(tradeUserList.contains(loginnedMember.getUsid())&&c.getCardBoard().getTradeStage()>1) {%>
+			<li><div id="enterFuncBtn" onclick="fn_enterBtn();">
+					<img src="<%= request.getContextPath() %>/images/enter.png" width="40px" height="40px">
+					<p>채팅방접속</p>
+				</div></li>
+			<%} %>
+			<%if(c.getCardBoard().getWriterUsid()!=loginnedMember.getUsid()){ %>
+			<%if(c.getCardBoard().getTradeStage()==2&&tradeUserList.contains(loginnedMember.getUsid())) {%>
+			<%if(paidUsers!=null&&!paidUsers.contains(loginnedMember.getUsid())) {%>
+			<li><div id="openFuncBtn" onclick="fn_pay();">
+					<img src="<%= request.getContextPath() %>/images/dollar.png" width="40px" height="40px">
+					<p>결제하기</p>
+				</div></li>
+			<%} %>
+			<%} %>
+			<%} %>
+			<% if(c.getCardBoard().getTradeStage()==2) {%>
+			<% if(c.getCardBoard().getWriterUsid()==loginnedMember.getUsid()){ %>
+			<li><div onclick="fn_shipping();">
+					<img src="<%= request.getContextPath() %>/images/shipping.png" width="40px" height="40px">
+					<p>배송시작하기</p>
+				</div></li>
+			<%} %>
+			<%} %>
+			<% if(c.getCardBoard().getTradeStage()==3) {%>
+			<% if(c.getCardBoard().getWriterUsid()!=loginnedMember.getUsid()&&!deliveryUsers.contains(loginnedMember.getUsid())){ %>
+			<li><div onclick="fn_delivery();">
+					<img src="<%= request.getContextPath() %>/images/box.png" width="40px" height="40px">
+					<p>수령확인</p>
+				</div></li>
+			<%} %>
+			<%} %>
+			<% if(c.getCardBoard().getTradeStage()==1) {%>
+			<% if(c.getCardBoard().getWriterUsid()==loginnedMember.getUsid()){ %>
+			<li><div id="openFuncBtn" onclick="fun_createroom();">
+					<img src="<%= request.getContextPath() %>/images/open.png" width="40px" height="40px">
+					<p>방열기</p>
+				</div></li>
+			<%} %>
+			<%} %>
+			<% if(c.getCardBoard().getTradeStage()==3) {%>
+			<% if(c.getCardBoard().getWriterUsid()==loginnedMember.getUsid()){ %>
+			<li><div onclick="fn_end();">
+					<img src="<%= request.getContextPath() %>/images/end.png" width="40px" height="40px">
+					<p>N빵종료하기</p>
+				</div></li>
+			<%} %>
+			<%} %>
+			</ul>
+		</div>
+		<hr>
+	</div>
+	<div id="commentSection">
+		<div id="commentInsert">
+			<select name="commentTo" id="commentTo">
+				<option value="openComment" selected>전체댓글</option>
+				<option value="secretComment">비밀댓글</option>
+			</select> <input type="text" name="commentContent" class="commentContent" id="commentContent" size="48"> <input type="hidden" name="commentLevel"
+				id="commentLevel" value="1">
+			<button class="commentInsertBtn" id="commentInsertBtn">댓글입력</button>
+		</div>
+		<div id="Comments">
+			<ul class="comment_list">
+				<!-- 댓글이 들어갈 곳 -->
+			</ul>
+		</div>
+	</div>
+	</div>
+
+
+
+	<!--  -->
+	<!--  -->
 </section>
 <script>
 <% if(reply.equals("success")) { %>
@@ -1202,5 +1266,5 @@ String.prototype.string = function (len) { var s = '', i = 0; while (i++ < len) 
 String.prototype.zf = function (len) { return "0".string(len - this.length) + this; };
 
 Number.prototype.zf = function (len) { return this.toString().zf(len); };
-</script> --%>
-<%@ include file="/WEB-INF/views/common/footer.jsp" %>
+</script>
+<%@ include file="/WEB-INF/views/common/footer.jsp"%>

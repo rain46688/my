@@ -19,13 +19,13 @@
 		</interceptor>
 	</interceptors>
 
-	<beans:bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+<beans:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
 
-	<beans:bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
-		<beans:property name="order" value="0" />
-	</beans:bean>
+<beans:bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+	<beans:property name="order" value="0"/>
+</beans:bean>
 
-	<beans:bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" />
+<beans:bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
 
 </beans:beans>
 

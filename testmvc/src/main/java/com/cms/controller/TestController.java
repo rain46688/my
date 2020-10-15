@@ -40,6 +40,9 @@ import com.cms.model.vo.SessionVo;
 
 import lombok.extern.java.Log;
 
+/**
+ * Handles requests for the application home page.
+ */
 @Controller
 @Log
 public class TestController {
@@ -50,6 +53,9 @@ public class TestController {
 	@Resource(name = "testService")
 	private TestService testService;
 
+	/**
+	 * Simply selects the home view to render by returning its name.
+	 */
 	@RequestMapping(value = "/noticeTest")
 	public ModelAndView testNoticeList(Map<String, Object> commandMap, String cPage) throws Exception {
 		log.info(" ===== testNoticeList 실행 ===== ");
@@ -73,7 +79,6 @@ public class TestController {
 			login.setMemberId(rememberMe.getValue());
 			login.setRememberMe(true);
 		}
-
 		ModelAndView mv = new ModelAndView("/member/loginPage");
 		return mv;
 	}
@@ -358,8 +363,8 @@ public class TestController {
 			log.info(" ===== 상세 페이지 진입 실패 로그 ===== ");
 			return mv;
 		}
-		ModelAndView mv = new ModelAndView("/board/boardPage");
-//		ModelAndView mv = new ModelAndView("../../index");
+//		ModelAndView mv = new ModelAndView("/board/boardPage");
+		ModelAndView mv = new ModelAndView("../../index");
 		if (paidUsersList != null)
 			mv.addObject("paidUsersList", paidUsersList);
 		if (tradeUserList != null)
@@ -367,6 +372,7 @@ public class TestController {
 		mv.addObject("likeCount", likeCount);
 		if (map != null)
 			mv.addObject("map", map);
+		request.setAttribute("date", map.get("ENROLL_DATE"));
 		return mv;
 	}
 

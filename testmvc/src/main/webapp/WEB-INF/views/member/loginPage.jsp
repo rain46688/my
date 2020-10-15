@@ -34,7 +34,7 @@
 				</a>
 
 				<div class="panel-body">
-					<form:form action="loginPage" method="post" commandName="login">
+					<form:form action="loginPage" method="post" modelAttribute="login">
 						<fieldset>
 							<div class="form-group">
 								<form:input type="text" class="input" placeholder="아이디" path="memberId" id="memberId" />

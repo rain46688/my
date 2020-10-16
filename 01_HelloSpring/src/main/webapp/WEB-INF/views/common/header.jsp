@@ -25,11 +25,11 @@
 	<div id="container">
 		<header>
 			<div id="header-container">
-				<h2>Hello Spring</h2>
+				<h2><c:out value="${param.title}"/></h2>
 			</div>
 			<nav class="navbar navbar-expand-lg navbar-light bg-light">
 				<a class="navbar-brand" href="#">
-					<img src="${pageContext.request.contextPath }/resources/images/logo-spring.png"
+					<img src="${path }/resources/images/logo-spring.png"
 					alt="스프링로고" width="50px">
 				</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -43,6 +43,9 @@
 							<a class="nav-link" href="${path }">home</a>
 						</li>
 						<!-- 추가메뉴구성하기 -->
+						<li class="nav-item ">
+							<a class="nav-link" href="${path }/demo/demo.do">demo</a>
+						</li>
 					</ul>
 				</div>
 			</nav>

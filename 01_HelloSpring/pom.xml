@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
 	<!-- 프로젝트와 maven에 대한 정보 -->
-	
+
 	<!-- 모델 버전 -->
 	<modelVersion>4.0.0</modelVersion>
-	<!--패키지랑 컨텍스트명  -->
+	<!--패키지랑 컨텍스트명 -->
 	<groupId>com.kh</groupId>
 	<artifactId>spring</artifactId>
 	<!-- 프로젝트 이름 -->
@@ -14,12 +14,12 @@
 	<packaging>war</packaging>
 	<!-- 버전 -->
 	<version>1.0.0-BUILD-SNAPSHOT</version>
-	
+
 	<!-- pom.xml에서 사용하는 변수로 보면됨 공통으로 사용하는 데이터를 보관하고 사용하기 위해 설정 -->
 	<properties>
-	<!-- java 버전 바꾸고 싶으면 변경 가능 -->
+		<!-- java 버전 바꾸고 싶으면 변경 가능 -->
 		<java-version>11</java-version>
-		<!-- java-version 이름으로 불러올수있다 편하게 여기만 바꾸면 아래 쭉바뀌니 좋은것  -->
+		<!-- java-version 이름으로 불러올수있다 편하게 여기만 바꾸면 아래 쭉바뀌니 좋은것 -->
 		<org.springframework-version>5.2.0.RELEASE</org.springframework-version>
 		<org.aspectj-version>1.9.4</org.aspectj-version>
 		<org.slf4j-version>1.7.28</org.slf4j-version>
@@ -126,6 +126,17 @@
 			<version>1.2</version>
 		</dependency>
 
+		<!-- lombok 활용하기 -->
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.12</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -155,7 +166,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.6.1</version>
 				<configuration>
-				<!-- java 버전 바꾸고 싶으면 변경 가능 -->
+					<!-- java 버전 바꾸고 싶으면 변경 가능 -->
 					<source>11</source>
 					<target>11</target>
 					<!-- java 버전 바꾸고 싶으면 변경 가능 -->

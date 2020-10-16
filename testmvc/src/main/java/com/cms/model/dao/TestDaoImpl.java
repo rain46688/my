@@ -100,4 +100,12 @@ public class TestDaoImpl extends AbstractDAO implements TestDao {
 		return selectList("board.deliveryUsersList", commandMap);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Integer> likeList(Map<String, Object> commandMap, int usid) throws Exception {
+		// TODO Auto-generated method stub
+		commandMap.put("usid", usid);
+		return (List<Integer>) selectOne("board.likeList", commandMap);
+	}
+
 }

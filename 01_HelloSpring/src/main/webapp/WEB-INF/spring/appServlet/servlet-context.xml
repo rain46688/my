@@ -23,6 +23,23 @@
 	
 	<context:component-scan base-package="com.kh.spring" />
 	
+	<!-- 새로운 POJO를 스프링 BEAN으로 등록하기 , 항상 xml에 등록할때는 클래스 패키지명을 전부 입력하자! -->
+	<!-- @Component 어노테이션 처리랑 같은 기능을함 만들면 옆에 BeanTest 자바 클래스 옆에 S 생김 -->
+	<!-- 내 코드면 상관없지만 남이 만든 라이브러리에 객체를 생성할때는 xml방식을 사용해야된다! -->
+	<beans:bean id="test1" class="com.kh.spring.BeanTest">
+	<!-- property 하면 BeanTest의 setter를 찾는거임 -->
+		<beans:property name="name" value="홍지운"/>
+	</beans:bean>
+	<!-- 같은 타입의 빈을 아이디가 달라도 2개이상이면 자동으로 주입이 안된다! -->
+	<beans:bean id="test2" class="com.kh.spring.BeanTest">
+		<beans:property name="name" value="이승환"/>
+	</beans:bean>
+	
+	<!-- 생성자를 이용해서 bean 을 생성하게 하는 방법 -->
+	<beans:bean id="test3" class="com.kh.spring.BeanTest">
+		<beans:constructor-arg index="0" value="박정연"/>
+	</beans:bean>
+	
 	
 	
 </beans:beans>

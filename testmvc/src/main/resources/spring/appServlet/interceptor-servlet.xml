@@ -15,9 +15,11 @@
 	<interceptors>
 		<interceptor>
 			<mapping path="/noticeTest" />
+			<mapping path="/boardPage" />
 			<beans:bean id="loginInterceptor" class="com.cms.common.interceptor.LoginInterceptor" />
 		</interceptor>
 	</interceptors>
+
 
 <beans:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
 

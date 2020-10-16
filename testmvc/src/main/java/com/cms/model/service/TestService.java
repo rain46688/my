@@ -31,4 +31,6 @@ public interface TestService {
 
 	List<Integer> deliveryUsersList(Map<String, Object> commandMap) throws Exception;
 
+	List<Integer> likeList(Map<String, Object> commandMap, SessionVo sv) throws Exception;
+
 }

@@ -121,4 +121,10 @@ public class TestServiceImpl implements TestService {
 		return testDAO.deliveryUsersList(commandMap);
 	}
 
+	@Override
+	public List<Integer> likeList(Map<String, Object> commandMap, SessionVo sv) throws Exception {
+		// TODO Auto-generated method stub
+		return testDAO.likeList(commandMap, sv.getUsid());
+	}
+
 }

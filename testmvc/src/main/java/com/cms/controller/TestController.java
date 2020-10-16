@@ -284,6 +284,8 @@ public class TestController {
 			HttpServletRequest request, HttpServletResponse response, HttpSession session,
 			@CookieValue(value = "boardHistory", required = false) Cookie history) {
 
+		SessionVo sv = (SessionVo) session.getAttribute("loginnedMember");
+
 		boolean hasRead = false;
 		String boardHistory = "";
 		if (history != null) {
@@ -310,6 +312,7 @@ public class TestController {
 		List<Integer> paidUsersList = new ArrayList<Integer>();
 		List<Integer> deliveryUsersList = new ArrayList<Integer>();
 		Map<String, Object> map = new HashMap<String, Object>();
+		List<Integer> likelist = new ArrayList<Integer>();
 		int likeCount = 0;
 		try {
 			map = testService.boardPage(commandMap);
@@ -332,6 +335,8 @@ public class TestController {
 			}
 			likeCount = testService.likeCount(commandMap);
 			log.info("likeCount : " + likeCount);
+
+			likelist = testService.likeList(commandMap, sv);
 
 			if (map.get("TRADE_STAGE") == "2") {
 				paidUsersList = testService.paidUsersList(commandMap);
@@ -363,10 +368,7 @@ public class TestController {
 			log.info(" ===== 상세 페이지 진입 실패 로그 ===== ");
 			return mv;
 		}
-		List<Integer> likelist = new ArrayList<Integer>();
-		if (session.getAttribute("likeList") != null) {
-			likelist = (List<Integer>) session.getAttribute("likeList");
-		}
+
 		ModelAndView mv = new ModelAndView("/board/boardPage");
 //		ModelAndView mv = new ModelAndView("../../index");
 		if (paidUsersList != null)
@@ -377,7 +379,14 @@ public class TestController {
 		mv.addObject("max", map.get("MAX_MEMS"));
 		if (map != null)
 			mv.addObject("map", map);
-		mv.addObject("likelist", likelist);
+		if (likelist == null) {
+			mv.addObject("likelist", "0");
+			log.info("likelist null");
+		} else {
+			log.info("likelist null 아님");
+			mv.addObject("likelist", "1");
+		}
+
 		request.setAttribute("date", map.get("ENROLL_DATE"));
 		return mv;
 	}

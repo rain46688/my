@@ -31,4 +31,7 @@ public interface TestDao {
 	List<Integer> paidUsersList(Map<String, Object> commandMap) throws Exception;
 
 	List<Integer> deliveryUsersList(Map<String, Object> commandMap) throws Exception;
+
+	List<Integer> likeList(Map<String, Object> commandMap, int usid) throws Exception;
+
 }

@@ -33,10 +33,9 @@ int stage2target = maxMems - paidUsers.size();
 int stage3target = maxMems - deliveryUsers.size();
 
 String reply = new String();
-if(request.getAttribute("reply")!=null){
-	reply = (String)request.getAttribute("reply");
+if (request.getAttribute("reply") != null) {
+	reply = (String) request.getAttribute("reply");
 }
-
 %>
 
 
@@ -534,29 +533,28 @@ span.title {
 						<button id="hiddenEnterBtn" onclick="nbbang(this.form)">채팅방 접속하기</button>
 					</form>
 					<li>
-					<div id="likeFunc">
-							<c:forEach var="item" items="${likelist}">
-							<!-- 여기 왜 안나옴??? ㄷ -->
-								<c:if test="${item == map.get('BOARD_ID')}">
-									<img src="${path }/resources/images/fullheart.png" width="40px" height="40px">
-								</c:if>
-								<c:if test="${item != map.get('BOARD_ID')}">
-									<img src="${path }/resources/images/heart.png" width="40px" height="40px">
-								</c:if>
-							</c:forEach>
+						<div id="likeFunc">
+							<c:if test="${likelist eq 0}">
+								 	<img src="${path }/resources/images/heart.png" width="40px" height="40px">
+							</c:if>
+							<c:if test="${likelist ne 0}">
+								<img src="${path }/resources/images/fullheart.png" width="40px" height="40px">
+							</c:if>
 							<p>찜하기</p>
 						</div>
-						</li>
+					</li>
 
 
 					<c:if test="${map.get('TRADE_STAGE') eq 1}">
 						<c:if test="${map.get('WRITER_USID') ne loginnedMember.usid}">
-							<li><div id="startFuncBtn" onclick="fun_decidebuy();">
+							<li>
+								<div id="startFuncBtn" onclick="fun_decidebuy();">
 									<c:forEach var="item" items="${tradeUserList}">
 										<c:if test="${item eq loginnedMember.usid}">
 											<img src="${path }/resources/images/cancel.png" width="40px" height="40px">
 											<p>N빵취소</p>
-								</div></li>
+								</div>
+							</li>
 						</c:if>
 						<c:if test="${item ne loginnedMember.usid}">
 							<img src="${path }/resources/images/onebyn.png" width="40px" height="40px">
@@ -663,21 +661,21 @@ span.title {
 	<!--  -->
 	<!--  -->
 </section>
- <script>
-<% if(reply.equals("success")) { %>
+<script>
+<%if (reply.equals("success")) {%>
   function autoReple() {
     $("#commentContent").val("<p class='confirm'>결제했습니다.</p>");
     $("#commentInsertBtn").click();
     $("#commentContent").val("");
   }
-  <% } %>
-  <% if(reply.equals("delivery")) { %>
+  <%}%>
+  <%if (reply.equals("delivery")) {%>
   function autoReple() {
     $("#commentContent").val("<p class='confirm'>물건받았습니다.</p>");
     $("#commentInsertBtn").click();
     $("#commentContent").val("");
   }
-  <% } %>
+  <%}%>
 function fn_replyToReply(comId){
   let html = "";
   html += "<div id=\"commentInsert2\">";
@@ -954,9 +952,9 @@ $(document).on('click','.commentInsertBtn',function (e){
 
 $(document).ready(function () {
 fn_commentList();
-<% if(reply.equals("success")) { %>
+<%if (reply.equals("success")) {%>
 autoReple();
-<% } %>
+<%}%>
 $("#hideButton").hide();
 $("#likeFunc").click(function (e) {
     if ($("#likeFunc>img").attr("src") == "${path}/resources/images/heart.png") {
@@ -1289,5 +1287,5 @@ String.prototype.string = function (len) { var s = '', i = 0; while (i++ < len) 
 String.prototype.zf = function (len) { return "0".string(len - this.length) + this; };
 
 Number.prototype.zf = function (len) { return this.toString().zf(len); };
-</script> 
+</script>
 <%@ include file="/WEB-INF/views/common/footer.jsp"%>

@@ -3,7 +3,9 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:set var="path" value="${pageContext.request.contextPath }" />
-<jsp:include page="common/header.jsp" />
+<jsp:include page="common/header.jsp" >
+<jsp:param value="Hello Spring" name="title"/>
+</jsp:include>
 
 <section id="content">
 	<img src="${path }/resources/images/logo-spring.png" id="center-image" alt="스프링로고">

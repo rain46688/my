@@ -29,4 +29,7 @@
 	<select id="deliveryUsersList" parameterType="hashmap" resultType="_int">
 	<![CDATA[SELECT TRADE_USID FROM TRADE_LIST WHERE TRADE_BOARD_ID = #{boardId} AND DELIVERY_STATUS = 1]]>
 	</select>
+		<select id="likeList" parameterType="hashmap" resultType="_int">
+	<![CDATA[SELECT * FROM LIKE_LIST WHERE LIKE_BOARD_ID = #{boardId} AND LIKE_USID = #{usid}]]>
+	</select>
 </mapper>

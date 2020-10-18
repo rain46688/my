@@ -1,5 +1,6 @@
 package com.cms.controller;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,9 +35,12 @@ import com.cms.common.exception.IdPasswordNotMatchingException;
 import com.cms.common.exception.MemberInsertFailedException;
 import com.cms.common.temp.AESCrypto;
 import com.cms.model.service.TestService;
+import com.cms.model.vo.Comment;
 import com.cms.model.vo.Login;
 import com.cms.model.vo.Member;
 import com.cms.model.vo.SessionVo;
+import com.google.gson.Gson;
+import com.google.gson.JsonIOException;
 
 import lombok.extern.java.Log;
 
@@ -108,6 +112,13 @@ public class TestController {
 			SessionVo sv = testService.loginCheck(login);
 			log.info("sv : " + sv.toString());
 
+			try {
+				String id = AESCrypto.decrypt(login.getMemberId());
+				login.setMemberId(id);
+				sv.setMemberId(id);
+			} catch (Exception e) {
+
+			}
 			session.setAttribute("loginnedMember", sv);
 
 			Cookie c = new Cookie("saveId", login.getMemberId());
@@ -388,6 +399,29 @@ public class TestController {
 		}
 
 		request.setAttribute("date", map.get("ENROLL_DATE"));
+		return mv;
+	}
+
+	@RequestMapping("/board/commentList")
+	public void commentList(int cBoardId, HttpServletResponse response) {
+		log.info("commentList 실행");
+		try {
+			List<Comment> list = testService.commentList(cBoardId);
+			response.setContentType("application/json;charset=utf-8");
+			new Gson().toJson(list, response.getWriter());
+		} catch (JsonIOException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@RequestMapping(value = "/chat/chatRoom")
+	public ModelAndView webRtc() throws Exception {
+		log.info(" ===== webRtc 실행 ===== ");
+		ModelAndView mv = new ModelAndView("socket/socket3/socket");
 		return mv;
 	}
 

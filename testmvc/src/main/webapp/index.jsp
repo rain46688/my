@@ -2,8 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="path" value="${pageContext.request.contextPath }" />
 <%
-Integer requestCount = (Integer)request.getAttribute("likeCount");
-
+	Integer requestCount = (Integer) request.getAttribute("likeCount");
 %>
 <!DOCTYPE html>
 <html>
@@ -25,8 +24,6 @@ Integer requestCount = (Integer)request.getAttribute("likeCount");
 	<a href="${path}/loginPage">로그인 페이지</a>
 	<a href="${path}/joinPage">회원가입 페이지</a>
 	<a href="${path}/board?boardTitle=애완용품">게시판</a>
-	
-	
 
 </body>
 </html>

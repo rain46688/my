@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.cms.model.vo.Login;
 import com.cms.model.vo.Member;
+import com.cms.model.vo.Comment;
 
 @Repository("testDAO")
 public class TestDaoImpl extends AbstractDAO implements TestDao {
@@ -106,6 +107,12 @@ public class TestDaoImpl extends AbstractDAO implements TestDao {
 		// TODO Auto-generated method stub
 		commandMap.put("usid", usid);
 		return (List<Integer>) selectOne("board.likeList", commandMap);
+	}
+
+	@Override
+	public List<Comment> commentList(int cBoardId) throws Exception {
+		// TODO Auto-generated method stub
+		return selectList("board.commentList", cBoardId);
 	}
 
 }

@@ -400,7 +400,7 @@ span.title {
 		<div id="userInfo">
 			<hr>
 			<div id="userThumb">
-				<img src="${path}/resources/profilePic/${map.get('MEMBER_PICTURE')}" alt="" width="40px" height="40px">
+				<img src="${path}/resources/images/${map.get('MEMBER_PICTURE')}" alt="" width="40px" height="40px">
 			</div>
 			<div id="userIdAndAddress">
 				<div id="userId">${map.get('WRITER_NICKNAME')}</div>
@@ -535,7 +535,7 @@ span.title {
 					<li>
 						<div id="likeFunc">
 							<c:if test="${likelist eq 0}">
-								 	<img src="${path }/resources/images/heart.png" width="40px" height="40px">
+								<img src="${path }/resources/images/heart.png" width="40px" height="40px">
 							</c:if>
 							<c:if test="${likelist ne 0}">
 								<img src="${path }/resources/images/fullheart.png" width="40px" height="40px">
@@ -545,115 +545,127 @@ span.title {
 					</li>
 
 
+
+						<li><div id="enterFuncBtn" onclick="fn_enterBtn();">
+									<img src="${path }/resources/images/enter.png" width="40px" height="40px">
+									<p>채팅방접속</p>
+								</div></li>
+					<c:forEach var="item" items="${tradeUserList}">
+						<c:if test="${item eq loginnedMember.usid && map.get('TRADE_STAGE') > 1}">
+						<%-- 	<li><div id="enterFuncBtn" onclick="fn_enterBtn();">
+									<img src="${path }/resources/images/enter.png" width="40px" height="40px">
+									<p>채팅방접속</p>
+								</div></li> --%>
+						</c:if>
+					</c:forEach>
+
+
+					<!-- 플러그 이용해서 분기 -->
 					<c:if test="${map.get('TRADE_STAGE') eq 1}">
 						<c:if test="${map.get('WRITER_USID') ne loginnedMember.usid}">
-							<li>
-								<div id="startFuncBtn" onclick="fun_decidebuy();">
-									<c:forEach var="item" items="${tradeUserList}">
-										<c:if test="${item eq loginnedMember.usid}">
-											<img src="${path }/resources/images/cancel.png" width="40px" height="40px">
-											<p>N빵취소</p>
-								</div>
-							</li>
+							<c:forEach var="item" items="${tradeUserList}">
+								<c:if test="${item eq loginnedMember.usid}">
+									<c:set var="flag" value="false" />
+								</c:if>
+								<c:if test="${item ne loginnedMember.usid}">
+									<c:set var="flag" value="true" />
+								</c:if>
+							</c:forEach>
 						</c:if>
-						<c:if test="${item ne loginnedMember.usid}">
-							<img src="${path }/resources/images/onebyn.png" width="40px" height="40px">
-							<p>N빵신청</p>
-			</div>
-			</li>
-			</c:if>
-			</c:forEach>
-			</c:if>
-			</c:if>
+					</c:if>
 
-			<c:forEach var="item" items="${tradeUserList}">
-				<c:if test="${item eq loginnedMember.usid && map.get('TRADE_STAGE') > 1}">
-					<li><div id="enterFuncBtn" onclick="fn_enterBtn();">
-							<img src="${path }/resources/images/enter.png" width="40px" height="40px">
-							<p>채팅방접속</p>
-						</div></li>
-				</c:if>
-			</c:forEach>
+					<li>
+						<div id="startFuncBtn" onclick="fun_decidebuy();">
+							<c:if test="${flag eq true }">
+								<img src="${path}/resources/images/onebyn.png" width="40px" height="40px">
+								<p>N빵신청</p>
+							</c:if>
+							<c:if test="${flag ne true }">
+								<img src="${path}/resources/images/cancel.png" width="40px" height="40px">
+								<p>N빵취소</p>
+							</c:if>
+						</div>
+					</li>
 
 
-			<c:if test="${map.get('WRITER_USID') ne loginnedMember.usid}">
-				<c:forEach var="item" items="${tradeUserList}">
-					<c:if test="${item eq loginnedMember.usid && map.get('TRADE_STAGE') == 2}">
-						<c:forEach var="item2" items="${paidUsers}">
-							<c:if test="${item2 ne loginnedMember.usid && !(empty paidUsers)}">
-								<li><div id="openFuncBtn" onclick="fn_pay();">
-										<img src="${path }/resources/images/dollar.png" width="40px" height="40px">
-										<p>결제하기</p>
+					<c:if test="${map.get('WRITER_USID') ne loginnedMember.usid}">
+						<c:forEach var="item" items="${tradeUserList}">
+							<c:if test="${item eq loginnedMember.usid && map.get('TRADE_STAGE') == 2}">
+								<c:forEach var="item2" items="${paidUsers}">
+									<c:if test="${item2 ne loginnedMember.usid && !(empty paidUsers)}">
+										<li><div id="openFuncBtn" onclick="fn_pay();">
+												<img src="${path }/resources/images/dollar.png" width="40px" height="40px">
+												<p>결제하기</p>
+											</div></li>
+									</c:if>
+								</c:forEach>
+							</c:if>
+						</c:forEach>
+					</c:if>
+
+
+
+					<c:if test="${map.get('TRADE_STAGE') eq 2}">
+						<c:if test="${map.get('WRITER_USID') eq loginnedMember.usid}">
+							<li><div onclick="fn_shipping();">
+									<img src="${path }/resources/images/shipping.png" width="40px" height="40px">
+									<p>배송시작하기</p>
+								</div></li>
+						</c:if>
+					</c:if>
+
+
+					<c:if test="${map.get('TRADE_STAGE') eq 3}">
+						<c:forEach var="item" items="${deliveryUsers}">
+							<c:if test="${item eq loginnedMember.usid && map.get('WRITER_USID') ne loginnedMember.usid}">
+								<li><div onclick="fn_delivery();">
+										<img src="${path }/resources/images/box.png" width="40px" height="40px">
+										<p>수령확인</p>
 									</div></li>
 							</c:if>
 						</c:forEach>
 					</c:if>
-				</c:forEach>
-			</c:if>
 
 
-
-			<c:if test="${map.get('TRADE_STAGE') eq 2}">
-				<c:if test="${map.get('WRITER_USID') eq loginnedMember.usid}">
-					<li><div onclick="fn_shipping();">
-							<img src="${path }/resources/images/shipping.png" width="40px" height="40px">
-							<p>배송시작하기</p>
-						</div></li>
-				</c:if>
-			</c:if>
-
-
-			<c:if test="${map.get('TRADE_STAGE') eq 3}">
-				<c:forEach var="item" items="${deliveryUsers}">
-					<c:if test="${item eq loginnedMember.usid && map.get('WRITER_USID') ne loginnedMember.usid}">
-						<li><div onclick="fn_delivery();">
-								<img src="${path }/resources/images/box.png" width="40px" height="40px">
-								<p>수령확인</p>
-							</div></li>
+					<c:if test="${map.get('TRADE_STAGE') eq 1}">
+						<c:if test="${map.get('WRITER_USID') eq loginnedMember.usid}">
+							<li><div id="openFuncBtn" onclick="fun_createroom();">
+									<img src="${path }/resources/images/open.png" width="40px" height="40px">
+									<p>방열기</p>
+								</div></li>
+						</c:if>
 					</c:if>
-				</c:forEach>
-			</c:if>
 
 
-			<c:if test="${map.get('TRADE_STAGE') eq 1}">
-				<c:if test="${map.get('WRITER_USID') eq loginnedMember.usid}">
-					<li><div id="openFuncBtn" onclick="fun_createroom();">
-							<img src="${path }/resources/images/open.png" width="40px" height="40px">
-							<p>방열기</p>
-						</div></li>
-				</c:if>
-			</c:if>
+					<c:if test="${map.get('TRADE_STAGE') eq 3}">
+						<c:if test="${map.get('WRITER_USID') eq loginnedMember.usid}">
+							<li><div onclick="fn_end();">
+									<img src="${path }/resources/images/end.png" width="40px" height="40px">
+									<p>N빵종료하기</p>
+								</div></li>
+						</c:if>
+					</c:if>
 
 
-			<c:if test="${map.get('TRADE_STAGE') eq 3}">
-				<c:if test="${map.get('WRITER_USID') eq loginnedMember.usid}">
-					<li><div onclick="fn_end();">
-							<img src="${path }/resources/images/end.png" width="40px" height="40px">
-							<p>N빵종료하기</p>
-						</div></li>
-				</c:if>
-			</c:if>
-
-
-			</ul>
+				</ul>
+			</div>
+			<hr>
 		</div>
-		<hr>
-	</div>
-	<div id="commentSection">
-		<div id="commentInsert">
-			<select name="commentTo" id="commentTo">
-				<option value="openComment" selected>전체댓글</option>
-				<option value="secretComment">비밀댓글</option>
-			</select> <input type="text" name="commentContent" class="commentContent" id="commentContent" size="48"> <input type="hidden" name="commentLevel"
-				id="commentLevel" value="1">
-			<button class="commentInsertBtn" id="commentInsertBtn">댓글입력</button>
+		<div id="commentSection">
+			<div id="commentInsert">
+				<select name="commentTo" id="commentTo">
+					<option value="openComment" selected>전체댓글</option>
+					<option value="secretComment">비밀댓글</option>
+				</select> <input type="text" name="commentContent" class="commentContent" id="commentContent" size="48"> <input type="hidden" name="commentLevel"
+					id="commentLevel" value="1">
+				<button class="commentInsertBtn" id="commentInsertBtn">댓글입력</button>
+			</div>
+			<div id="Comments">
+				<ul class="comment_list">
+					<!-- 댓글이 들어갈 곳 -->
+				</ul>
+			</div>
 		</div>
-		<div id="Comments">
-			<ul class="comment_list">
-				<!-- 댓글이 들어갈 곳 -->
-			</ul>
-		</div>
-	</div>
 	</div>
 
 
@@ -662,6 +674,8 @@ span.title {
 	<!--  -->
 </section>
 <script>
+
+//자동 댓글
 <%if (reply.equals("success")) {%>
   function autoReple() {
     $("#commentContent").val("<p class='confirm'>결제했습니다.</p>");
@@ -676,6 +690,8 @@ span.title {
     $("#commentContent").val("");
   }
   <%}%>
+  
+  //댓글 달기
 function fn_replyToReply(comId){
   let html = "";
   html += "<div id=\"commentInsert2\">";
@@ -729,10 +745,12 @@ function fn_end(){
 	}
 }
 
+//채팅방 버튼을 누르면 히든 폼 안의 채팅방 버튼이 클릭됨
 function fn_enterBtn(){
   $("#hiddenEnterBtn").click();
 }
 
+//부모창이 종료되면 자식창도 종료
 var pop;
 window.onunload = function() { 
 	pop.close(); 
@@ -756,8 +774,8 @@ function nbbang(f){
 	f.submit();    
 }
 
+//방만들기
 function fun_createroom() {
-
 $.ajax({
     type: "GET",
     /* "boardId":"2" 부분 게시판 id값을 객체로 받아와서 넣기로 변경해야됨 */
@@ -778,6 +796,7 @@ $.ajax({
   })
 }
 
+//방 참여 여부
 function fun_decidebuy(){
 	/* 컨트롤 f주의 여기 틀어짐 컨텍스트 부분 */
   if($("#startFuncBtn>img").attr("src")=="${path}/resources/images/onebyn.png") {
@@ -835,6 +854,7 @@ function fun_cancelbuy() {
 		})
   }
 
+//댓글 삭제하기
 $(document).on('click', '.repleDelete', function(e){
   let comId = $(e.target).parent().parent().children('.comId').val();
   if(confirm('댓글을 삭제하시겠습니까?')) {
@@ -855,6 +875,7 @@ $(document).on('click', '.repleDelete', function(e){
     }
   })
 
+  //댓글 수정하기 폼 생성하는거
 $(document).on('click', '.repleModify',function(e){
   let value = $(e.target).parent().parent().children('.comment_text').text();
   let comId = $(e.target).parent().parent().children('.comId').val();
@@ -867,6 +888,7 @@ $(document).on('click', '.repleModify',function(e){
   $(e.target).parent().parent().children('.comment_text').html(html);
 })
 
+//댓글 수정하기 엔터키로
 $(document).on('keypress', '.commentModify', function(e){
   if(e.keyCode == 13) {
     $(e.target).parent().children('.commentModifyBtn').click();
@@ -875,6 +897,7 @@ $(document).on('keypress', '.commentModify', function(e){
   }
 });
 
+//댓글 수정
 $(document).on('click','.commentModifyBtn',function(e){
   $.ajax({
     url: "${path}/board/commentModify",
@@ -894,6 +917,7 @@ $(document).on('click','.commentModifyBtn',function(e){
 })
 
   //같은 이름을 가진 모든 클래스에 Func적용
+  //엔터 눌러도 댓글 입력 적용
 $(document).on('keypress', '.commentContent', function(e){
   if(e.keyCode == 13) {
     $(e.target).parent().children('.commentInsertBtn').click();
@@ -902,6 +926,7 @@ $(document).on('keypress', '.commentContent', function(e){
   }
 });
 
+//댓글 입력하기
 $(document).on('click','.commentInsertBtn',function (e){
   if ($(e.target).parent().children('.commentContent').val() != null) {
     if($(e.target).parent().children('input[name=commentLevel]').val()==1) {
@@ -950,6 +975,7 @@ $(document).on('click','.commentInsertBtn',function (e){
   }
 })
 
+//좋아요 버튼 처리 
 $(document).ready(function () {
 fn_commentList();
 <%if (reply.equals("success")) {%>
@@ -987,8 +1013,50 @@ $("#likeFunc").click(function (e) {
   })
 })
 
-    
 
+function fn_commprint(select,item,secret,level){
+	console.log("s : "+select);
+    let date = new Date(Date.parse(item.cenrollDate));
+    let repleDate = date.format('yyyy-MM-dd(KS) HH:mm:ss');
+ 	 let html = "";
+	   html += "<li class='comment_item'>";
+       html += "<hr>";
+       if(level == '1'){
+       html += "<div class='comment_area'>";
+       }else{
+    	html += "<div class='comment_area2'>";
+       }
+       html += "<div class='comment_thumb'>";
+       html += "<img src='${path}/resources/images/"+ item.com_Profile +"' alt='' width='30px'" +" height='30px' style='border-radius: 70%'>";
+       html += "</div>";
+       html += "<div class='comment_box'>";
+       html += "<div class='comment_id'>";
+       html += item.cwriter_Nickname;
+       html += "</div>";
+       html += "<input type='hidden' class='comId' value='" + item.com_Id + "'>";
+       html += "<div class='comment_text'>";
+       if(secret == 't'){
+    	   html += "비밀댓글입니다." + "</div>";
+       }else{
+    	   html += item.content + "</div>";   
+       }
+       html += "<div class='comment_info'>";
+       if(select == '0'){
+      	   html += repleDate + " <a class='addToReple' style='cursor:pointer' onclick='fn_replyToReply("+item.com_Id+");'>답글쓰기</a> <a class='addToReple repleModify' style='cursor:pointer'>수정</a> <a class='addToReple repleDelete' style='cursor:pointer' >삭제</a>";
+       }else if(select  ==  '1'){
+    	   html += repleDate + " <a class='addToReple' style='cursor:pointer' onclick='fn_replyToReply("+item.com_Id+");'>답글쓰기</a>";
+       }else if(select == '2'){
+      	   html += repleDate + "  <a class='addToReple repleModify' style='cursor:pointer'>수정</a> <a class='addToReple repleDelete' style='cursor:pointer' >삭제</a>";
+       }else if(select =='3'){
+    	   html += repleDate;
+       }
+       html += "</div>";
+       html += "<div class='replereple'></div>";
+       html += "</div></div></li>"; 
+	return html;
+}
+
+//댓글 리스트 가져오기
 function fn_commentList() {
   $.ajax({
       url: "${path}/board/commentList",
@@ -998,224 +1066,73 @@ function fn_commentList() {
           "cBoardId": "${map.get('BOARD_ID')}"
       },
       success: function (data) {
+    	//console.log("commentList data : "+data);
         let html = "";
         $.each(data, function (index, item) {
-          let date = new Date(Date.parse(item.cenrollDate));
-          let repleDate = date.format('yyyy-MM-dd(KS) HH:mm:ss');
+          //console.log("index : "+index+" item : "+item.content);
+         // console.log("date : "+date+" "+" repleDate : "+repleDate);
+          //로그인한 멤버 != 게시글 작성자
           if("${loginnedMember.usid}"!="${map.get('WRITER_USID')}"){
-            if(item.comLayer==1){
-              if(item.cwriterNickname=="${loginnedMember.nickname}") {
-                html += "<li class='comment_item'>";
-                html += "<hr>";
-                html += "<div class='comment_area'>";
-                html += "<div class='comment_thumb'>";
-                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
-                        " height='30px' style='border-radius: 70%'>";
-                html += "</div>";
-                html += "<div class='comment_box'>";
-                html += "<div class='comment_id'>";
-                html += item.cwriterNickname;
-                html += "</div>";
-                html += "<input type='hidden' class='comId' value='" + item.comId + "'>";
-                html += "<div class='comment_text'>";
-                html += item.content + "</div>";
-                html += "<div class='comment_info'>";
-                html += repleDate + " <a class='addToReple' style='cursor:pointer' onclick='fn_replyToReply("+item.comId+");'>답글쓰기</a> <a class='addToReple repleModify' style='cursor:pointer'>수정</a> <a class='addToReple repleDelete' style='cursor:pointer' >삭제</a>";
-                html += "</div>";
-                html += "<div class='replereple'></div>";
-                html += "</div></div></li>";
+        	  //코멘트 계층이 1인 경우
+            if(item.com_Layer==1){
+            	//코멘트 작성자 닉네임 ==  로그인한 멤버 닉네임
+              if(item.cwriter_Nickname=="${loginnedMember.nickname}") {
+            	  console.log('함수부분 1');
+            	  html += fn_commprint('0',item,'f','1');
               }else {
+            		//코멘트 작성자 닉네임 !=  로그인한 멤버 닉네임
+            		
+            		//비밀댓글이 아닌 경우
                 if(!item.secret){
-                html += "<li class='comment_item'>";
-                html += "<hr>";
-                html += "<div class='comment_area'>";
-                html += "<div class='comment_thumb'>";
-                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
-                        " height='30px' style='border-radius: 70%'>";
-                html += "</div>";
-                html += "<div class='comment_box'>";
-                html += "<div class='comment_id'>";
-                html += item.cwriterNickname;
-                html += "</div>";
-                html += "<input type='hidden' class='comId' value='" + item.comId + "'>";
-                html += "<div class='comment_text'>";
-                html += item.content + "</div>";
-                html += "<div class='comment_info'>";
-                html += repleDate + " <a class='addToReple' style='cursor:pointer' onclick='fn_replyToReply("+item.comId+");'>답글쓰기</a>";
-                html += "</div>";
-                html += "<div class='replereple'></div>";
-                html += "</div></div></li>";
+              	  console.log('함수부분 2');
+              	  html += fn_commprint('1',item,'f','1');
                 }else {
-                  html += "<li class='comment_item'>";
-                html += "<hr>";
-                html += "<div class='comment_area'>";
-                html += "<div class='comment_thumb'>";
-                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
-                        " height='30px' style='border-radius: 70%'>";
-                html += "</div>";
-                html += "<div class='comment_box'>";
-                html += "<div class='comment_id'>";
-                html += item.cwriterNickname;
-                html += "</div>";
-                html += "<input type='hidden' class='comId' value='" + item.comId + "'>";
-                html += "<div class='comment_text'>";
-                html += "비밀댓글입니다." + "</div>";
-                html += "<div class='comment_info'>";
-                html += repleDate + " <a class='addToReple' style='cursor:pointer' onclick='fn_replyToReply("+item.comId+");'>답글쓰기</a>";
-                html += "</div>";
-                html += "<div class='replereple'></div>";
-                html += "</div></div></li>";
+                	//비밀댓글인경우
+                	  console.log('함수부분 3');
+               html += fn_commprint('1',item,'t','1');
                 }
               }
             }else {
-              if(item.cwriterNickname=="${loginnedMember.nickname}") {
-                html += "<li class='comment_item'>";
-                // html += "<hr>";
-                html += "<div class='comment_area2'>";
-                html += "<div class='comment_thumb'>";
-                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
-                        " height='30px' style='border-radius: 70%'>";
-                html += "</div>";
-                html += "<div class='comment_box'>";
-                html += "<div class='comment_id'>";
-                html += item.cwriterNickname;
-                html += "</div>";
-                html += "<input type='hidden' class='comId' value='" + item.comId + "'>";
-                html += "<div class='comment_text'>";
-                html += item.content + "</div>";
-                html += "<div class='comment_info'>";
-                html += repleDate + "  <a class='addToReple repleModify' style='cursor:pointer'>수정</a> <a class='addToReple repleDelete' style='cursor:pointer' >삭제</a>";
-                html += "</div>";
-                html += "<div class='replereple'></div>";
-                html += "</div></div></li>";
+            	 //코멘트 계층이 1이 아닌 경우
+            	 //코멘트 작성자 닉네임 == 로그인 멤버 닉네임
+              if(item.cwriter_Nickname=="${loginnedMember.nickname}") {
+            	  console.log('함수부분 4');
+            	  html += fn_commprint('2',item,'f','1');
               }else {
-                html += "<li class='comment_item'>";
-                // html += "<hr>";
-                html += "<div class='comment_area2'>";
-                html += "<div class='comment_thumb'>";
-                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
-                        " height='30px' style='border-radius: 70%'>";
-                html += "</div>";
-                html += "<div class='comment_box'>";
-                html += "<div class='comment_id'>";
-                html += item.cwriterNickname;
-                html += "</div>";
-                html += "<input type='hidden' class='comId' value='" + item.comId + "'>";
-                html += "<div class='comment_text'>";
-                html += item.content + "</div>";
-                html += "<div class='comment_info'>";
-                html += repleDate;
-                html += "</div>";
-                html += "<div class='replereple'></div>";
-                html += "</div></div></li>";
+            	 	//코멘트 작성자 닉네임 != 로그인 멤버 닉네임
+            	  html += fn_commprint('3',item,'f','1');
               }
             }
           }else {
-            if(item.comLayer==1){
+        	  //로그인한 멤버 == 게시글 작성자
+        	  //코멘트 계층이 1인 경우
+            if(item.com_Layer==1){
+           	 //코멘트 작성자 닉네임 == 로그인 멤버 닉네임
               if(item.cwriterNickname=="${loginnedMember.nickname}") {
-                html += "<li class='comment_item'>";
-                html += "<hr>";
-                html += "<div class='comment_area'>";
-                html += "<div class='comment_thumb'>";
-                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
-                        " height='30px' style='border-radius: 70%'>";
-                html += "</div>";
-                html += "<div class='comment_box'>";
-                html += "<div class='comment_id'>";
-                html += item.cwriterNickname;
-                html += "</div>";
-                html += "<input type='hidden' class='comId' value='" + item.comId + "'>";
-                html += "<div class='comment_text'>";
-                html += item.content + "</div>";
-                html += "<div class='comment_info'>";
-                html += repleDate + " <a class='addToReple' style='cursor:pointer' onclick='fn_replyToReply("+item.comId+");'>답글쓰기</a> <a class='addToReple repleModify' style='cursor:pointer'>수정</a> <a class='addToReple repleDelete' style='cursor:pointer' >삭제</a>";
-                html += "</div>";
-                html += "<div class='replereple'></div>";
-                html += "</div></div></li>";
+            	  console.log('함수부분 5');
+            	  html += fn_commprint('0',item,'f','1');
               }else {
+            	//코멘트 작성자 닉네임 != 로그인 멤버 닉네임
+            		//비밀댓글이 아닌 경우
                 if(!item.secret){
-                html += "<li class='comment_item'>";
-                html += "<hr>";
-                html += "<div class='comment_area'>";
-                html += "<div class='comment_thumb'>";
-                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
-                        " height='30px' style='border-radius: 70%'>";
-                html += "</div>";
-                html += "<div class='comment_box'>";
-                html += "<div class='comment_id'>";
-                html += item.cwriterNickname;
-                html += "</div>";
-                html += "<input type='hidden' class='comId' value='" + item.comId + "'>";
-                html += "<div class='comment_text'>";
-                html += item.content + "</div>";
-                html += "<div class='comment_info'>";
-                html += repleDate + " <a class='addToReple' style='cursor:pointer' onclick='fn_replyToReply("+item.comId+");'>답글쓰기</a>";
-                html += "</div>";
-                html += "<div class='replereple'></div>";
-                html += "</div></div></li>";
+                	  console.log('함수부분 6');
+                	  html += fn_commprint('1',item,'f','1');
                 }else {
-                  html += "<li class='comment_item'>";
-                html += "<hr>";
-                html += "<div class='comment_area'>";
-                html += "<div class='comment_thumb'>";
-                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
-                        " height='30px' style='border-radius: 70%'>";
-                html += "</div>";
-                html += "<div class='comment_box'>";
-                html += "<div class='comment_id'>";
-                html += item.cwriterNickname;
-                html += "</div>";
-                html += "<input type='hidden' class='comId' value='" + item.comId + "'>";
-                html += "<div class='comment_text'>";
-                html += item.content + "</div>";
-                html += "<div class='comment_info'>";
-                html += repleDate + " <a class='addToReple' style='cursor:pointer' onclick='fn_replyToReply("+item.comId+");'>답글쓰기</a>";
-                html += "</div>";
-                html += "<div class='replereple'></div>";
-                html += "</div></div></li>";
+                	//비밀 댓글인 경우
+                  	  console.log('함수부분 7');
+                  	  html += fn_commprint('1',item,'f','1');
                 }
               }
             }else {
-              if(item.cwriterNickname=="${loginnedMember.nickname}") {
-                html += "<li class='comment_item'>";
-                // html += "<hr>";
-                html += "<div class='comment_area2'>";
-                html += "<div class='comment_thumb'>";
-                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
-                        " height='30px' style='border-radius: 70%'>";
-                html += "</div>";
-                html += "<div class='comment_box'>";
-                html += "<div class='comment_id'>";
-                html += item.cwriterNickname;
-                html += "</div>";
-                html += "<input type='hidden' class='comId' value='" + item.comId + "'>";
-                html += "<div class='comment_text'>";
-                html += item.content + "</div>";
-                html += "<div class='comment_info'>";
-                html += repleDate + "  <a class='addToReple repleModify' style='cursor:pointer'>수정</a> <a class='addToReple repleDelete' style='cursor:pointer' >삭제</a>";
-                html += "</div>";
-                html += "<div class='replereple'></div>";
-                html += "</div></div></li>";
+            	  //코멘트 계층이 1이 아닌 경우
+            	  //코멘트 작성자 닉네임 == 로그인 멤버 닉네임
+              if(item.cwriter_Nickname=="${loginnedMember.nickname}") {
+            	  console.log('함수부분 8');
+            	  html += fn_commprint('2',item,'f','2');
               }else {
-                html += "<li class='comment_item'>";
-                // html += "<hr>";
-                html += "<div class='comment_area2'>";
-                html += "<div class='comment_thumb'>";
-                html += "<img src='${path}/resources/images/"+ item.comProfile +"' alt='' width='30px'" +
-                        " height='30px' style='border-radius: 70%'>";
-                html += "</div>";
-                html += "<div class='comment_box'>";
-                html += "<div class='comment_id'>";
-                html += item.cwriterNickname;
-                html += "</div>";
-                html += "<input type='hidden' class='comId' value='" + item.comId + "'>";
-                html += "<div class='comment_text'>";
-                html += item.content + "</div>";
-                html += "<div class='comment_info'>";
-                html += repleDate;
-                html += "</div>";
-                html += "<div class='replereple'></div>";
-                html += "</div></div></li>";
+            	  //코멘트 작성자 닉네임 != 로그인 멤버 닉네임
+            	    console.log('함수부분 9');
+            	    html += fn_commprint('3',item,'f','2');
               }
             }
           }

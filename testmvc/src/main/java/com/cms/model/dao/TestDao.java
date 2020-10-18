@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.cms.model.vo.Login;
 import com.cms.model.vo.Member;
+import com.cms.model.vo.Comment;
 
 public interface TestDao {
 
@@ -33,5 +34,7 @@ public interface TestDao {
 	List<Integer> deliveryUsersList(Map<String, Object> commandMap) throws Exception;
 
 	List<Integer> likeList(Map<String, Object> commandMap, int usid) throws Exception;
+
+	List<Comment> commentList(int cBoardId) throws Exception;
 
 }

@@ -16,6 +16,7 @@ import com.cms.model.dao.TestDao;
 import com.cms.model.vo.Login;
 import com.cms.model.vo.Member;
 import com.cms.model.vo.SessionVo;
+import com.cms.model.vo.Comment;
 
 @Service("testService")
 public class TestServiceImpl implements TestService {
@@ -125,6 +126,12 @@ public class TestServiceImpl implements TestService {
 	public List<Integer> likeList(Map<String, Object> commandMap, SessionVo sv) throws Exception {
 		// TODO Auto-generated method stub
 		return testDAO.likeList(commandMap, sv.getUsid());
+	}
+
+	@Override
+	public List<Comment> commentList(int cBoardId) throws Exception {
+		// TODO Auto-generated method stub
+		return testDAO.commentList(cBoardId);
 	}
 
 }

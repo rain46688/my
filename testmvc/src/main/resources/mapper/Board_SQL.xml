@@ -32,4 +32,7 @@
 		<select id="likeList" parameterType="hashmap" resultType="_int">
 	<![CDATA[SELECT * FROM LIKE_LIST WHERE LIKE_BOARD_ID = #{boardId} AND LIKE_USID = #{usid}]]>
 	</select>
+		<select id="commentList" parameterType="_int" resultType="com.cms.model.vo.Comment">
+	<![CDATA[SELECT * FROM "COMMENT" WHERE CBOARD_ID = #{boardId} START WITH COM_LAYER = 1 CONNECT BY PRIOR COM_ID = COM_REF]]>
+	</select>
 </mapper>

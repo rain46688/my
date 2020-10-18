@@ -6,6 +6,7 @@ import java.util.Map;
 import com.cms.model.vo.Login;
 import com.cms.model.vo.Member;
 import com.cms.model.vo.SessionVo;
+import com.cms.model.vo.Comment;
 
 public interface TestService {
 
@@ -32,5 +33,7 @@ public interface TestService {
 	List<Integer> deliveryUsersList(Map<String, Object> commandMap) throws Exception;
 
 	List<Integer> likeList(Map<String, Object> commandMap, SessionVo sv) throws Exception;
+
+	List<Comment> commentList(int cBoardId) throws Exception;
 
 }

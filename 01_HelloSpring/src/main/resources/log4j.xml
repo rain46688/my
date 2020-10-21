@@ -7,6 +7,12 @@
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
+			<!-- 
+			p : 단계
+			c : 클래스
+			m : 메세지 이름(변수 & 문구)
+			n : 개행 엔터
+			 -->
 		</layout>
 	</appender>
 	

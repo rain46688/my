@@ -45,6 +45,11 @@ public class HomeController {
 
 		// System.out.println("beanTest Test 출력 : " + test.getName());
 		// System.out.println("beanTest Test2 출력 : " + test2.getName());
+		logger.debug("beanTest test 출력 : " + test.getName());
+
+		logger.info("beanTest test2 출력 : " + test2.getName());
+		logger.warn("warn메소드 이용출력하기");
+		logger.error("error메소드 이용출력하기");
 		Cookie c = new Cookie("userId", "admin");
 		c.setMaxAge(60 * 60);
 		response.addCookie(c);

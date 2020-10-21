@@ -30,6 +30,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.cms.common.exception.IdPasswordNotMatchingException;
@@ -50,6 +52,7 @@ import lombok.extern.java.Log;
  */
 @Controller
 @Log
+@SessionAttributes("loginnedMember") // 세션 처리
 public class TestController {
 
 	private final int noticeNumPerPage = 5;
@@ -105,12 +108,12 @@ public class TestController {
 			} catch (Exception e) {
 			}
 		}
-
+		SessionVo sv = null;
 		login.setMemberPw(request.getParameter("memberPw"));
 		// 이렇게 받으면 찍힘 대신 name값이랑 vo 멤버변수명이랑 같아야됨!!
 		log.info("login :  " + login.getMemberId() + " " + login.getMemberPw() + " " + login.isRememberMe());
 		try {
-			SessionVo sv = testService.loginCheck(login);
+			sv = testService.loginCheck(login);
 			log.info("sv : " + sv.toString());
 
 			try {
@@ -120,7 +123,7 @@ public class TestController {
 			} catch (Exception e) {
 
 			}
-			session.setAttribute("loginnedMember", sv);
+			// session.setAttribute("loginnedMember", sv);
 
 			Cookie c = new Cookie("saveId", login.getMemberId());
 			c.setPath("/");
@@ -140,6 +143,7 @@ public class TestController {
 		}
 
 		ModelAndView mv = new ModelAndView("/common/msg");
+		mv.addObject("loginnedMember", sv);
 		mv.addObject("loc", "/");
 		mv.addObject("msg", "로그인 성공");
 		log.info(" ===== 로그인 성공 로그 ===== ");
@@ -147,9 +151,12 @@ public class TestController {
 	}
 
 	@RequestMapping(value = "/logout")
-	public ModelAndView logOut(HttpSession session) throws Exception {
+	public ModelAndView logOut(HttpSession session, SessionStatus status) throws Exception {
 		log.info(" ===== logOut 실행 ===== ");
-		session.invalidate();
+//		session.invalidate();
+		if (!status.isComplete()) {
+			status.setComplete();
+		}
 		ModelAndView mv = new ModelAndView("../../index");
 		return mv;
 	}

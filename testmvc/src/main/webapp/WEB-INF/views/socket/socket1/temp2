@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>RTC ì‚½ì§ˆ</title>
+<title>RTC »ğÁú</title>
 <!--Bootstrap only for styling-->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -12,8 +12,7 @@
 </head>
 <style>
 .container {
-/* 	background: rgb(200, 200, 200); */
-	border: 1px solid black; 
+	background: rgb(200, 200, 200);
 	margin: 50px auto;
 	max-width: 80%;
 	text-align: center;
@@ -29,6 +28,7 @@ input {
 }
 
 .footer {
+	background: rgb(148, 144, 144);
 	text-align: center;
 	padding: 2%;
 	position: absolute;
@@ -45,7 +45,7 @@ video {
 
 #text {
 	margin-top: 2em;
-	/* background: rgb(50, 50, 50); */
+	background: rgb(50, 50, 50);
 	width: 100%;
 	height: 200px;
 	color: white;
@@ -59,77 +59,74 @@ video {
 		<video id="video1" autoplay playsinline constrols preload="metadata"></video>
 		<video id="video2" autoplay playsinline constrols preload="metadata"></video>
 		<br>
-		<button type="button" class="btn btn-primary" onclick='connection();'>ì—°ê²°</button>
-		<!-- <input id="messageInput" type="text" class="form-control" placeholder="message"> -->
-		<button type="button" class="btn btn-primary" onclick='hangup();'>ì—°ê²° ëŠê¸°</button>
-		<!-- <div id="text"></div> -->
+		<button type="button" class="btn btn-primary" onclick='start();'>¿¬°á</button>
+		<input id="messageInput" type="text" class="form-control" placeholder="message">
+		<button type="button" class="btn btn-primary" onclick='hangup();'>¿¬°á ²÷±â</button>
+		<div id="text"></div>
 	</div>
 	<script>
 	
 	'use strict';
 	
-	//signaling ì„œë²„
+	//signaling ¼­¹ö
 	var conn = new WebSocket('ws://localhost:9090/socketrtc');
 
 	conn.onopen = function() {
-		console.log("onopen => signaling server ì—°ê²°");
+		console.log("signaling server ¿¬°á");
 	};
 
 	conn.onmessage = function(msg) {
-		console.log("onmessage => ë©”ì„¸ì§€ ì¶œë ¥ : "+msg);
+		console.log("¸Ş¼¼Áö Ãâ·Â : ", msg);
 		let content = JSON.parse(msg.data);
-		console.log("ë©”ì„¸ì§€ íƒ€ì… : "+content);
-		console.log("ì»¨í…ë“œ íƒ€ì… : "+content.type);
+		console.log("¸Ş¼¼Áö Å¸ÀÔ : "+content);
+		console.log("ÄÁÅÙµå Å¸ÀÔ : "+content.type);
+		
 		if(content.type === 'gotmedia'){
-			console.log(" === ë¶„ê¸° gotmedia === ");
-			console.log("ë°©ì„ ì²˜ìŒ ë§Œë“ ì‚¬ëŒ")
+			console.log(" === ºĞ±â gotmedia === ");
 			start();
 		}else if(content.type  === 'offer'){
-			console.log(" === ë¶„ê¸° offer === ");
+			console.log(" === ºĞ±â offer === ");
 			if(!isInitiator && !isStarted){
-				console.log(" === ë¶„ê¸° offer 2 === ");
+				console.log(" === ºĞ±â offer 2 === ");
 				start();
 			}
 			pc.setRemoteDescription(new RTCSessionDescription(content));
 			 doAnswer();
 		} else if (content.type  === 'answer' && isStarted) {
-			console.log(" === ë¶„ê¸° answer === ");
+			console.log(" === ºĞ±â answer === ");
 			 pc.setRemoteDescription(new RTCSessionDescription(content));
 		} else if (content.type  === 'candidate' && isStarted) {
-			console.log(" === ë¶„ê¸° candidate === ");
+			console.log(" === ºĞ±â candidate === ");
 		    var candidate = new RTCIceCandidate({
 		        sdpMLineIndex: content.label,
 		        candidate: content.candidate
 		      });
 		      pc.addIceCandidate(candidate);
 		    } else if (content.type  === 'bye' && isStarted) {
-				console.log(" === ë¶„ê¸° bye === ");
+				console.log(" === ºĞ±â bye === ");
 		      handleRemoteHangup();
 		    }
-	};
-	
-	conn.onclose = function() {
-		console.log('onclose ì‹¤í–‰');
 	};
 
 	function sendMessage(message) {
 		console.log("send : "+message);
+		//conn.send(message);
 		conn.send(JSON.stringify(message));
 	}
 	
 	//-------------------------------------------------------------
 	
-	//ë§ˆì´í¬ ë¹„ë””ì˜¤ ì„¤ì •
+	//¸¶ÀÌÅ© ºñµğ¿À ¼³Á¤
 	const video1 = document.getElementById('video1');
 	const video2 = document.getElementById('video2');
 	let isStarted = false;
 	let pc;
-	let isInitiator = false;//ë°©ì´ ì—´ë ¤ìˆëŠ”ì§€ ì—¬ë¶€, ì¼ë‹¨ ì—´ë ¤ìˆë‹¤ ì¹˜ì
+	let isInitiator = true;//¹æÀÌ ¿­·ÁÀÖ´ÂÁö ¿©ºÎ, ÀÏ´Ü ¿­·ÁÀÖ´Ù Ä¡ÀÚ
 	let localStream;
 	let remoteStream;
 	let isChannelReady = true;
 	
-	//TURN & STUN ì„œë²„ ë“±ë¡
+	//TURN & STUN ¼­¹ö µî·Ï
 	var configuration = {
 			  'iceServers': [
 				    {
@@ -150,33 +147,33 @@ video {
 	
 	navigator.mediaDevices.getUserMedia(constraints)
 	.then(gotStream)
-	  //ìŠ¤íŠ¸ë¦¼ ìš”ì²­ ì‹¤íŒ¨
+	  //½ºÆ®¸² ¿äÃ» ½ÇÆĞ
 	  .catch(function(e) { 
-		    alert('ì¹´ë©”ë¼ì™€ ë§ˆì´í¬ë¥¼ í—ˆìš©í•´ì£¼ì„¸ìš” / ì—ëŸ¬ : '+e.name);
+		    alert('Ä«¸Ş¶ó¿Í ¸¶ÀÌÅ©¸¦ Çã¿ëÇØÁÖ¼¼¿ä / ¿¡·¯ : '+e.name);
 	    });
 	
 	function gotStream(stream){
-			//ìŠ¤íŠ¸ë¦¼ ìš”ì²­ ì„±ê³µ
-			 console.log('ìŠ¤íŠ¸ë¦¼ ìš”ì²­ ì„±ê³µ');
+			//½ºÆ®¸² ¿äÃ» ¼º°ø
+			 console.log('½ºÆ®¸² ¿äÃ» ¼º°ø');
 			localStream = stream;
 			video1.srcObject = stream;
 			sendMessage({type:'gotmedia'});
 			//sendMessage('gotmedia');
 			if(isInitiator){
-				console.log("gotStream ë¶€ë¶„ start ì‹¤í–‰");
+				console.log("gotStream ºÎºĞ start ½ÇÇà");
 				start();
 			}
 		
 	};
 	
 	function start(){
-		console.log("start í•¨ìˆ˜ ì‹¤í–‰ : "+!isStarted+", "+(typeof localStream !== 'undefined')+", "+(isChannelReady));
+		console.log("start ÇÔ¼ö ½ÇÇà : "+!isStarted+", "+(typeof localStream !== 'undefined')+", "+(isChannelReady));
 		
 		if(!isStarted && typeof localStream !== 'undefined' && isChannelReady){
-			console.log("peer ì—°ê²° ë¶€ë¶„ ë¶„ê¸° ì§„ì…");
+			console.log("peer ¿¬°á ºÎºĞ ºĞ±â ÁøÀÔ");
 			createPeerConnection();
 			pc.addStream(localStream);
-			console.log("isStarted íŠ¸ë£¨");
+			console.log("isStarted Æ®·ç");
 			isStarted = true;
 			console.log("isInitiator : "+isInitiator);
 			if(isInitiator){
@@ -187,46 +184,46 @@ video {
 	};
 	
 	function createPeerConnection(){
-		console.log("createPeerConnection ì‹¤í–‰");
+		console.log("createPeerConnection ½ÇÇà");
 		try{
-			//configurationì—ëŠ” STUN & TURN ì„œë²„ê°€ ìˆìŒ
-			//í†µì‹ ì´ ì¤‘ë‹¨ë¬ì„ë•Œ ì‚¬ìš©ë˜ëŠ” ì„ì‹œì„œë²„ë¼ ê°œë…ì´ë¼í•¨.
+			//configuration¿¡´Â STUN & TURN ¼­¹ö°¡ ÀÖÀ½
+			//Åë½ÅÀÌ Áß´Ü‰çÀ»¶§ »ç¿ëµÇ´Â ÀÓ½Ã¼­¹ö¶ó °³³äÀÌ¶óÇÔ.
 			pc = new RTCPeerConnection(configuration);
 			pc.onicecandidate = handleIceCandidate;
 			pc.onaddstream = handleRemoteStreamAdded;
 			pc.onremovestream = handleRemoteStreamRemoved;
-			console.log(" RTCPeerConnection ìƒì„± ì™„ë£Œ ");
+			console.log(" RTCPeerConnection »ı¼º ¿Ï·á ");
 		}catch(e){
-			console.log(" RTCPeerConnection ìƒì„± ì—ëŸ¬ë°œìƒ : "+e.message);
-			alert("RTCPeerConnection ì—ëŸ¬");
+			console.log(" RTCPeerConnection »ı¼º ¿¡·¯¹ß»ı : "+e.message);
+			alert("RTCPeerConnection ¿¡·¯");
 			return;
 		}
 		
 	};
 	
 	function handleRemoteStreamAdded(event){
-		console.log("RemoteStream ì¶”ê°€ë¨");
-		//ì›ê²© ìŠ¤íŠ¸ë¦¼ì— ìŠ¤íŠ¸ë¦¼ì„ ë„£ì–´ì¤Œ
+		console.log("RemoteStream Ãß°¡µÊ");
+		//¿ø°İ ½ºÆ®¸²¿¡ ½ºÆ®¸²À» ³Ö¾îÁÜ
 		remoteStream = event.stream;
 		video2.srcObject = remoteStream;
 	};
 	
 	function doCall(){
-		console.log("createOff í•¨ìˆ˜ë¥¼ í†µí•´ì„œ í†µì‹  ìš”ì²­");
+		console.log("createOff ÇÔ¼ö¸¦ ÅëÇØ¼­ Åë½Å ¿äÃ»");
 		pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 	};
 	
 	function doAnswer() {
-		  console.log('peerì—ê²Œ ì‘ë‹µ ë³´ë‚´ê¸°.');
+		  console.log('Sending answer to peer.');
 		  pc.createAnswer().then(
 		    setLocalAndSendMessage,
 		    onCreateSessionDescriptionError
 		  );
 		};
 	
-	//í•¸ë“¤ëŸ¬ í›„ë³´ ìƒëŒ€ë°© íƒìƒ‰
+	//ÇÚµé·¯ ÈÄº¸ »ó´ë¹æ Å½»ö
 	function handleIceCandidate(event) {
-		  console.log('icecandidate ì‹¤í–‰ event : '+ event);
+		  console.log('icecandidate event: ', event);
 		  if (event.candidate) {
 		    sendMessage({
 		      type: 'candidate',
@@ -235,54 +232,48 @@ video {
 		      candidate: event.candidate.candidate
 		    });
 		  } else {
-		    console.log(' handleIceCandidate íƒìƒ‰ ì¢…ë£Œ ');
+		    console.log('End of candidates.');
 		  }
 	};
 	
+	function onCreateSessionDescriptionError(error) {
+		  trace('Failed to create session description: ' + error.toString());
+		}
+		
 	function handleRemoteStreamRemoved(event) {
-		 	 console.log('ì›ê²© ìŠ¤íŠ¸ë¦¼ ì‚­ì œë¨ Event : '+event);
+		 	 console.log('Remote stream removed. Event: ', event);
 		};
 		
 		function setLocalAndSendMessage(sessionDescription) {
+			console.log("sessionDescription : "+sessionDescription);
 			  pc.setLocalDescription(sessionDescription);
-			console.log("setLocalAndSendMessage ì‹¤í–‰ : "+sessionDescription);
+			  console.log('setLocalAndSendMessage sending message', sessionDescription);
 			  sendMessage(sessionDescription);
 			};
 		
 			function handleRemoteHangup() {
-				  console.log('Session ì¢…ë£Œ.');
+				  console.log('Session terminated.');
 				  stop();
 				  isInitiator = false;
 				};
-				
-			function connection(){
-				isInitiator = true;
-				start();
-			}
-					
-			//ì—°ê²° ëŠê¸°
+			
+		function handleCreateOfferError(event) {
+			  console.log('createOffer() error: ', event);
+			};
+			
+			//¿¬°á ²÷±â
 			function hangup() {
+				  console.log('Hanging up.');
 				  stop();
 				  sendMessage({type:'bye'});
 				};
 		
 			function stop() {
-				  console.log('ì—°ê²° ì¢…ë£Œ');
 				  isStarted = false;
 				  pc.close();
 				  pc = null;
 				};
-				
-		//-------------------------------------------------------------
 
-		function handleCreateOfferError(event) {
-					console.log('Offerë¶€ë¶„ ìƒì„± ì—ëŸ¬ error: ', event);
-			};	
-				
-		function onCreateSessionDescriptionError(error) {
-				trace('onCreateSessionDescriptionError ì—ëŸ¬ : ' + error.toString());
-			}
-				
 				
 				
 		

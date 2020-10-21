@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="member">
-	
+
 	<insert id="insertMember" parameterType="com.kh.spring.member.model.vo.Member">
 		INSERT INTO MEMBER VALUES(#{userId},#{password},#{userName},#{gender},#{age},
-									#{email},#{phone},#{address},#{hobby, typeHandler=strArr},
-									sysdate)
+		#{email},#{phone},#{address},#{hobby, typeHandler=strArr},
+		sysdate)
 	</insert>
+
+	<resultMap id="memberMap" type="mem">
+		<result column="hobby" property="hobby" typeHandler="strArr" />
+	</resultMap>
+<!-- 멤버 맵으로 보내도 Member 타입으로 받을수있음 -->
+	<select id="LoginMember" parameterType="mem" resultMap="memberMap">
+		SELECT * FROM MEMBER WHERE USERID = #{userId}
+	</select>
+
+<!-- 업데이트 인서트 딜리트는 리턴타입 안적음 항상 인트형이니 -->
+	<update id="updateMember" parameterType="mem">
+		UPDATE MEMBER SET 
+		USERNAME=#{userName},
+		GENDER  =#{gender},
+		AGE  =#{age},
+		EMAIL=#{email},
+		PHONE   =#{phone},
+		ADDRESS=#{address},
+		HOBBY=#{hobby, typeHandler=strArr}
+		WHERE USERID=#{userId}
+	</update>
 
 </mapper>

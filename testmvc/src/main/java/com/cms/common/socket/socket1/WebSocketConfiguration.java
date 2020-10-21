@@ -5,13 +5,17 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import lombok.extern.java.Log;
+
 @Configuration
 @EnableWebSocket
+@Log
 public class WebSocketConfiguration implements WebSocketConfigurer {
 
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		// TODO Auto-generated method stub
+		log.info(" === registerWebSocketHandlers 웹소켓 핸들러 실행 == ");
 		registry.addHandler(new SocketHandler(), "/socketrtc").setAllowedOrigins("*");
 	}
 

@@ -58,6 +58,7 @@
 							</div>
 						</li>
 					</ul>
+					<c:if test="${loginMember == null }">
 					<button class="btn btn-outline-success my-2 my-sm-0"
 					type="button" data-toggle="modal" data-target="#loginModal">로그인</button>
 					&nbsp;&nbsp;
@@ -93,7 +94,12 @@
 							</div>						
 						</div>
 					</div>
-					
+					</c:if>
+					<c:if test="${loginMember != null }">
+					<span><a href="${path }/member/memberUpade.do">${loginMember.userName}</a>님, 안녕하세요</span>
+					&nbsp;
+					<button class="btn btn-outline-success" type="button" onclick="location.replace('${path}/member/memberLogout.do');">로그아웃</button>
+					</c:if>
 				</div>
 			</nav>
 		</header>

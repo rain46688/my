@@ -5,7 +5,7 @@
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <jsp:include page="/WEB-INF/views/common/header.jsp">
-	<jsp:param name="title" value="DEMO" />
+	<jsp:param name="title" value=" " />
 </jsp:include>
 
 <style>
@@ -20,8 +20,9 @@ div#demo-container {
 
 <section id="content">
 	<div id="demo-container">
-		<h3>파라미터 테스트</h3>
+		<h3>게시글 수정하기</h3>
 		<form id="devFrm">
+			<input type="hidden" class="form-control" id="devName" name="devNo" value="${param.dno }">
 			<div class="form-group row">
 				<label for="devName" class="col-sm-2 col-form-label">이름</label>
 				<div class="col-sm-10">
@@ -41,26 +42,24 @@ div#demo-container {
 				</div>
 			</div>
 			<div class="form-group row">
-			
 				<label class="col-sm-2 col-form-label">성별</label>
 				<div class="col-sm-10">
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="devGender" id="devGender0" value="M"> <label class="form-check-label" for="devGender0">남</label>
+						<input class="form-check-input" type="radio" name="devGender" id="devGender0" value="M"> <label class="form-check-label"
+							for="devGender0">남</label>
 					</div>
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="radio" name="devGender" id="devGender1" value="F"> <label class="form-check-label" for="devGender1">여</label>
+						<input class="form-check-input" type="radio" name="devGender" id="devGender1" value="F"> <label class="form-check-label"
+							for="devGender1">여</label>
 					</div>
 				</div>
-				
-				
 			</div>
 			<div class="form-group row">
 				<label class="col-sm-2 col-form-label">개발언어</label>
-				
 				<div class="col-sm-10">
-					
 					<div class="form-check form-check-inline">
-						<input class="form-check-input" type="checkbox" name="devLang" id="devLang0" value="Java"> <label class="form-check-label" for="devLang0">Java</label>
+						<input class="form-check-input" type="checkbox" name="devLang" id="devLang0" value="Java"> <label class="form-check-label"
+							for="devLang0">Java</label>
 					</div>
 					<div class="form-check form-check-inline">
 						<input class="form-check-input" type="checkbox" name="devLang" id="devLang1" value="C"> <label class="form-check-label" for="devLang1">C</label>
@@ -69,55 +68,26 @@ div#demo-container {
 						<input class="form-check-input" type="checkbox" name="devLang" id="devLang2" value="Javascript"> <label class="form-check-label"
 							for="devLang2">Javascript</label>
 					</div>
-				
 				</div>
-				
 			</div>
 		</form>
 		<!-- 버튼 -->
 		<div class="list-group">
-			<button type="button" onclick="demo('demo');" class="list-group-item list-group-item-action">HttpRequest로 파라미터처리</button>
+			<button type="button" onclick="updateDev();" class="list-group-item list-group-item-action">수정하기</button>
 		</div>
-
-		<div class="list-group">
-			<button type="button" onclick="demo('demo2');" class="list-group-item list-group-item-action">@RequestParam으로 파라미터처리</button>
-		</div>
-	<div class="list-group">
-			<button type="button" onclick="demo('demo3');" class="list-group-item list-group-item-action">Command로 파라미터처리</button>
-		</div>
-			<div class="list-group">
-			<button type="button" onclick="demo('demo4');" class="list-group-item list-group-item-action">Map으로 파라미터처리</button>
-		</div>
-		
-		<div class="list-group">
-			<button type="button" onclick="insertDev();" class="list-group-item list-group-item-action">DB에 저장하기</button>
-		</div>
-		
-		
-<!-- 
-	위에 넣어야 가운데 들어감!
-		 -->
-		</div>
-
+	</div>
 	</div>
 
-
-
 	</div>
-
-
 
 </section>
 <script>
 
-	function insertDev(){
-		$("#devFrm").attr({"action":"${path}/insertDev.do","method":"post"});
-		$("#devFrm").submit();
-	}
-	function demo(src) {
-		$("#devFrm").attr("action", "${path}/demo/" + src);
-		$("#devFrm").submit();
+function updateDev(){
+	$("#devFrm").attr({"action":"${path}/updateDev.do","method":"post"});
+	$("#devFrm").submit();
+}
 
-	}
 </script>
+
 <jsp:include page="/WEB-INF/views/common/footer.jsp" />

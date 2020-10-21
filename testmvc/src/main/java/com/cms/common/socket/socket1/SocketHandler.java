@@ -19,11 +19,13 @@ public class SocketHandler extends TextWebSocketHandler {
 	public void handleTextMessage(WebSocketSession session, TextMessage message)
 			throws InterruptedException, IOException {
 		log.info("session : " + session + " messsage : " + message);
+
 		for (WebSocketSession webSocketSession : sessions) {
 			if (webSocketSession.isOpen() && !session.getId().equals(webSocketSession.getId())) {
 				webSocketSession.sendMessage(message);
 			}
 		}
+
 	}
 
 	@Override

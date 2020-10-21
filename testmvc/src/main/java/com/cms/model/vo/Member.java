@@ -53,6 +53,5 @@ public class Member {
 	private int nbbangScore; // N빵 점수 (일정 이상 모을 수록 회원 등급 상승)
 	private String memberPicture; // 회원 프로필 사진 (파일 이름, 확장자명)
 	private boolean pwIsUuid; // 임시비번임을 알려주는 용도의 변수^!^
-	private String curRoomBid; // 민수꺼 지우지 말기^^
 
 }

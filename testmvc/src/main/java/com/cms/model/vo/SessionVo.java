@@ -2,12 +2,10 @@ package com.cms.model.vo;
 
 import javax.persistence.Entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 
-@Getter
-@Setter
+@Data
 @Entity
 @ToString
 public class SessionVo {
@@ -16,4 +14,5 @@ public class SessionVo {
 	private String memberPw;
 	private String nickname;
 	private int usid;
+	private String curRoomBid; // ¹Î¼ö²¨ Áö¿ìÁö ¸»±â^^
 }

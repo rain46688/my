@@ -2,6 +2,9 @@ package com.kh.spring;
 
 import java.util.Locale;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +40,14 @@ public class HomeController {
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
+	public String home(Locale locale, Model model, HttpServletResponse response) {
 		// 메인 페이지로 연결하는 서블릿
 
-		System.out.println("beanTest Test 출력 : " + test.getName());
-		System.out.println("beanTest Test2 출력 : " + test2.getName());
+		// System.out.println("beanTest Test 출력 : " + test.getName());
+		// System.out.println("beanTest Test2 출력 : " + test2.getName());
+		Cookie c = new Cookie("userId", "admin");
+		c.setMaxAge(60 * 60);
+		response.addCookie(c);
 
 		return "index";
 	}

@@ -4,5 +4,39 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- DB 연결을 위한 Class를 bean으로 등록하고 사용하기 -->
+	<!-- 1. DB연경 정보를 구성하는 DataSource객체 등록하기 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	<!-- 스프링이 생성해서 알아서 관리한다. 소멸할때 클래스안에 갖고잇는 메소드를 실행시켜주는 기능 꺼질때 클로즈해라 라는 의미 -->
+	<!-- DB에 대한 연결정보의 값을 각 필드에 대입해줌, Property setter를 이용해서 필드에 값을 넣어주는것!! -->
+	<!-- name에서 컨트롤 스페이스바 눌러보면 갖고있는 필드값이 쭉 나옴 존나 많다. -->
+	<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+	<property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+	<property name="username" value="spring" />
+	<property name="password" value="spring" />
+	</bean>
+	
+	<!-- 2. SqlSessionFactoryBean 객체를 bean으로 등록 -->
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<!-- DB연결 정보, Mapper파일의 위치정보를 등록함 , 결국 이넘이 오픈세션을 하는거라함 -->
+	<!-- value라고 나온건 전부 기본자료형임 알아서 변환되서 들어가는데 기본자료형이 아니고 그냥 객체면 value로 넣을수없음 ref 참조한다고 
+	적어줘야한다. -->
+	<property name="dataSource" ref="dataSource"></property>
+	<property name="configLocation" value="classpath:mybatis-config.xml"/>
+	<property name="mapperLocations" value="classpath*:mapper/**/*.xml"/>
+	</bean>
+	
+	<!-- sqlSessionFactoryBean을 이용할 SqlSessionTemplate객체를 bean으로 등록 -->
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+	<!-- 그냥 적으면 에러남 에러나는데 이유가 있다. -->
+	<!-- 디폴트 생성자가 없어서 에러가나는것이다!! -->
+		<constructor-arg index="0" ref="sqlSessionFactoryBean"/>
+	</bean>
+	
+	
+	
+	
+	
+	
 		
 </beans>

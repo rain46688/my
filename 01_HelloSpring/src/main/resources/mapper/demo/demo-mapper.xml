@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="dev">
+<!-- <insert id="insertDev" parameterType="com.kh.spring.demo.model.vo.Demo"> -->
+<insert id="insertDev" parameterType="demo">
+	INSERT INTO DEV VALUES(seq_dev_no.nextval,
+	#{devName},#{devAge},#{devEmail},#{devGender},
+<!-- 	<foreach collection="devLang" item="l" open="'" close="'"
+	separator=",">
+	${l}
+	</foreach> -->
+	<!-- #{devLang, typeHandler=com.kh.spring.common.StringArrayTypeHandler} -->
+		#{devLang, typeHandler=strArr}
+	)
+</insert>
+<!-- ${l}로 $넣어야  ' '가 안들어감! -->
+<!-- typehandler 재정의해서만들면 foreach할필요없음 -->
+
+<resultMap id="demoMap" type="demo">
+	<result column="devLang" property="devLang" typeHandler="strArr"/>
+</resultMap>
+
+<select id="selectDemoList" resultMap="demoMap">
+	SELECT * FROM DEV
+</select>
+
+<update id = "updateDev" parameterType="demo">
+	UPDATE DEV SET DEVNAME = #{devName}, DEVAGE = #{devAge}, DEVEMAIL = #{devEmail},  DEVGENDER=#{devGender}, DEVLANG=#{devLang, typeHandler=strArr} 
+	WHERE DEVNO = #{devNo}
+</update>
+<delete id="deleteDev" parameterType="String">
+	DELETE FROM DEV WHERE DEVNO = #{dno}
+</delete>
+
+</mapper>

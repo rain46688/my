@@ -12,7 +12,7 @@ public class WebSocketConfiguration implements WebSocketConfigurer {
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		// TODO Auto-generated method stub
-		registry.addHandler(new SocketHandler(), "/socket").setAllowedOrigins("*");
+		registry.addHandler(new SocketHandler(), "/socketrtc").setAllowedOrigins("*");
 	}
 
 }

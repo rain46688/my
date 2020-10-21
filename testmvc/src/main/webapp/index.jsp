@@ -24,6 +24,7 @@
 	<a href="${path}/loginPage">로그인 페이지</a>
 	<a href="${path}/joinPage">회원가입 페이지</a>
 	<a href="${path}/board?boardTitle=애완용품">게시판</a>
+	<a href="${path}/webrtc">소켓 테스트</a>
 
 </body>
 </html>

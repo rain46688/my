@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+<!-- 
+
+typealias 정도만 들어가는것 나머지는 root에서 했으니
+
+ -->
+ <typeAliases>
+ 		<typeAlias type="com.kh.spring.demo.model.vo.Demo" alias="demo"/>
+ 		<typeAlias type="com.kh.spring.common.StringArrayTypeHandler" alias="strArr"/>
+ </typeAliases>
+
+</configuration>

@@ -2,6 +2,7 @@ package com.cms.controller;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -419,10 +420,38 @@ public class TestController {
 	}
 
 	@RequestMapping(value = "/chat/chatRoom")
-	public ModelAndView webRtc() throws Exception {
+	public ModelAndView webRtc(String maxMems, String tradeStage, String writerUsid, String boardId, String boardTitle,
+			String memberPicture, HttpSession session) throws Exception {
 		log.info(" ===== webRtc 실행 ===== ");
-		ModelAndView mv = new ModelAndView("socket/socket3/socket");
+		log.info("maxMems : " + maxMems + " tradeStage : " + tradeStage + " writerUsid : " + writerUsid + " boardId : "
+				+ boardId + " boardTitle : " + boardTitle + " memberPicture : " + memberPicture);
+
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd a HH:mm");
+		java.util.Date time_ = new java.util.Date();
+		String time = format.format(time_);
+		System.out.println("time : " + time);
+		SessionVo m = (SessionVo) session.getAttribute("loginnedMember");
+		if (m != null && boardId != null)
+			m.setCurRoomBid(boardId);
+
+		ModelAndView mv = new ModelAndView("socket/socket4/chatRoom");
+		mv.addObject("maxMems", maxMems);
+		mv.addObject("tradeStage", tradeStage);
+		mv.addObject("writerUsid", writerUsid);
+		mv.addObject("boardId", boardId);
+		mv.addObject("x", 600);
+		mv.addObject("y", 800);
+		mv.addObject("m", m);
+		mv.addObject("memberPicture", memberPicture);
+		mv.addObject("time", time);
+		mv.addObject("boardTitle", boardTitle);
 		return mv;
+	}
+
+	@RequestMapping("/webrtc")
+	public String webrtcTest() {
+		log.info("webrtcTest 실행");
+		return "socket/socket1/webRtc";
 	}
 
 }

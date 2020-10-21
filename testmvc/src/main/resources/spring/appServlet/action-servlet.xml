@@ -36,6 +36,7 @@
 		<websocket:sockjs />
 	</websocket:handlers>
 
-	<beans:bean id="testHandler" class="com.cms.common.socket.socket3.MyHandler"></beans:bean>
+<!-- 	<beans:bean id="testHandler" class="com.cms.common.socket.socket4.SockjsHandler"></beans:bean> -->
+	<beans:bean id="testHandler" class="com.cms.common.socket.socket1.SocketHandler"></beans:bean>
 
 </beans:beans>

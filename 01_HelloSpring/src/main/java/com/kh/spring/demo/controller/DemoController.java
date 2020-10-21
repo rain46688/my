@@ -1,6 +1,8 @@
 package com.kh.spring.demo.controller;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -8,10 +10,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kh.spring.demo.model.service.DemoService;
 import com.kh.spring.demo.model.vo.Demo;
@@ -22,7 +28,67 @@ import com.kh.spring.demo.model.vo.Demo;
 public class DemoController {
 
 	@Autowired
+	@Qualifier("service")
 	private DemoService service;
+
+	@RequestMapping("/demo/demoList.do")
+	public String selectDemo(Model m) {
+		List<Demo> list = service.selectDemoList();
+		m.addAttribute("list", list);
+		return "demo/demoList";
+	}
+
+	@RequestMapping("/insertDev.do")
+	public String insertDev(Demo demo) {
+
+		int result = service.insertDev(demo);
+		System.out.println(result);
+		// return "index";
+		// return "redirect:WEB-INF/index.jsp";//이렇게 쓰면 안됨!! 다이렉트로 JSP에 접근 못한다.
+		return "redirect:/"; // 이런식으로 서블릿 요청으로 돌아가야된다.
+		// 1.msg.jsp를 이용하는 방법!
+		// 2. sendRedirect이용하는 방법! -> String 리턴값을 redirect:페이지명.jsp
+		// 리졸버한테 가지않고 위 페이지명으로 주소값을 바꿔버림
+	}
+
+	@RequestMapping(value = "/updateDev.do", method = RequestMethod.GET)
+	public String updateDevEnd(Demo demo, Model m) {
+		String loc = "";
+		String msg = "";
+		System.out.println("GET");
+		System.out.println("demo : " + demo);
+
+		for (String s : demo.getDevLang()) {
+			System.out.println(s + " ");
+		}
+
+		try {
+			int result = service.updateDev(demo);
+			m.addAttribute("loc", "/demo/demoList.do");
+			m.addAttribute("msg", "수정 성공했습니다.");
+			return "common/msg";
+		} catch (Exception e) {
+			m.addAttribute("loc", "/demo/demoList.do");
+			m.addAttribute("msg", "수정 실패했습니다.");
+			return "common/msg";
+		}
+	}
+
+	@RequestMapping("/deleteDev.do")
+	public String deleteDev(String dno, Model m) {
+		String loc = "";
+		String msg = "";
+		try {
+			int result = service.deleteDev(dno);
+			m.addAttribute("loc", "/demo/demoList.do");
+			m.addAttribute("msg", "삭제 성공하였습니다.");
+			return "common/msg";
+		} catch (Exception e) {
+			m.addAttribute("loc", "/demo/demoList.do");
+			m.addAttribute("msg", "삭제 실패하였습니다.");
+			return "common/msg";
+		}
+	}
 
 //	@Autowired
 //	private DemoServiceImpl service2;
@@ -90,10 +156,11 @@ public class DemoController {
 		System.out.println();
 
 		// 세션 생성
-		Demo demo = Demo.builder().devName(devName).devAge(devAge).devEmail(devEmail).devGender(devGender)
-				.devLang(devLang).build();
+		// Demo demo =
+		// Demo.builder().devName(devName).devAge(devAge).devEmail(devEmail).devGender(devGender)
+		// .devLang(devLang).build();
 
-//		Demo demo = new Demo(0, devName, devAge, devEmail, devGender, devLang);
+		Demo demo = new Demo(0, devName, devAge, devEmail, devGender, devLang);
 
 		request.setAttribute("demo", demo);
 		session.setAttribute("userId", devName);
@@ -122,17 +189,53 @@ public class DemoController {
 		// Model객체를 이용하여 데이터를 보관할 수 있음 -> scope 영역은 rqquest와 동일
 		// Model객체를 활용하는 방법은 request와 비슷
 		// addAttribute(String,Object)
-		model.addAttribute("demo", Demo.builder().devName(devName).devAge(devAge).devEmail(devEmail)
-				.devGender(devGender).devLang(devLang).build());
+		// model.addAttribute("demo",
+		// Demo.builder().devName(devName).devAge(devAge).devEmail(devEmail)
+		// .devGender(devGender).devLang(devLang).build());
+		model.addAttribute("demo", new Demo(0, devName, devAge, devEmail, devGender, devLang));
 		System.out.println(devName + " " + devAge + " " + devEmail + " " + devGender + " " + devLang);
 		return "demo/demoResult";
 	}
 
 	// Command로 데이터 처리하기 -> 바로 Vo객체로 데이터 받기
+	// name값 == setter의 이름과동일하면 대입을 해줌
+	// Data 타입에 유의해야함. 4000 error
 	@RequestMapping("/demo/demo3")
 	public String demo3(Demo demo, Model m) {
-		System.out.println(demo);
+
+//		System.out.println(demo);
+
 		return "demo/demoResult";
+	}
+
+	// Map 객체로 클라이언트가 전달한 값 받아오기 -> @RequestParam Map map으로 선언
+	// Map에 key값은 자동으로 input태그의 name값으로 설정된다.
+	@RequestMapping("/demo/demo4")
+	public String demo4(@RequestParam Map<String, Object> param, String[] devLang, Model m) {
+//		for (String p : param.keySet()) {
+//			System.out.println(param.get(p));
+//		}
+		System.out.println(param);
+		for (String l : devLang) {
+			System.out.println(l);
+		}
+		return "demo/demoResult";
+	}
+
+	// 기타정보가져오기
+	// @RequestHeader, @CookieValue
+	@RequestMapping("/demo/demo.do")
+	public String demo(@CookieValue(value = "userId", required = false) String userId,
+			@CookieValue(value = "email", defaultValue = "prince0324") String email,
+			@RequestHeader(value = "User-agent") String userAgent, @RequestHeader(value = "Referer") String prev) {
+		// 기본값을 주거나 required를 false로 줘야 에러를 피할수있따.
+		System.out.println("쿠키값 확인 : " + userId);
+		System.out.println("쿠키값 확인 : " + email);
+		System.out.println("request헤더 확인 userAgent : " + userAgent);
+		System.out.println("request헤더 확인 Referer : " + prev);
+
+		System.out.println("mappingㅁ소드 호출");
+		return "demo/demo";
 	}
 
 }

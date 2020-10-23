@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd">
+
+	<!-- 
+	
+	선언적방식으로 aop 적용하기 
+	aop:config 태그를 이용함
+	aop:apect태그 class지정
+	aop:pintcut 패턴 지정 expression = 메소드에 대한 패턴 지정
+	aop:advice(bofore,after,around) method
+	
+	-->
+	
+<!-- 	<bean id="loggerAspectBean" class="com.kh.spring.common.aop.LoggerAspect"/>
+	<bean id="insertCheck" class="com.kh.spring.common.aop.CheckInsertAspect"/>
+	<aop:config>
+		<aop:aspect id="loggerAspect" ref="loggerAspectBean">
+		실행 시점 전체 메소드!
+		"execution(* com.kh.spring..login*(..))" 넣을때 띄어쓰기 조심하기!! 띄어쓰기로 에러남!!
+			<aop:pointcut expression="execution(* com.kh.spring.memo..memo*(..))" id="pc"/>메소드를 적어줘야됨! 
+			<aop:before method="before" pointcut-ref="pc"/>pc는 위의 포인트컷 이름임 id=pc인거
+		</aop:aspect>
+		
+		<aop:aspect id="check" ref="insertCheck">
+			<aop:pointcut expression="execution(* com.kh.spring..*dao..insert*(..))" id="pcck"/>
+			<aop:after method="after" pointcut-ref="pcck"/>
+		</aop:aspect>
+	</aop:config> -->
+
+
+<!-- autoproxy가 있어야 aop를 어노테이션으로 쓸수있따!!! -->
+<aop:aspectj-autoproxy/>
+
+</beans>

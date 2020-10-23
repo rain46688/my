@@ -41,7 +41,10 @@
 							<a class="nav-link" href="${path }">home</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="${path }">게시판</a>
+							<a class="nav-link" href="${path }/board/boardList.do">게시판</a>
+						</li>
+								<li class="nav-item">
+							<a class="nav-link" href="${path }/memo/memo.do">메모</a>
 						</li>
 						<!-- 추가메뉴구성하기 -->
 						<%-- <li class="nav-item">

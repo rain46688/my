@@ -191,6 +191,16 @@
 		</dependency>
 
 
+		<!-- weaveraop설정할때 꼭 넣어야됨!! 버전은 위의 aspectj 버전과 동일하게 -->
+		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${org.aspectj-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+
 
 		<!-- Test -->
 		<dependency>

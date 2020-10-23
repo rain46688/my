@@ -4,48 +4,33 @@
 <head>
 <meta charset="UTF-8">
 <title>RTC 삽질</title>
-<!--Bootstrap only for styling-->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-<!--Bootstrap only for styling-->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <style>
 .container {
-/* 	background: rgb(200, 200, 200); */
-	border: 1px solid black; 
+	border: 1px solid black;
+	border-radius:8px;
 	margin: 50px auto;
 	max-width: 80%;
 	text-align: center;
 	padding: 2%;
 }
 
-button {
-	margin: 1em;
-}
-
-input {
-	margin-top: 1em;
-}
-
-.footer {
-	text-align: center;
-	padding: 2%;
-	position: absolute;
-	bottom: 0;
-	width: 100%;
-}
-
 video {
 	width: 40%;
-	height: 300px;
-	border: 1px solid black;
+	height: 50%;
 	float: center;
 }
 
 #text {
 	margin-top: 2em;
-	/* background: rgb(50, 50, 50); */
 	width: 100%;
 	height: 200px;
 	color: white;
@@ -55,21 +40,26 @@ video {
 </style>
 
 <body>
-	<div class="container">
-		<video id="video1" autoplay playsinline constrols preload="metadata"></video>
-		<video id="video2" autoplay playsinline constrols preload="metadata"></video>
-		<br>
-		<button type="button" class="btn btn-primary" onclick='connection();'>연결</button>
-		<!-- <input id="messageInput" type="text" class="form-control" placeholder="message"> -->
-		<button type="button" class="btn btn-primary" onclick='hangup();'>연결 끊기</button>
-		<!-- <div id="text"></div> -->
-	</div>
+	<section>
+		<section class="container">
+			<h3>ME</h3>
+			<video id="video1" autoplay playsinline controls preload="metadata"></video>
+			<h3>Another</h3>
+			<video id="video2" autoplay playsinline controls preload="metadata"></video>
+			<br>
+			<br>
+			<button type="button" class="btn btn-outline-success my-2 my-sm-0" onclick='connection();'>연결</button>
+			<button type="button" class="btn btn-outline-success my-2 my-sm-0" onclick='exit();'>연결 끊기</button>
+		</section>
 	<script>
 	
 	'use strict';
+
+	//---------------------------- signaling 서버 -------------------------------------
 	
-	//signaling 서버
-	var conn = new WebSocket('ws://localhost:9090/socketrtc');
+/* 	var conn = new WebSocket('ws://192.168.219.100:9090/socketrtc'); */
+
+const conn = new WebSocket('wss://192.168.219.100:8443/socketrtc');
 
 	conn.onopen = function() {
 		console.log("onopen => signaling server 연결");
@@ -78,11 +68,10 @@ video {
 	conn.onmessage = function(msg) {
 		console.log("onmessage => 메세지 출력 : "+msg);
 		let content = JSON.parse(msg.data);
-		console.log("메세지 타입 : "+content);
-		console.log("컨텐드 타입 : "+content.type);
-		if(content.type === 'gotmedia'){
-			console.log(" === 분기 gotmedia === ");
-			console.log("방을 처음 만든사람")
+		console.log("content.type : "+content.type);
+		if(content.type === 'host'){
+			console.log(" === 분기 host === ");
+			console.log("방을 처음 만든사람");
 			start();
 		}else if(content.type  === 'offer'){
 			console.log(" === 분기 offer === ");
@@ -113,11 +102,10 @@ video {
 	};
 
 	function sendMessage(message) {
-		console.log("send : "+message);
 		conn.send(JSON.stringify(message));
-	}
+	};
 	
-	//-------------------------------------------------------------
+	//---------------------------- 설정 -------------------------------------
 	
 	//마이크 비디오 설정
 	const video1 = document.getElementById('video1');
@@ -143,10 +131,15 @@ video {
 				  ]
 		};
 
+	
+	//---------------------------- 비디오 -------------------------------------
+	
+	
 	const constraints = {
-		    video: true,
+			  video: {width: {exact: 1280}, height: {exact: 720}},
 		    audio : true
 		};
+	
 	
 	navigator.mediaDevices.getUserMedia(constraints)
 	.then(gotStream)
@@ -157,17 +150,18 @@ video {
 	
 	function gotStream(stream){
 			//스트림 요청 성공
-			 console.log('스트림 요청 성공');
+			 console.log('stream 함수 => 스트림 요청 성공');
 			localStream = stream;
 			video1.srcObject = stream;
-			sendMessage({type:'gotmedia'});
-			//sendMessage('gotmedia');
+			sendMessage({type:'host'});
 			if(isInitiator){
-				console.log("gotStream 부분 start 실행");
+				console.log("gotStream 함수 => start 실행");
 				start();
 			}
-		
 	};
+	
+	
+	//---------------------------- P2P 연결 로직 -------------------------------------
 	
 	function start(){
 		console.log("start 함수 실행 : "+!isStarted+", "+(typeof localStream !== 'undefined')+", "+(isChannelReady));
@@ -183,14 +177,14 @@ video {
 				doCall();
 			}
 		}
-		
 	};
 	
 	function createPeerConnection(){
 		console.log("createPeerConnection 실행");
 		try{
 			//configuration에는 STUN & TURN 서버가 있음
-			//통신이 중단됬을때 사용되는 임시서버라 개념이라함.
+			//STUN : Session Traversal Utilities for NAT의 약자로 자신의 공인 아이피를 알아오기위해 STUN 서버에 요청하고 STUN 서버는 공인 IP주소를 응답함.
+			//TRUN : Traversal Using Relays around NAT 의 약자 NAT 또는 방화벽에서 보조하는 프로토콜. 클라이언트는 직접 서버와 통신 하지않고 TURN 서버를 경유함.
 			pc = new RTCPeerConnection(configuration);
 			pc.onicecandidate = handleIceCandidate;
 			pc.onaddstream = handleRemoteStreamAdded;
@@ -225,9 +219,11 @@ video {
 		};
 	
 	//핸들러 후보 상대방 탐색
+	//ICE : Interactive Connectivity Establishment의 약자로 두 단말이 서로 통신할수 있는 최적의 경로를 찾을수있도록 도와주는 프레임워크임.
 	function handleIceCandidate(event) {
 		  console.log('icecandidate 실행 event : '+ event);
 		  if (event.candidate) {
+			  console.log('icecandidate 응답 보내기 ');
 		    sendMessage({
 		      type: 'candidate',
 		      label: event.candidate.sdpMLineIndex,
@@ -245,7 +241,7 @@ video {
 		
 		function setLocalAndSendMessage(sessionDescription) {
 			  pc.setLocalDescription(sessionDescription);
-			console.log("setLocalAndSendMessage 실행 : "+sessionDescription);
+			console.log("setLocalAndSendMessage 응답 보내기 : "+sessionDescription);
 			  sendMessage(sessionDescription);
 			};
 		
@@ -261,8 +257,10 @@ video {
 			}
 					
 			//연결 끊기
-			function hangup() {
+			function exit() {
+				/* conn.close(); */
 				  stop();
+				  console.log('연결 종료 응답 보내기 ');
 				  sendMessage({type:'bye'});
 				};
 		
@@ -273,7 +271,7 @@ video {
 				  pc = null;
 				};
 				
-		//-------------------------------------------------------------
+	//---------------------------- 에러 -------------------------------------
 
 		function handleCreateOfferError(event) {
 					console.log('Offer부분 생성 에러 error: ', event);
@@ -282,9 +280,13 @@ video {
 		function onCreateSessionDescriptionError(error) {
 				trace('onCreateSessionDescriptionError 에러 : ' + error.toString());
 			}
-				
-				
-				
+		
+	/* 	window.onunload = window.onbeforeunload = (function(){myFunction()})
+		
+		function myFunction(){
+			exit();
+		};
+		 */
 		
 	</script>
 </body>

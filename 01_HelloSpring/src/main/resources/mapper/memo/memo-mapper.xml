@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="memo">
+
+	<insert id="memoInsert" parameterType="map">
+		INSERT INTO MEMO VALUES(SEQ_MEMONO.NEXTVAL, #{memo}, #{password}, DEFAULT)
+	</insert>
+
+	<select id="memoList" resultType="map">
+		SELECT * FROM MEMO ORDER BY MEMODATE DESC
+	</select>
+
+	<select id="getMemoCount" resultType="_int">
+		SELECT COUNT(*) FROM MEMO
+	</select>
+
+	<delete id="memodel" parameterType="_int">
+		DELETE FROM MEMO WHERE MEMONO = #{no}
+	</delete>
+	
+	<insert id="insertCheck" parameterType="map">
+		INSERT INTO INSERTCHECK VALUES(SEQ_INSERCK.NEXTVAL,#{uri},#{day})
+	</insert>
+</mapper>

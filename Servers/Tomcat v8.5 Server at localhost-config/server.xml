@@ -76,15 +76,19 @@
          Either JSSE or OpenSSL style configuration may be used regardless of
          the SSLImplementation selected. JSSE style configuration is used below.
     -->
-    <!--
-    <Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
-               maxThreads="150" SSLEnabled="true">
-        <SSLHostConfig>
+
+    <Connector SSLEnabled="true" maxThreads="150" port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol">
+<!--         <SSLHostConfig>
             <Certificate certificateKeystoreFile="conf/localhost-rsa.jks"
                          type="RSA" />
+        </SSLHostConfig> -->
+        
+        		<SSLHostConfig>
+            <Certificate certificateKeystoreFile="E:\apache-tomcat-8.5.57\conf\key\tomcat.keystore" certificateKeystorePassword="cms03080" certificateKeystoreType="JKS"/>
         </SSLHostConfig>
+        
     </Connector>
-    -->
+
     <!-- Define an SSL/TLS HTTP/1.1 Connector on port 8443 with HTTP/2
          This connector uses the APR/native implementation which always uses
          OpenSSL for TLS.

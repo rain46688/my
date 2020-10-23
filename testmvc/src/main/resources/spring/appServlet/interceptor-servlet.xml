@@ -10,16 +10,12 @@
 			<mapping path="/**" />
 			<beans:bean id="commonInterceptor" class="com.cms.common.interceptor.CommonInterceptor" />
 		</interceptor>
-	</interceptors>
-
-	<interceptors>
-		<interceptor>
-			<mapping path="/noticeTest" />
-			<mapping path="/boardPage" />
-			<beans:bean id="loginInterceptor" class="com.cms.common.interceptor.LoginInterceptor" />
+			<interceptor>
+				<mapping path="/noticeTest" />
+				<mapping path="/boardPage" />
+				<beans:bean id="loginInterceptor" class="com.cms.common.interceptor.LoginInterceptor" />
 		</interceptor>
 	</interceptors>
-
 
 <beans:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
 

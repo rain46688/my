@@ -50,6 +50,18 @@ public class HomeController {
 		logger.info("beanTest test2 출력 : " + test2.getName());
 		logger.warn("warn메소드 이용출력하기");
 		logger.error("error메소드 이용출력하기");
+
+		// 예외가 발생하면 예외 메세지 전부 텍스트 파일에 들어감
+		// C:\Users\rain46688\springlog
+
+//		try {
+//			String[] a = null;
+//			a[0] = "유병승";
+//		} catch (NullPointerException e) {
+//			logger.error("널포인트 에러", e);
+//			logger.error("nullpointer : " + e.getMessage());
+//		}
+
 		Cookie c = new Cookie("userId", "admin");
 		c.setMaxAge(60 * 60);
 		response.addCookie(c);

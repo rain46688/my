@@ -2,6 +2,8 @@ package com.kh.spring.member.contoller;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,8 @@ import com.kh.spring.member.model.vo.Member;
 //하나뿐 아니라 여러개 넣을수있음
 @SessionAttributes("loginMember")
 public class MemberController {
+
+	private Logger log = LoggerFactory.getLogger(MemberController.class);
 
 	@Autowired
 	private MemberService service;
@@ -140,5 +144,12 @@ public class MemberController {
 		m.addAttribute("loc", loc);
 
 		return "common/msg";
+	}
+
+	@RequestMapping(value = "/msg")
+	public ModelAndView error() throws Exception {
+		log.info(" ===== error 실행 ===== ");
+		ModelAndView mv = new ModelAndView("/common/msg");
+		return mv;
 	}
 }

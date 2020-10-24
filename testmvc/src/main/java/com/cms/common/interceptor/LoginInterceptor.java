@@ -17,7 +17,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
 			throws Exception {
 		log.info(" ===== LoginInterceptor 거쳐감 ===== ");
 		HttpSession session = request.getSession();
-		if (session.getAttribute("loginnedMember") == null) {
+		if (session.getAttribute("loginnedMember") == null && session.getAttribute("gname") == null) {
 			log.info(" ===== 해당 페이지는 로그인 없이 접근할수없음 ===== ");
 			request.setAttribute("msg", "로그인을 해주세요");
 			request.setAttribute("loc", "/loginPage");

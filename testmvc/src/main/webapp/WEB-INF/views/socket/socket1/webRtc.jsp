@@ -59,7 +59,7 @@ video {
 	
 /* 	var conn = new WebSocket('ws://192.168.219.100:9090/socketrtc'); */
 
-const conn = new WebSocket('wss://192.168.219.100:8443/socketrtc');
+const conn = new WebSocket('wss://192.168.219.105:8443/socketrtc');
 
 	conn.onopen = function() {
 		console.log("onopen => signaling server 연결");
@@ -184,7 +184,7 @@ const conn = new WebSocket('wss://192.168.219.100:8443/socketrtc');
 		try{
 			//configuration에는 STUN & TURN 서버가 있음
 			//STUN : Session Traversal Utilities for NAT의 약자로 자신의 공인 아이피를 알아오기위해 STUN 서버에 요청하고 STUN 서버는 공인 IP주소를 응답함.
-			//TRUN : Traversal Using Relays around NAT 의 약자 NAT 또는 방화벽에서 보조하는 프로토콜. 클라이언트는 직접 서버와 통신 하지않고 TURN 서버를 경유함.
+			//TURN : Traversal Using Relays around NAT 의 약자 NAT 또는 방화벽에서 보조하는 프로토콜. 클라이언트는 직접 서버와 통신 하지않고 TURN 서버를 경유함.
 			pc = new RTCPeerConnection(configuration);
 			pc.onicecandidate = handleIceCandidate;
 			pc.onaddstream = handleRemoteStreamAdded;

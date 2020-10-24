@@ -10,18 +10,24 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="google-signin-client_id" content="109451624786-3quf002c334a2alg5u0cu3prcu5593hh.apps.googleusercontent.com">
 <title>nbbang</title>
-
 <link href="${path}/resources/css/bootstrap.min.css" rel="stylesheet">
 <script src="${path}/resources/js/jquery-3.5.1.min.js"></script>
 <link href="${path}/resources/css/header.css" rel="stylesheet">
 <link rel="icon" type="image/png" href="${path}/resources/images/logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
 <style>
 #error {
 	font-size: 15px;
 	font-weifht: bold;
 	color: red;
+}
+
+.g-signin2 {
+	display: inline-block;
+	margin: 0px auto;
 }
 </style>
 
@@ -45,8 +51,11 @@
 							<form:checkbox path="rememberMe" id="saveId" />
 							아이디 저장하기<br> <br>
 							<form:errors path="memberPw" id="error" />
-							<br> 
+							<br>
 							<button type="submit" onclick="return fn_login_validate()">로그인</button>
+							<br> <br>
+							<div class="g-signin2" data-onsuccess="onSignIn"></div>
+							<br> <br>
 						</fieldset>
 						<div id="loginSearchField">
 							<span id="findId" class="loginSearch" onclick="fn_findId();">아이디찾기</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span id="findPw" class="loginSearch"
@@ -58,5 +67,39 @@
 			</div>
 		</div>
 	</section>
+
+
+	<script>
+	
+		function onSignIn(googleUser) {
+			var profile = googleUser.getBasicProfile();
+			console.log('ID: ' + profile.getId());
+			console.log('Name: ' + profile.getName());
+			console.log('Image URL: ' + profile.getImageUrl());
+			console.log('Email: ' + profile.getEmail());.
+			var id_token = googleUser.getAuthResponse().id_token;
+			console.log("ID Token: " + id_token);
+
+			if (name != null) {
+				var form = document.createElement("form");
+				form.setAttribute("charset", "UTF-8");
+				form.setAttribute("method", "Post");
+				form.setAttribute("action", "/glogin");
+				var hiddenField = document.createElement("input");
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", "gname");
+				hiddenField.setAttribute("value", profile.getName());
+				form.appendChild(hiddenField);
+				var hiddenField = document.createElement("input");
+				hiddenField.setAttribute("type", "hidden");
+				hiddenField.setAttribute("name", "gprofile");
+				hiddenField.setAttribute("value", profile.getImageUrl());
+				form.appendChild(hiddenField);
+				document.body.appendChild(form);
+				form.submit();
+			}
+		}
+		
+	</script>
 
 	<%@ include file="/WEB-INF/views/common/footer.jsp"%>

@@ -9,6 +9,8 @@
 <head>
 <link rel="icon" type="image/png" href="${path}/resources/images/logo.png">
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-signin-client_id" content="109451624786-3quf002c334a2alg5u0cu3prcu5593hh.apps.googleusercontent.com">
 <title>nbbang</title>
 <script src="${path}/resources/js/jquery-3.5.1.min.js"></script>
 <link href="${path}/resources/css/bootstrap.min.css" rel="stylesheet">
@@ -18,6 +20,16 @@
 <link href="${path}/resources/css/footer.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
 </head>
+
+<style>
+#profile {
+	witdh: 60px;
+	height: 60px;
+	border-radius: 70%;
+	border: 2px solid black;
+	margin-right: 5px;
+}
+</style>
 
 <body>
 	<div id="container">
@@ -35,29 +47,34 @@
 				</div>
 				<div id="topBtn">
 
-					<c:if test="${(empty loginnedMember.memberId)}">
+					<c:if test="${(empty loginnedMember.memberId) && (empty gprofile)}">
 						<button type="button" class="btn btn-outline-primary" style="font-size: 20px;" onclick="location.href='${path}/loginPage'">로그인</button>
 						<button type="button" class="btn btn-outline-primary" style="font-size: 20px;" onclick="location.href='${path}/joinPage">회원가입</button>
 						<button type="button" class="btn btn-outline-primary" style="font-size: 20px;" onclick="location.href='${path}/member/myPage'">마이페이지</button>
 					</c:if>
 
-					<c:if test="${!(empty loginnedMember.memberId)}">
-						<button type="button" class="btn btn-outline-primary" style="font-size: 20px;"
-							onclick="location.href='${path}/logout'">로그아웃</button>
+					<c:if test="${!(empty gprofile)}">
+						<img id="profile" alt="구글 프로필" src="${gprofile}">
+					</c:if>
+
+					<c:if test="${!(empty loginnedMember.memberId) || !(empty gprofile)}">
+						<c:if test="${!(empty gprofile)}">
+							<button type="button" class="btn btn-outline-primary" style="font-size: 20px;" onclick="signOut();">로그아웃</button>
+						</c:if>
+						<c:if test="${(empty gprofile)}">
+							<button type="button" class="btn btn-outline-primary" style="font-size: 20px;" onclick="location.href='${path}/logout'">로그아웃</button>
+						</c:if>
 						<c:if test="${loginnedMember.memberId == 'admin'}">
-							<button type="button" class="btn btn-outline-primary" style="font-size: 20px;"
-								onclick="location.href='${path}/customer/customerQnA'">고객센터</button>
+							<button type="button" class="btn btn-outline-primary" style="font-size: 20px;" onclick="location.href='${path}/customer/customerQnA'">고객센터</button>
 						</c:if>
 						<c:if test="${loginnedMember.memberId != 'admin'}">
-							<button type="button" class="btn btn-outline-primary" style="font-size: 20px;"
-								onclick="location.href='${path}/notice/noticeList'">고객센터</button>
+							<button type="button" class="btn btn-outline-primary" style="font-size: 20px;" onclick="location.href='${path}/notice/noticeList'">고객센터</button>
 						</c:if>
 					</c:if>
 
 					<c:if test="${!(empty loginnedMember.memberId)}">
 						<c:if test="${loginnedMember.memberId == 'admin'}">
-							<button type="button" class="btn btn-outline-primary" style="font-size: 20px;"
-								onclick="location.href='${path}/admin/adminPage?usid='">관리자페이지</button>
+							<button type="button" class="btn btn-outline-primary" style="font-size: 20px;" onclick="location.href='${path}/admin/adminPage?usid='">관리자페이지</button>
 						</c:if>
 						<c:if test="${loginnedMember.memberId != 'admin'}">
 							<button type="button" class="btn btn-outline-primary" style="font-size: 20px;" onclick="location.href='${path}/member/myPage?usid=1">마이페이지</button>
@@ -97,4 +114,20 @@
 				location.assign("${path}/boListSearch?keyword="+keyword +"&category="+category);
 			}
 		}
+		
+		function signOut() {
+			var auth2 = gapi.auth2.getAuthInstance();
+			auth2.signOut().then(function() {
+				console.log('User signed out.');
+				location.replace('${path}/glogout');
+			});
+			auth2.disconnect();
+		};
+
+		function onLoad() {
+			gapi.load('auth2', function() {
+				gapi.auth2.init();
+			});
+		};
 	</script>
+		<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>

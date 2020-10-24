@@ -52,7 +52,7 @@ import lombok.extern.java.Log;
  */
 @Controller
 @Log
-@SessionAttributes("loginnedMember") // 세션 처리
+@SessionAttributes(value = { "loginnedMember", "gname", "gprofile" }) // 세션 처리
 public class TestController {
 
 	private final int noticeNumPerPage = 5;
@@ -157,7 +157,10 @@ public class TestController {
 		if (!status.isComplete()) {
 			status.setComplete();
 		}
-		ModelAndView mv = new ModelAndView("../../index");
+		ModelAndView mv = new ModelAndView("/common/msg");
+		mv.addObject("loc", "/");
+		mv.addObject("msg", "로그아웃 되었습니다.");
+		log.info(" ===== 로그아웃 성공 로그 ===== ");
 		return mv;
 	}
 
@@ -459,6 +462,33 @@ public class TestController {
 	public String webrtcTest() {
 		log.info("webrtcTest 실행");
 		return "socket/socket1/webRtc";
+	}
+
+	@RequestMapping("/glogin")
+	public String googleLogin(String gname, String gprofile, HttpSession session) {
+		log.info("googleLogin 실행");
+
+		log.info("gname : " + gname);
+		log.info("gprofile : " + gprofile);
+
+		session.setAttribute("gprofile", gprofile);
+		session.setAttribute("gname", gname);
+
+		return "../../index";
+	}
+
+	@RequestMapping("/glogout")
+	public ModelAndView googleLogout(SessionStatus status) {
+		log.info("googleLogout 실행");
+		if (!status.isComplete()) {
+			status.setComplete();
+		}
+
+		ModelAndView mv = new ModelAndView("/common/msg");
+		mv.addObject("loc", "/");
+		mv.addObject("msg", "로그아웃 되었습니다.");
+		log.info(" ===== 구글 로그아웃 성공 로그 ===== ");
+		return mv;
 	}
 
 }

@@ -44,7 +44,6 @@
 	<!-- 매핑 : 주소값과 연결한다는 의미 -->
 	<beans:bean id="test" class="com.kh.spring.common.interceptor.LoggerInterceptor"/>
 	<interceptors>
-	
 	<!-- 	<interceptor>
 			<mapping path="/**"/>
 			<mapping path="/**"/> 이렇게 전체로 해놓으면 css나js 파일 받아올때 에러가 날수도있다함!!
@@ -60,9 +59,16 @@
 		</interceptor> -->
 		
 			<interceptor>
-			<mapping path="/demo/*"/>
+			<mapping path="/*/*.do"/>
 			<beans:bean class="com.kh.spring.common.interceptor.LoginCheckInterceptor"/>
 		</interceptor>
 	</interceptors>	
+	
+	<!-- 파일 업로드  처리를 위한 resolver 객체를 springbean으로 등록하기 -->
+	<beans:bean id="multipartResolver"
+	class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<!-- 최대 업로드 사이즈를 무조건 정해줘야된다! 10485760(1024*1024*10)는 10메가다 -->
+	<beans:property name="maxUploadSize" value="10485760"></beans:property>
+	</beans:bean>
 	
 </beans:beans>

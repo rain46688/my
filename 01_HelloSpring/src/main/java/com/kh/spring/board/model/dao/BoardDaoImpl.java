@@ -7,6 +7,12 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.kh.spring.board.model.vo.Attachment;
+import com.kh.spring.board.model.vo.Board;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Repository
 public class BoardDaoImpl implements BoardDao {
 
@@ -23,6 +29,19 @@ public class BoardDaoImpl implements BoardDao {
 	public int boardCount(SqlSession session) {
 		// TODO Auto-generated method stub
 		return session.selectOne("board.boardCount");
+	}
+
+	@Override
+	public int insertBoard(SqlSession session, Board board) {
+		log.debug(" ========== insertBoard dao =========");
+		// TODO Auto-generated method stub
+		return session.insert("board.insertBoard", board);
+	}
+
+	@Override
+	public int insertAttachment(SqlSession session, Attachment file) {
+		// TODO Auto-generated method stub
+		return session.insert("board.insertAttachment", file);
 	}
 
 }

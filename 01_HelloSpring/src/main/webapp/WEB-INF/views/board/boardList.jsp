@@ -7,10 +7,13 @@
 <jsp:include page="/WEB-INF/views/common/header.jsp">
 	<jsp:param name="title" value=" " />
 </jsp:include>
+<style>
 
+    button#btn-add{float:right; margin:0 0 15px;}
+</style>
 <section id="board-container" class="container">
 	<p>총 ${totalCount }건의 게시물이 있습니다.</p>
-
+	<button type="button" value="글쓰기" id="btn-add" class="btn btn-outline-success" onclick="location.href='${path}/board/boardForm.do'" >글쓰기</button>
 	<table id="tbl-board" class="table table-striped table-hover">
 		<tr>
 			<th>번호</th>
@@ -26,9 +29,9 @@
 				<td><c:out value="${m.BOARDTITLE }" /></td>
 				<td><c:out value="${m.BOARDWRITER }" /></td>
 				<td><c:out value="${m.BOARDDATE }" /></td>
-				<td><c:if test="${empty (m.ATTACHMENTNO) }">
+				<td><c:if test="${empty (m.FILECOUNT)}">
 							&nbsp;없음
-						</c:if> <c:if test="${!empty (m.ATTACHMENTNO) }">
+						</c:if> <c:if test="${(m.FILECOUNT > 0)}">
 						&nbsp;<img alt="file" src="${path }/resources/images/file.png">
 					</c:if></td>
 				<td><c:out value="${m.BOARDREADCOUNT }" /></td>

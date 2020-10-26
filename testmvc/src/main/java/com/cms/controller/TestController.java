@@ -464,6 +464,18 @@ public class TestController {
 		return "socket/socket1/webRtc";
 	}
 
+	@RequestMapping("/webrtc2")
+	public String webrtcTest2() {
+		log.info("webrtcTest2 실행");
+		return "socket/socket1/webRtc2";
+	}
+
+	@RequestMapping("/webrtc3")
+	public String webrtcTest3() {
+		log.info("webrtcTest3 실행");
+		return "socket/socket1/webRtc3";
+	}
+
 	@RequestMapping("/glogin")
 	public String googleLogin(String gname, String gprofile, HttpSession session) {
 		log.info("googleLogin 실행");

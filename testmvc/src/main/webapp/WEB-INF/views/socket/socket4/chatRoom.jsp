@@ -44,6 +44,7 @@ body {
 /* 텍스트 출력되는 하얀부분 위 박스 */
 #ChatArea {
 	/* 아래 스크롤바 감추기 */
+	/* 스크롤바 생성 */
 	overflow-x: hidden;
 	height: 80%;
 	width: 100%;

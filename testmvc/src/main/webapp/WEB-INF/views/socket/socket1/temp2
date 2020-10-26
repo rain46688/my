@@ -3,7 +3,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>RTC ì‚½ì§ˆ</title>
+<title>RTC »ğÁú</title>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <!-- jQuery library -->
@@ -48,77 +48,76 @@ video {
 			<video id="video2" autoplay playsinline controls preload="metadata"></video>
 			<br>
 			<br>
-			<button type="button" class="btn btn-outline-success my-2 my-sm-0" onclick='connection();'>ì—°ê²°</button>
-			<button type="button" class="btn btn-outline-success my-2 my-sm-0" onclick='exit();'>ì—°ê²° ëŠê¸°</button>
+			<button type="button" class="btn btn-outline-success my-2 my-sm-0" onclick='connection();'>¿¬°á</button>
+			<button type="button" class="btn btn-outline-success my-2 my-sm-0" onclick='exit();'>¿¬°á ²÷±â</button>
 		</section>
 	<script>
 	
 	'use strict';
 
-	//---------------------------- signaling ì„œë²„ -------------------------------------
+	//---------------------------- signaling ¼­¹ö -------------------------------------
 	
 /* 	var conn = new WebSocket('ws://192.168.219.100:9090/socketrtc'); */
 
 const conn = new WebSocket('wss://192.168.219.105:8443/socketrtc');
 
 	conn.onopen = function() {
-		console.log("onopen => signaling server ì—°ê²°");
+		console.log("onopen => signaling server ¿¬°á");
 	};
 
 	conn.onmessage = function(msg) {
-		console.log("onmessage => ë©”ì„¸ì§€ ì¶œë ¥ : "+msg);
+		console.log("onmessage => ¸Ş¼¼Áö Ãâ·Â : "+msg);
 		let content = JSON.parse(msg.data);
 		console.log("content.type : "+content.type);
 		if(content.type === 'host'){
-			console.log(" === ë¶„ê¸° host === ");
-			console.log("ë°©ì„ ì²˜ìŒ ë§Œë“ ì‚¬ëŒ");
+			console.log(" === ºĞ±â host === ");
+			console.log("¹æÀ» Ã³À½ ¸¸µç»ç¶÷");
 			start();
 		}else if(content.type  === 'offer'){
-			console.log(" === ë¶„ê¸° offer === ");
+			console.log(" === ºĞ±â offer === ");
 			if(!isInitiator && !isStarted){
-				console.log(" === ë¶„ê¸° offer 2 === ");
+				console.log(" === ºĞ±â offer 2 === ");
 				start();
 			}
 			pc.setRemoteDescription(new RTCSessionDescription(content));
 			 doAnswer();
 		} else if (content.type  === 'answer' && isStarted) {
-			console.log(" === ë¶„ê¸° answer === ");
+			console.log(" === ºĞ±â answer === ");
 			 pc.setRemoteDescription(new RTCSessionDescription(content));
 		} else if (content.type  === 'candidate' && isStarted) {
-			console.log(" === ë¶„ê¸° candidate === ");
+			console.log(" === ºĞ±â candidate === ");
 		    var candidate = new RTCIceCandidate({
 		        sdpMLineIndex: content.label,
 		        candidate: content.candidate
 		      });
 		      pc.addIceCandidate(candidate);
 		    } else if (content.type  === 'bye' && isStarted) {
-				console.log(" === ë¶„ê¸° bye === ");
+				console.log(" === ºĞ±â bye === ");
 		      handleRemoteHangup();
 		    }
 	};
 	
 	conn.onclose = function() {
-		console.log('onclose ì‹¤í–‰');
+		console.log('onclose ½ÇÇà');
 	};
 
 	function sendMessage(message) {
 		conn.send(JSON.stringify(message));
-		console.log("ë©”ì„¸ì§€ ë³´ë‚´ëŠ” í•¨ìˆ˜ sendMessage");
 	};
 	
-	//---------------------------- ì„¤ì • -------------------------------------
+	//---------------------------- ¼³Á¤ -------------------------------------
 	
-	//ë§ˆì´í¬ ë¹„ë””ì˜¤ ì„¤ì •
+	//¸¶ÀÌÅ© ºñµğ¿À ¼³Á¤
 	const video1 = document.getElementById('video1');
 	const video2 = document.getElementById('video2');
 	let isStarted = false;
 	let pc;
-	let isInitiator = true;//ë°©ì´ ì—´ë ¤ìˆëŠ”ì§€ ì—¬ë¶€, ì¼ë‹¨ ì—´ë ¤ìˆë‹¤ ì¹˜ì
+	let isInitiator = false;//¹æÀÌ ¿­·ÁÀÖ´ÂÁö ¿©ºÎ, ÀÏ´Ü ¿­·ÁÀÖ´Ù Ä¡ÀÚ
 	let localStream;
 	let remoteStream;
 	let isChannelReady = true;
 	
-	//TURN & STUN ì„œë²„ ë“±ë¡
+	//TURN & STUN ¼­¹ö µî·Ï
 	var configuration = {
 			  'iceServers': [
 				    {
@@ -133,7 +132,7 @@ const conn = new WebSocket('wss://192.168.219.105:8443/socketrtc');
 		};
 
 	
-	//---------------------------- ë¹„ë””ì˜¤ -------------------------------------
+	//---------------------------- ºñµğ¿À -------------------------------------
 	
 	
 	const constraints = {
@@ -144,92 +143,87 @@ const conn = new WebSocket('wss://192.168.219.105:8443/socketrtc');
 	
 	navigator.mediaDevices.getUserMedia(constraints)
 	.then(gotStream)
-	  //ìŠ¤íŠ¸ë¦¼ ìš”ì²­ ì‹¤íŒ¨
+	  //½ºÆ®¸² ¿äÃ» ½ÇÆĞ
 	  .catch(function(e) { 
-		    alert('ì¹´ë©”ë¼ì™€ ë§ˆì´í¬ë¥¼ í—ˆìš©í•´ì£¼ì„¸ìš” / ì—ëŸ¬ : '+e.name);
+		    alert('Ä«¸Ş¶ó¿Í ¸¶ÀÌÅ©¸¦ Çã¿ëÇØÁÖ¼¼¿ä / ¿¡·¯ : '+e.name);
 	    });
 	
 	function gotStream(stream){
-			//ìŠ¤íŠ¸ë¦¼ ìš”ì²­ ì„±ê³µ
-			 console.log('stream í•¨ìˆ˜ => ìŠ¤íŠ¸ë¦¼ ìš”ì²­ ì„±ê³µ');
+			//½ºÆ®¸² ¿äÃ» ¼º°ø
+			 console.log('stream ÇÔ¼ö => ½ºÆ®¸² ¿äÃ» ¼º°ø');
 			localStream = stream;
-			console.log("localStream : "+localStream)
 			video1.srcObject = stream;
+			sendMessage({type:'host'});
 			if(isInitiator){
-				sendMessage({type:'host'});
-				console.log("ë©”ì„¸ì§€ ë³´ëƒ„!");
-				console.log("gotStream í•¨ìˆ˜ => start ì‹¤í–‰");
+				console.log("gotStream ÇÔ¼ö => start ½ÇÇà");
 				start();
 			}
 	};
 	
 	
-	//---------------------------- P2P ì—°ê²° ë¡œì§ -------------------------------------
+	//---------------------------- P2P ¿¬°á ·ÎÁ÷ -------------------------------------
 	
 	function start(){
-		console.log("start í•¨ìˆ˜ ì‹¤í–‰ : "+!isStarted+", "+(typeof localStream !== 'undefined')+", "+(isChannelReady));
+		console.log("start ÇÔ¼ö ½ÇÇà : "+!isStarted+", "+(typeof localStream !== 'undefined')+", "+(isChannelReady));
 		
 		if(!isStarted && typeof localStream !== 'undefined' && isChannelReady){
-			console.log("peer ì—°ê²° ë¶€ë¶„ ë¶„ê¸° ì§„ì…");
+			console.log("peer ¿¬°á ºÎºĞ ºĞ±â ÁøÀÔ");
 			createPeerConnection();
 			pc.addStream(localStream);
-			console.log("isStarted íŠ¸ë£¨");
+			console.log("isStarted Æ®·ç");
 			isStarted = true;
 			console.log("isInitiator : "+isInitiator);
-			
-			//if(isInitiator){//isInitiator ê¸°ë³¸ falseë¼ ì‹¤í–‰ì•ˆë¨
-				console.log("do call ì‹¤í–‰ë¨ ");
+			if(isInitiator){
 				doCall();
-			//}
-			
+			}
 		}
 	};
 	
 	function createPeerConnection(){
-		console.log("createPeerConnection ì‹¤í–‰");
+		console.log("createPeerConnection ½ÇÇà");
 		try{
-			//configurationì—ëŠ” STUN & TURN ì„œë²„ê°€ ìˆìŒ
-			//STUN : Session Traversal Utilities for NATì˜ ì•½ìë¡œ ìì‹ ì˜ ê³µì¸ ì•„ì´í”¼ë¥¼ ì•Œì•„ì˜¤ê¸°ìœ„í•´ STUN ì„œë²„ì— ìš”ì²­í•˜ê³  STUN ì„œë²„ëŠ” ê³µì¸ IPì£¼ì†Œë¥¼ ì‘ë‹µí•¨.
-			//TURN : Traversal Using Relays around NAT ì˜ ì•½ì NAT ë˜ëŠ” ë°©í™”ë²½ì—ì„œ ë³´ì¡°í•˜ëŠ” í”„ë¡œí† ì½œ. í´ë¼ì´ì–¸íŠ¸ëŠ” ì§ì ‘ ì„œë²„ì™€ í†µì‹  í•˜ì§€ì•Šê³  TURN ì„œë²„ë¥¼ ê²½ìœ í•¨.
+			//configuration¿¡´Â STUN & TURN ¼­¹ö°¡ ÀÖÀ½
+			//STUN : Session Traversal Utilities for NATÀÇ ¾àÀÚ·Î ÀÚ½ÅÀÇ °øÀÎ ¾ÆÀÌÇÇ¸¦ ¾Ë¾Æ¿À±âÀ§ÇØ STUN ¼­¹ö¿¡ ¿äÃ»ÇÏ°í STUN ¼­¹ö´Â °øÀÎ IPÁÖ¼Ò¸¦ ÀÀ´äÇÔ.
+			//TURN : Traversal Using Relays around NAT ÀÇ ¾àÀÚ NAT ¶Ç´Â ¹æÈ­º®¿¡¼­ º¸Á¶ÇÏ´Â ÇÁ·ÎÅäÄİ. Å¬¶óÀÌ¾ğÆ®´Â Á÷Á¢ ¼­¹ö¿Í Åë½Å ÇÏÁö¾Ê°í TURN ¼­¹ö¸¦ °æÀ¯ÇÔ.
 			pc = new RTCPeerConnection(configuration);
 			pc.onicecandidate = handleIceCandidate;
 			pc.onaddstream = handleRemoteStreamAdded;
 			pc.onremovestream = handleRemoteStreamRemoved;
-			console.log(" RTCPeerConnection ìƒì„± ì™„ë£Œ ");
+			console.log(" RTCPeerConnection »ı¼º ¿Ï·á ");
 		}catch(e){
-			console.log(" RTCPeerConnection ìƒì„± ì—ëŸ¬ë°œìƒ : "+e.message);
-			alert("RTCPeerConnection ì—ëŸ¬");
+			console.log(" RTCPeerConnection »ı¼º ¿¡·¯¹ß»ı : "+e.message);
+			alert("RTCPeerConnection ¿¡·¯");
 			return;
 		}
 		
 	};
 	
 	function handleRemoteStreamAdded(event){
-		console.log("RemoteStream ì¶”ê°€ë¨");
-		//ì›ê²© ìŠ¤íŠ¸ë¦¼ì— ìŠ¤íŠ¸ë¦¼ì„ ë„£ì–´ì¤Œ
+		console.log("RemoteStream Ãß°¡µÊ");
+		//¿ø°İ ½ºÆ®¸²¿¡ ½ºÆ®¸²À» ³Ö¾îÁÜ
 		remoteStream = event.stream;
 		video2.srcObject = remoteStream;
 	};
 	
 	function doCall(){
-		console.log("createOff í•¨ìˆ˜ë¥¼ í†µí•´ì„œ í†µì‹  ìš”ì²­");
+		console.log("createOff ÇÔ¼ö¸¦ ÅëÇØ¼­ Åë½Å ¿äÃ»");
 		pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 	};
 	
 	function doAnswer() {
-		  console.log('peerì—ê²Œ ì‘ë‹µ ë³´ë‚´ê¸°.');
+		  console.log('peer¿¡°Ô ÀÀ´ä º¸³»±â.');
 		  pc.createAnswer().then(
 		    setLocalAndSendMessage,
 		    onCreateSessionDescriptionError
 		  );
 		};
 	
-	//í•¸ë“¤ëŸ¬ í›„ë³´ ìƒëŒ€ë°© íƒìƒ‰
-	//ICE : Interactive Connectivity Establishmentì˜ ì•½ìë¡œ ë‘ ë‹¨ë§ì´ ì„œë¡œ í†µì‹ í• ìˆ˜ ìˆëŠ” ìµœì ì˜ ê²½ë¡œë¥¼ ì°¾ì„ìˆ˜ìˆë„ë¡ ë„ì™€ì£¼ëŠ” í”„ë ˆì„ì›Œí¬ì„.
+	//ÇÚµé·¯ ÈÄº¸ »ó´ë¹æ Å½»ö
+	//ICE : Interactive Connectivity EstablishmentÀÇ ¾àÀÚ·Î µÎ ´Ü¸»ÀÌ ¼­·Î Åë½ÅÇÒ¼ö ÀÖ´Â ÃÖÀûÀÇ °æ·Î¸¦ Ã£À»¼öÀÖµµ·Ï µµ¿ÍÁÖ´Â ÇÁ·¹ÀÓ¿öÅ©ÀÓ.
 	function handleIceCandidate(event) {
-		  console.log('icecandidate ì‹¤í–‰ event : '+ event);
+		  console.log('icecandidate ½ÇÇà event : '+ event);
 		  if (event.candidate) {
-			  console.log('icecandidate ì‘ë‹µ ë³´ë‚´ê¸° ');
+			  console.log('icecandidate ÀÀ´ä º¸³»±â ');
 		    sendMessage({
 		      type: 'candidate',
 		      label: event.candidate.sdpMLineIndex,
@@ -237,22 +231,22 @@ const conn = new WebSocket('wss://192.168.219.105:8443/socketrtc');
 		      candidate: event.candidate.candidate
 		    });
 		  } else {
-		    console.log(' handleIceCandidate íƒìƒ‰ ì¢…ë£Œ ');
+		    console.log(' handleIceCandidate Å½»ö Á¾·á ');
 		  }
 	};
 	
 	function handleRemoteStreamRemoved(event) {
-		 	 console.log('ì›ê²© ìŠ¤íŠ¸ë¦¼ ì‚­ì œë¨ Event : '+event);
+		 	 console.log('¿ø°İ ½ºÆ®¸² »èÁ¦µÊ Event : '+event);
 		};
 		
 		function setLocalAndSendMessage(sessionDescription) {
 			  pc.setLocalDescription(sessionDescription);
-			console.log("setLocalAndSendMessage ì‘ë‹µ ë³´ë‚´ê¸° : "+sessionDescription);
+			console.log("setLocalAndSendMessage ÀÀ´ä º¸³»±â : "+sessionDescription);
 			  sendMessage(sessionDescription);
 			};
 		
 			function handleRemoteHangup() {
-				  console.log('Session ì¢…ë£Œ.');
+				  console.log('Session Á¾·á.');
 				  stop();
 				  isInitiator = false;
 				};
@@ -262,29 +256,29 @@ const conn = new WebSocket('wss://192.168.219.105:8443/socketrtc');
 				start();
 			}
 					
-			//ì—°ê²° ëŠê¸°
+			//¿¬°á ²÷±â
 			function exit() {
 				/* conn.close(); */
 				  stop();
-				  console.log('ì—°ê²° ì¢…ë£Œ ì‘ë‹µ ë³´ë‚´ê¸° ');
+				  console.log('¿¬°á Á¾·á ÀÀ´ä º¸³»±â ');
 				  sendMessage({type:'bye'});
 				};
 		
 			function stop() {
-				  console.log('ì—°ê²° ì¢…ë£Œ');
+				  console.log('¿¬°á Á¾·á');
 				  isStarted = false;
 				  pc.close();
 				  pc = null;
 				};
 				
-	//---------------------------- ì—ëŸ¬ -------------------------------------
+	//---------------------------- ¿¡·¯ -------------------------------------
 
 		function handleCreateOfferError(event) {
-					console.log('Offerë¶€ë¶„ ìƒì„± ì—ëŸ¬ error: ', event);
+					console.log('OfferºÎºĞ »ı¼º ¿¡·¯ error: ', event);
 			};	
 				
 		function onCreateSessionDescriptionError(error) {
-				trace('onCreateSessionDescriptionError ì—ëŸ¬ : ' + error.toString());
+				trace('onCreateSessionDescriptionError ¿¡·¯ : ' + error.toString());
 			}
 		
 	/* 	window.onunload = window.onbeforeunload = (function(){myFunction()})

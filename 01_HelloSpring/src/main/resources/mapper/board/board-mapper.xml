@@ -3,11 +3,25 @@
 <mapper namespace="board">
 
 	<select id="boardList" resultType="map">
-		 SELECT * FROM BOARD LEFT JOIN ATTACHMENT USING(BOARDNO) ORDER BY BOARDDATE DESC
+		 SELECT B.*,(SELECT COUNT(*) FROM ATTACHMENT WHERE BOARDNO = B.BOARDNO) FILECOUNT FROM BOARD B ORDER BY BOARDDATE DESC
 	</select>
 
 <select id="boardCount" resultType="_int">
 		SELECT COUNT(*) FROM BOARD
 	</select>
+	
+	<insert id="insertBoard" parameterType="bo">
+		INSERT INTO BOARD VALUES(SEQ_BOARDNO.NEXTVAL,#{boardTitle}, #{boardWriter},#{boardContent},default,default)
+	<selectKey keyProperty="boardNo" resultType="_int" order="AFTER">
+	<!-- insert 쿼리문이 실행한후 AFTER CURRVAL을 가져와서 boardNo에 넣어라라는 의미! -->
+		SELECT SEQ_BOARDNO.CURRVAL FROM DUAL
+	</selectKey>
+	</insert>
+
+<insert id="insertAttachment" parameterType="at">
+	INSERT INTO ATTACHMENT VALUES(SEQ_ATTACHMENTNO.NEXTVAL,#{boardNo},
+	#{originalFileName},#{renamedFileName},default,default,default)
+</insert>
+
 
 </mapper>

@@ -38,5 +38,4 @@
 		<aop:advisor id="transactionAdvisor" pointcut-ref="transactionPointcut" advice-ref="txAdvice" />
 	</aop:config>
 
-
 </beans>

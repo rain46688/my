@@ -49,6 +49,8 @@
 	<a href="${path}/joinPage" class="btn btn-outline-success my-2 my-sm-0">회원가입 페이지</a>
 	<a href="${path}/board?boardTitle=애완용품" class="btn btn-outline-success my-2 my-sm-0">게시판</a>
 	<a href="${path}/webrtc" class="btn btn-outline-success my-2 my-sm-0">RTC 소켓 테스트</a>
+	<a href="${path}/webrtc2" class="btn btn-outline-success my-2 my-sm-0">RTC 소켓 테스트2</a>
+	<a href="${path}/webrtc3" class="btn btn-outline-success my-2 my-sm-0">RTC 소켓 테스트3</a>
 
 </body>
 </html>

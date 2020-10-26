@@ -9,6 +9,8 @@ typealias 정도만 들어가는것 나머지는 root에서 했으니
  <typeAliases>
  		<typeAlias type="com.kh.spring.demo.model.vo.Demo" alias="demo"/>
  		<typeAlias type="com.kh.spring.member.model.vo.Member" alias="mem"/>
+ 		<typeAlias type="com.kh.spring.board.model.vo.Board" alias="bo"/>
+ 		<typeAlias type="com.kh.spring.board.model.vo.Attachment" alias="at"/>
  		<typeAlias type="com.kh.spring.common.StringArrayTypeHandler" alias="strArr"/>
  </typeAliases>
 

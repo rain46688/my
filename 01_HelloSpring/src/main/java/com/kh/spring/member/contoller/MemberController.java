@@ -83,7 +83,7 @@ public class MemberController {
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/member/memberLogin.do", method = RequestMethod.POST)
+	@RequestMapping(value = "/member/memberLogin", method = RequestMethod.POST)
 	public String memberLogin(Member member, Model m) {
 //@session을 사용하면 파라미터에서 세션을 받을 필요가없다.
 		Member login = service.loginMember(member);

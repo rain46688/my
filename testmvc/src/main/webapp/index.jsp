@@ -51,6 +51,7 @@
 	<a href="${path}/webrtc" class="btn btn-outline-success my-2 my-sm-0">RTC 소켓 테스트</a>
 	<a href="${path}/webrtc2" class="btn btn-outline-success my-2 my-sm-0">RTC 소켓 테스트2</a>
 	<a href="${path}/webrtc3" class="btn btn-outline-success my-2 my-sm-0">RTC 소켓 테스트3</a>
+	<a href="${path}/webrtc4" class="btn btn-outline-success my-2 my-sm-0">RTC 소켓 테스트4</a>
 
 </body>
 </html>

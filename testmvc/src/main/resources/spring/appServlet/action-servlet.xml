@@ -29,14 +29,17 @@
 	<!-- xmlns:websocket="http://www.springframework.org/schema/websocket" 이거 추가함 -->
 
 	<websocket:handlers>
-		<websocket:mapping handler="testHandler" path="/socket" />
+	<!-- path부분도 소켓 주소로 바꿔줘야됨 -->
+		<websocket:mapping handler="testHandler" path="/socketrtc" />
 		<websocket:handshake-interceptors>
 			<beans:bean class="org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor" />
 		</websocket:handshake-interceptors>
-		<websocket:sockjs />
+		<!-- <websocket:sockjs/> -->
+		<!-- sockjs가 아니면 주석해줘야됩! 안그러면 에러남
+		 failed: Error during WebSocket handshake: Unexpected response code: 200 -->
 	</websocket:handlers>
 
 <!-- 	<beans:bean id="testHandler" class="com.cms.common.socket.socket4.SockjsHandler"></beans:bean> -->
 	<beans:bean id="testHandler" class="com.cms.common.socket.socket1.SocketHandler"></beans:bean>
-
+<!-- 여기부분 클래스도 핸들러 바꿀때 바꿔줘야됨 -->
 </beans:beans>

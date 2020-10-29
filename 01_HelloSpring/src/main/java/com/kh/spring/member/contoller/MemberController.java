@@ -1,5 +1,9 @@
 package com.kh.spring.member.contoller;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -10,10 +14,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kh.spring.member.model.service.MemberService;
 import com.kh.spring.member.model.vo.Member;
 
@@ -64,7 +71,7 @@ public class MemberController {
 		return mv;
 	}
 
-	@RequestMapping("/member/memberEnroll.do")
+	@RequestMapping("/member/memberEnroll")
 	public String memberEnroll() {
 		// member/memberEnroll.jsp
 		return "member/memberEnroll";
@@ -152,4 +159,72 @@ public class MemberController {
 		ModelAndView mv = new ModelAndView("/common/msg");
 		return mv;
 	}
+
+	// Stream을 이용한 ajax처리하기
+//	@RequestMapping("/member/checkDuplicateId")
+//	public void streamAjax(@RequestParam Member mem, HttpServletResponse response) {
+//		Member mem = new Member();
+//		mem.setUserId("" + param.get("userId"));
+//		Member m = service.loginMember(mem);
+//		try {
+//			// response.getWriter().print(m);
+//			new Gson().toJson(m, response.getWriter());
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+
+	// jsonView를 이용하는 방식 Json Lib2Spring 이 필요함
+//	@RequestMapping("/member/checkDuplicateId")
+//	public ModelAndView jsonViewAjax(@RequestParam Map param, ModelAndView mv) {
+//		log.debug("jsonViewAjax : " + param.get("userId"));
+//		Member mem = new Member();
+//		mem.setUserId("" + param.get("userId"));
+//		Member m = service.loginMember(mem);
+//		mv.addObject("result", m != null ? false : true);
+//		mv.setViewName("jsonView");// jsonSimple 방식 객체 내부에 다른 객체 있으면
+//		// 파싱하지 못함
+//
+//		return mv;
+//
+//	}
+
+	// @ResponseBody
+	// 변환해줄 객체가 필요~ jackson객체를 이용해서 JSON으로 변환해서 데이터 전달
+	// 스트링으로 그냥 보내면 한글이 깨짐!
+//	@RequestMapping("/member/checkDuplicateId")
+//	@ResponseBody
+//	public String respinseBodyAjax(@RequestParam Map param) throws JsonProcessingException, IOException {
+//		Member mem = new Member();
+//		mem.setUserId("" + param.get("userId"));
+//		Member m = service.loginMember(mem);
+//		ObjectMapper mapper = new ObjectMapper();
+//		return mapper.writeValueAsString(m);
+//	}
+
+	// 맵으로해보기
+//	@RequestMapping("/member/checkDuplicateId")
+//	@ResponseBody
+//	public Map respinseBodyAjax(@RequestParam Map param) throws JsonProcessingException, IOException {
+//		Member mem = new Member();
+//		mem.setUserId("" + param.get("userId"));
+//		Member m = service.loginMember(mem);
+//		Map data = new HashMap();
+//		data.put("member", m);
+//		return data;
+//	}
+
+	// 멤버로 넘기기
+	@RequestMapping("/member/checkDuplicateId")
+	@ResponseBody
+	public Member respinseBodyAjax(@RequestParam Map param) throws JsonProcessingException, IOException {
+		Member mem = new Member();
+		mem.setUserId("" + param.get("userId"));
+		Member m = service.loginMember(mem);
+		Map data = new HashMap();
+		data.put("member", m);
+		return m;
+	}
+
 }

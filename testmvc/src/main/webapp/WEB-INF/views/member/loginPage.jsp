@@ -71,7 +71,7 @@
 
 	<script>
 	
-		function onSignIn(googleUser) {
+		 function onSignIn(googleUser) {
 			var profile = googleUser.getBasicProfile();
 			console.log('ID: ' + profile.getId());
 			console.log('Name: ' + profile.getName());
@@ -98,7 +98,7 @@
 				document.body.appendChild(form);
 				form.submit();
 			}
-		}
+		} 
 		
 	</script>
 

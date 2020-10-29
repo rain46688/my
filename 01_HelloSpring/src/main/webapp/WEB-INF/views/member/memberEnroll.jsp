@@ -11,12 +11,39 @@
 	<style>
 		div#enroll-container{width:400px; margin:0 auto; text-align:center;}
 		div#enroll-container input, div#enroll-container select {margin-bottom:10px;}
+		div#userId-container{position:relative; padding:0px;}
+		div#userId-container span.guide{display:none;font-size:12px;position:absolute;top:12px;right:10px;}
+		div#userId-container span.ok{color:green;}
+		div#userId-container span.error{color:red;}
 	</style>
 	<section id="content">
 			<div id="enroll-container">
 			
 			<form name="memberEnrollFrm" action="${path }/member/memberEnrollEnd.do" method="post">
+				<div id="userId-container">
 				<input type="text" class="form-control" placeholder="아이디 (4글자이상)" name="userId" id="userId_" required>
+				<span class="guide ok">이 아이디는 사용이 가능합니다.</span>
+				<span class="guide error">이 아이디는 사용이  불가능합니다.</span>
+				</div>
+				<script>
+					$(function(){
+						$("#userId_").keyup(e=>{
+							const userId = $(e.target).val().trim();
+							if(userId.length < 4){
+								$(".guide").hide();
+								return;
+							}
+							//아이디 중복확인하기
+							 $.ajax({
+								url:"${path}/member/checkDuplicateId",
+								data:{userId,userId},
+								success:data => {
+									console.log(data);
+								}
+							 })
+						})
+					})
+				</script>
 				<input type="password" class="form-control" placeholder="비밀번호" name="password" id="password_" required>
 				<input type="password" class="form-control" placeholder="비밀번호확인" id="password2" required>
 				<input type="text" class="form-control" placeholder="이름" name="userName" id="userName" required>

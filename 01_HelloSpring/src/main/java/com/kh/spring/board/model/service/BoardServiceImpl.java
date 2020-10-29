@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.kh.spring.board.model.dao.BoardDao;
 import com.kh.spring.board.model.vo.Attachment;
@@ -37,8 +36,10 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	@Transactional // 트랜잭션 처리 어노테이션 예외가 발생하면 트랜잭션이 처리되서 롤백됨
-	public int insertBoard(Board board, List<Attachment> files) {
+//	@Transactional
+	// 트랜잭션 처리 어노테이션 예외가 발생하면 트랜잭션이 처리되서 롤백됨
+	// @Transactional() 괄호에 옵션을 넣을수있다!
+	public int insertBoard(Board board, List<Attachment> files) throws RuntimeException {
 		// TODO Auto-generated method stub
 		log.debug(" ========== insertBoard service =========");
 		// inesrt 두개 처리
@@ -50,10 +51,24 @@ public class BoardServiceImpl implements BoardService {
 				for (Attachment file : files) {
 					file.setBoardNo(board.getBoardNo());
 					result = dao.insertAttachment(session, file);
+					if (result == 0)
+						throw new RuntimeException("입력오류");
 				}
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public Board selctBoard(int no) {
+		// TODO Auto-generated method stub
+		return dao.selctBoard(session, no);
+	}
+
+	@Override
+	public List<Attachment> selctAttachmentList(int no) {
+		// TODO Auto-generated method stub
+		return dao.selctAttachmentList(session, no);
 	}
 
 }

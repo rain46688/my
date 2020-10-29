@@ -59,7 +59,7 @@ video {
 	
 /* 	var conn = new WebSocket('ws://192.168.219.100:9090/socketrtc'); */
 
-const conn = new WebSocket('wss://192.168.219.105:8443/socketrtc');
+const conn = new WebSocket('wss://localhost:8443/socketrtc');
 
 	conn.onopen = function() {
 		console.log("onopen => signaling server 연결");

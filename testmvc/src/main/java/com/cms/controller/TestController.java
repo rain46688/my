@@ -476,6 +476,29 @@ public class TestController {
 		return "socket/socket1/webRtc3";
 	}
 
+	@RequestMapping("/webrtc4")
+	public String webrtcTest4() {
+		log.info("webrtcTest4 실행");
+		return "socket/socket1/webRtc4Set";
+	}
+
+	@RequestMapping("/webrtc4Set")
+	public ModelAndView webrtcTest4Set(String room, String flag, HttpSession session) {
+		log.info("webrtcTest4Set 실행");
+		ModelAndView mv = new ModelAndView();
+		log.info("room : " + room + " flag : " + flag);
+		mv.setViewName("socket/socket1/webRtc4");
+		SessionVo m = (SessionVo) session.getAttribute("loginnedMember");
+		m.setCurRoomBid(room);
+		if (flag.equals("create"))
+			m.setHost(true);
+		else
+			m.setHost(false);
+//		mv.addObject("room", room);
+//		mv.addObject("flag", flag.equals("create") ? true : false);
+		return mv;
+	}
+
 	@RequestMapping("/glogin")
 	public String googleLogin(String gname, String gprofile, HttpSession session) {
 		log.info("googleLogin 실행");

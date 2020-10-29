@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
 	<!-- Root Context: defines shared resources visible to all other web components -->
@@ -41,7 +42,21 @@
 	<!-- 어노테이션 방식으로 트랜잭션 처리하기 -->
 	<tx:annotation-driven transaction-manager="transactionManager"/>
 
+	<!-- 트랜젝션 처리 구문 추가하기 -->
+	<!-- 트랜젝션용 advice를 등록함 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+		<!-- 메소드명이 insert로 시작되는! -->
+			<tx:method name="insert*"/>
+			<!-- rollback-for도 기본값이있어서 안적어도 상관없음 내가 예외의 범위를 지정하고싶을때 적는것입!! -->
+		</tx:attributes>
+	</tx:advice>	
 
+	<!-- pointcut 설정하기 -->
+	<aop:config proxy-target-class="true">
+		<aop:pointcut id="serviceMethod" expression="execution(* com.kh.spring..*ServiceImpl.insert*(..))"/>
+		<aop:advisor id="transactionAdvisor" pointcut-ref="serviceMethod" advice-ref="txAdvice"/>
+	</aop:config>
 
 
 </beans>

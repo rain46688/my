@@ -26,7 +26,11 @@
 		<c:forEach items="${list }" var="m">
 			<tr>
 				<td><c:out value="${m.BOARDNO }" /></td>
-				<td><c:out value="${m.BOARDTITLE }" /></td>
+				<td>
+				<a href="${path }/board/boardView.do?no=${m.BOARDNO}">
+				<c:out value="${m.BOARDTITLE }" />
+				</a>
+				</td>
 				<td><c:out value="${m.BOARDWRITER }" /></td>
 				<td><c:out value="${m.BOARDDATE }" /></td>
 				<td><c:if test="${empty (m.FILECOUNT)}">

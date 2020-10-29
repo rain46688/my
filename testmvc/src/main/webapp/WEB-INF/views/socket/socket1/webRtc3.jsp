@@ -83,12 +83,12 @@ video {
 	const configuration = {
 			  'iceServers': [
 				    {
-				      'urls': 'stun:stun.l.google.com:19302'
+				      url: 'stun:stun.l.google.com:19302'
 				    },
 				    {
-				    	'url': 'turn:numb.viagenie.ca',
-				    	'credential': 'muazkh',
-				    	'username': 'webrtc@live.com'
+				    	url: 'turn:numb.viagenie.ca',
+				    	credential: 'muazkh',
+				    	username: 'webrtc@live.com'
 				    }
 				  ]
 		};
@@ -97,7 +97,7 @@ video {
 	//---------------------------- signaling 서버 -------------------------------------
 
 
-const conn = new WebSocket('wss://192.168.219.105:8443/socketrtc');
+const conn = new WebSocket('wss://localhost:8443/socketrtc');
 
 	conn.onopen = function() {
 		console.log("signaling server 연결");
@@ -166,7 +166,7 @@ const conn = new WebSocket('wss://192.168.219.105:8443/socketrtc');
 					  }, function (stream) {
 						  printdiv("스트림 얻기");
 						 // video1.src = URL.createObjectURL(stream);
-						// video1.srcObject =stream;
+						 video1.srcObject =stream;
 					    pc.addStream(stream);
 					  }, logError);
 					};

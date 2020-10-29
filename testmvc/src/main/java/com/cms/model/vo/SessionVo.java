@@ -15,4 +15,5 @@ public class SessionVo {
 	private String nickname;
 	private int usid;
 	private String curRoomBid; // ¹Î¼ö²¨ Áö¿ìÁö ¸»±â^^
+	private boolean host;
 }

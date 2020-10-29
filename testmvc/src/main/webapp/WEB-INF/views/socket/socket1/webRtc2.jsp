@@ -74,7 +74,7 @@ video {
 	//---------------------------- signaling 서버 -------------------------------------
 
 
-const conn = new WebSocket('wss://192.168.219.105:8443/socketrtc');
+const conn = new WebSocket('wss://localhost:8443/socketrtc');
 
 	conn.onopen = function() {
 		console.log("onopen => signaling server 연결");
@@ -109,7 +109,6 @@ const conn = new WebSocket('wss://192.168.219.105:8443/socketrtc');
 			 console.log("bye");
 		     handleRemoteHangup();
 		 }
-		
 	};
 	
 	conn.onclose = function() {

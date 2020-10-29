@@ -18,4 +18,8 @@ public interface BoardDao {
 
 	int insertAttachment(SqlSession session, Attachment file);
 
+	Board selctBoard(SqlSession session, int no);
+
+	List<Attachment> selctAttachmentList(SqlSession session, int no);
+
 }

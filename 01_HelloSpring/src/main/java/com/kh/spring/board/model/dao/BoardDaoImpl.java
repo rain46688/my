@@ -44,4 +44,16 @@ public class BoardDaoImpl implements BoardDao {
 		return session.insert("board.insertAttachment", file);
 	}
 
+	@Override
+	public Board selctBoard(SqlSession session, int no) {
+		// TODO Auto-generated method stub
+		return session.selectOne("board.selectBoard", no);
+	}
+
+	@Override
+	public List<Attachment> selctAttachmentList(SqlSession session, int no) {
+		// TODO Auto-generated method stub
+		return session.selectList("board.selectAttachmentList", no);
+	}
+
 }

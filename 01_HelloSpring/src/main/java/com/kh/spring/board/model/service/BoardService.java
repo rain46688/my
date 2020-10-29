@@ -14,4 +14,8 @@ public interface BoardService {
 
 	int insertBoard(Board board, List<Attachment> files);
 
+	Board selctBoard(int no);
+
+	List<Attachment> selctAttachmentList(int no);
+
 }

@@ -19,9 +19,16 @@
 	</insert>
 
 <insert id="insertAttachment" parameterType="at">
-	INSERT INTO ATTACHMENT VALUES(SEQ_ATTACHMENTNO.NEXTVAL,#{boardNo},
-	#{originalFileName},#{renamedFileName},default,default,default)
+	INSERT INTO ATTACHMENT VALUES(SEQ_ATTACHMENTNO.NEXTVAL\#{boardNo},
+	#{originalFileName},#{renamedFileName},default,default,default)ㄹ
 </insert>
 
+<select id="selectBoard" parameterType="_int" resultType="bo">
+	SELECT * FROM BOARD WHERE BOARDNO = #{no}
+</select>
+
+<select id="selectAttachmentList" parameterType="_int" resultType="at">
+	SELECT * FROM ATTACHMENT WHERE BOARDNO = #{no}
+</select>
 
 </mapper>

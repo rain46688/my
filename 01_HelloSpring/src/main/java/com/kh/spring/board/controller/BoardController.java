@@ -1,6 +1,10 @@
 package com.kh.spring.board.controller;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,11 +12,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -113,15 +120,73 @@ public class BoardController {
 				files.add(file);
 			}
 		}
-		// data DB 저장하기
-		int result = service.insertBoard(board, files);
-
+		int result = 0;
+		String error = "";
+		try {
+			// data DB 저장하기
+			result = service.insertBoard(board, files);
+		} catch (RuntimeException e) {
+			log.debug("입력 실패!");
+			error = e + "";
+		}
 		mv.addObject("msg", result > 0 ? "등록성공" : "등록실패");
 		mv.addObject("loc", "/board/boardList.do");
 
 		log.debug("board : " + board);
 
 		return mv;
+	}
+
+	@RequestMapping("/board/boardView.do")
+	public ModelAndView boardView(int no, ModelAndView mv) {
+
+		mv.addObject("board", service.selctBoard(no));
+		mv.addObject("attachments", service.selctAttachmentList(no));
+		mv.setViewName("board/boardView");
+		return mv;
+	}
+
+	@RequestMapping("/board/fileDown.do")
+	public void fileDown(HttpServletRequest request, HttpServletResponse response, String oriName, String reName,
+			@RequestHeader(name = "user-agent") String header) {
+		// 파일 디렉토리 가져오기
+		// 파일 다운로드 로직!
+		String path = request.getServletContext().getRealPath("/resources/upload/board");
+		File saveFile = new File(path + "/" + reName);
+		// 입출력 스트림 생성
+		BufferedInputStream bis = null;
+		ServletOutputStream sos = null;
+		try {
+			bis = new BufferedInputStream(new FileInputStream(saveFile));
+			sos = response.getOutputStream();
+			String encodeRename = "";
+			boolean isMSIE = header.indexOf("Trident") != -1 || header.indexOf("MSIE") != -1;
+			if (isMSIE) {
+				encodeRename = URLEncoder.encode(oriName, "UTF-8");
+				encodeRename = encodeRename.replaceAll("\\+", "%20");
+			} else {
+				encodeRename = new String(oriName.getBytes("UTF-8"), "ISO-8859-1");
+			}
+			response.setContentType("application/octet-stream;charset=utf-8");
+			response.setHeader("Content-Disposition", "attachment;filename=\"" + encodeRename + "\"");
+			response.setContentLength((int) saveFile.length());
+			int read = -1;
+			while ((read = bis.read()) != -1) {
+				sos.write(read);
+			}
+		} catch (IOException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			try {
+				sos.close();
+				bis.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 }

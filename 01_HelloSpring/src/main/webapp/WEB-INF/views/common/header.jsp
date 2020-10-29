@@ -66,7 +66,7 @@
 					type="button" data-toggle="modal" data-target="#loginModal">로그인</button>
 					&nbsp;&nbsp;
 					<button class="btn btn-outline-success my-2 my-sm-0"
-					type="button" onclick="location.href='${path}/member/memberEnroll.do'">
+					type="button" onclick="location.href='${path}/member/memberEnroll'">
 					회원가입</button>
 					<div class="modal fade" id="loginModal" tabindex="-1" role="dialog"
 					aria-labelledby="exampleModalLabel" aria-hidden="true">

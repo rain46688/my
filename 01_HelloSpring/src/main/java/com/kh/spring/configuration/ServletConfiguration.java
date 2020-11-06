@@ -5,12 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-//Spring bean configuration xmlÆÄÀÏ°í °°Àº ¿ªÇÒÀ» ÇÏ´Â class
+//Spring bean configuration xmlíŒŒì¼ê³  ê°™ì€ ì—­í• ì„ í•˜ëŠ” class
 @Configuration
 public class ServletConfiguration {
 	@Bean
 	public Logger getLogger() {
 		return LoggerFactory.getLogger(ServletConfiguration.class);
-		// @Slf4j ·Òº¹ ¾î³ëÅ×ÀÌ¼Ç ¾²¸é ¾ÈÇØµµµÉµí
+		// @Slf4j ë¡¬ë³µ ì–´ë…¸í…Œì´ì…˜ ì“°ë©´ ì•ˆí•´ë„ë ë“¯
 	}
 }

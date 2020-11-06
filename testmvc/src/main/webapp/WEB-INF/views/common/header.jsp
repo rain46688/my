@@ -29,6 +29,34 @@
 	border: 2px solid black;
 	margin-right: 5px;
 }
+
+#al {
+	width: 35px;
+	height: 35px;
+	/* border: 1px solid black; */
+	display: inline-block;
+	color: yellow;
+	background-color: red;
+	border-radius: 70%;
+	font-weight: bold;
+	font-size: 30px;
+	position: relative;
+	z-index: 2;
+	top: 20px;
+	left: -2px;
+	right: 4px;
+	text-align: center;
+	font-size: 25px;
+	 box-shadow: 1px 1px 1px 1px gray;
+}
+
+#bell {
+	z-index: 1;
+	left: 30px;
+}
+.bell2{
+	position: relative;
+}
 </style>
 
 <body>
@@ -46,7 +74,12 @@
 					</div>
 				</div>
 				<div id="topBtn">
-
+					<c:if test="${loginnedMember.usid != null}">
+						<a id="bell" class="bell2" href="/alarmList?usid=${loginnedMember.usid }"><img src="${path }/resources/images/bell.png" style="width: 60px; height: 60px;"></a>
+						<c:if test="${loginnedMember.usid != null}">
+						<a id="number" href="/alarmList?usid=${loginnedMember.usid }"></a>
+						</c:if>
+					</c:if>
 					<c:if test="${(empty loginnedMember.memberId) && (empty gprofile)}">
 						<button type="button" class="btn btn-outline-primary" style="font-size: 20px;" onclick="location.href='${path}/loginPage'">로그인</button>
 						<button type="button" class="btn btn-outline-primary" style="font-size: 20px;" onclick="location.href='${path}/joinPage">회원가입</button>
@@ -95,6 +128,68 @@
 			</nav>
 		</header>
 		<script>
+		
+		let num = 1;
+		
+		function alarmPrint(){
+			if("${loginnedMember.usid}" != ""){
+			$.ajax({
+			    type: "GET",
+			    data: {
+			      "usid": "${loginnedMember.usid}"
+			    },
+			      dataType: "json",
+			      url: "${path}/alarmCount",
+			    success: function (data) {
+			    	console.log("data : "+data);
+			    	num = data;
+					if(num > 0){
+						console.log("0보다 큼")
+						$("#number").append("<div id='al'>"+num+"</div>");
+					}else{
+						console.log("0보다 안큼")
+						$("#bell").removeClass('bell2');
+					}
+			    }
+			  });
+			}else{
+				console.log("로그인이 안되있습니다.");
+			}
+		};
+		alarmPrint();
+		
+		const socket = new WebSocket("wss://192.168.219.105/socketa");
+		
+		
+		socket.onopen = function(){
+		}
+		
+		socket.onmessage = function(msg){
+			console.log("msg 콘솔 : "+msg);
+			console.log("num : "+num++);
+			console.log("num2 : "+num);
+			$("#number").html("");
+			$("#number").append("<div id='al'>"+num+"</div>");
+			$("#bell").addClass('bell2');
+		};
+		
+		socket.onclose = function(){
+		};
+		
+		function sendMessage(msg){
+			socket.send(JSON.stringify(new Alarm("${loginnedMember.usid}",msg,"alarm","하이하이","${loginnedMember.nickname}")));
+		};
+		
+		function Alarm(send_mem_usid,receive_mem_usid,type,alarm_content,send_mem_nickname){
+			this.send_mem_usid = send_mem_usid;
+			this.receive_mem_usid = receive_mem_usid;
+			this.type = type;
+			this.alarm_content = alarm_content;
+			this.send_mem_nickname = send_mem_nickname;
+		};
+		
+		//---------------------------- 
+		
 		function enterkey(){
 			if(window.event.keyCode == 13) {
 				fn_search('overall');
@@ -115,7 +210,7 @@
 			}
 		}
 		
-		function signOut() {
+	/* 	function signOut() {
 			var auth2 = gapi.auth2.getAuthInstance();
 			auth2.signOut().then(function() {
 				console.log('User signed out.');
@@ -128,6 +223,7 @@
 			gapi.load('auth2', function() {
 				gapi.auth2.init();
 			});
-		};
+		}; */
+		
 	</script>
 		<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>

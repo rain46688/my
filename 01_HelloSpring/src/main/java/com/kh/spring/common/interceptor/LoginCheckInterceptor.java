@@ -17,11 +17,11 @@ public class LoginCheckInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		// TODO Auto-generated method stub
-		// ·Î±×ÀÎ È®ÀÎÇÏ±â
+		// ë¡œê·¸ì¸ í™•ì¸í•˜ê¸°
 		Member login = (Member) request.getSession().getAttribute("loginMember");
 		if (login == null) {
-			log.warn("·Î±×ÀÎ ÇÏÁö¾Ê°í Á¢±ÙÇÔ !" + request.getRequestURI());
-			request.setAttribute("msg", "·Î±×ÀÎ ÈÄ ÀÌ¿ëÀÌ °¡´ÉÇÕ´Ï´Ù.");
+			log.warn("ë¡œê·¸ì¸ í•˜ì§€ì•Šê³  ì ‘ê·¼í•¨ !" + request.getRequestURI());
+			request.setAttribute("msg", "ë¡œê·¸ì¸ í›„ ì´ìš©ì´ ê°€ëŠ¥í•©ë‹ˆë‹¤.");
 			request.setAttribute("loc", "/");
 			request.getRequestDispatcher("/msg").forward(request, response);
 			return false;

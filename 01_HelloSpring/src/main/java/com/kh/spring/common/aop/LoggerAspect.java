@@ -13,68 +13,68 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-@Component // ºóµî·ÏÇÏ´Â°Å
+@Component // ë¹ˆë“±ë¡í•˜ëŠ”ê±°
 @Aspect
 public class LoggerAspect {
 
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
-	// Æ÷ÀÎÆ®ÄÆ , advice
+	// í¬ì¸íŠ¸ì»· , advice
 	@Pointcut("execution(* com.kh.spring..*(..))")
 	public void loggerPointCut() {
 	}
 
-	// advice °¢ @Before, @After, @Around
+	// advice ê° @Before, @After, @Around
 
-	// Aspect°´Ã¼·Î °øÅëÀ¸·Î ½ÇÇàµÉ ¸Ş¼Òµå¸¦ ÁöÁ¤
+	// Aspectê°ì²´ë¡œ ê³µí†µìœ¼ë¡œ ì‹¤í–‰ë  ë©”ì†Œë“œë¥¼ ì§€ì •
 	@Before("loggerPointCut()")
 	public void before(JoinPoint join) throws Exception {
 		log.info("LoggerAspect");
-		Signature sig = join.getSignature();// ÆÄ¶ó¹ÌÅÍ°ª È®ÀÎ
+		Signature sig = join.getSignature();// íŒŒë¼ë¯¸í„°ê°’ í™•ì¸
 		Object[] params = join.getArgs();
 		for (Object obj : params) {
 			System.out.println(obj);
 		}
-		log.debug("@Before aspectÅ¬·¡½º¿¡¼­ Ãâ·Â !!" + sig.getDeclaringTypeName() + " : " + sig.getName());
+		log.debug("@Before aspectí´ë˜ìŠ¤ì—ì„œ ì¶œë ¥ !!" + sig.getDeclaringTypeName() + " : " + sig.getName());
 	}
 
-	// Æ÷ÀÎÆ®ÄÆ , advice
+	// í¬ì¸íŠ¸ì»· , advice
 	@Pointcut("execution(* com.kh.spring..*dao..insert*(..))")
 	public void InsertPointCut() {
 	}
 
-	// advice after Àû¿ëÇÏ±â
+	// advice after ì ìš©í•˜ê¸°
 	@After("InsertPointCut()")
 	public void after(JoinPoint join) throws Exception {
 		Signature sig = join.getSignature();
-		log.debug("@After ¸Ş¼Òµå Á¾·á ÈÄ Ãâ·Â ÇÏ±â " + sig.getDeclaringTypeName() + " : " + sig.getName());
+		log.debug("@After ë©”ì†Œë“œ ì¢…ë£Œ í›„ ì¶œë ¥ í•˜ê¸° " + sig.getDeclaringTypeName() + " : " + sig.getName());
 	}
 
-	// Around½ÇÇàÇÏ±â
-	// ¸Ş¼Òµå ½ÇÇàÀü, ¸Ş¼Òµå ½ÇÇà ÈÄ ·ÎÁ÷À» ÇÑ¹ø¿¡ ±¸ÇöÇÒ ¼ö ÀÖ´Â°Í
-	// Controller´Â Å¬·¡½º¸íÀÓ
+	// Aroundì‹¤í–‰í•˜ê¸°
+	// ë©”ì†Œë“œ ì‹¤í–‰ì „, ë©”ì†Œë“œ ì‹¤í–‰ í›„ ë¡œì§ì„ í•œë²ˆì— êµ¬í˜„í•  ìˆ˜ ìˆëŠ”ê²ƒ
+	// ControllerëŠ” í´ë˜ìŠ¤ëª…ì„
 	@Pointcut("execution(* com.kh.spring..*Controller.*(..))")
 	public void controllerAll() {
 	};
 
 	@Around("controllerAll()")
-	// around ÇÒ¶§´Â ¸Ş¼Òµå¿¡¼­ Object¸¦ ¹İÈ¯°ªÀ¸·Î ³Ö¾îÁà¾ßµÈ´Ù.
+	// around í• ë•ŒëŠ” ë©”ì†Œë“œì—ì„œ Objectë¥¼ ë°˜í™˜ê°’ìœ¼ë¡œ ë„£ì–´ì¤˜ì•¼ëœë‹¤.
 	public Object loggerAround(ProceedingJoinPoint joinPoint) throws Throwable {
-		// after ÄÚµå
+		// after ì½”ë“œ
 		String methodName = joinPoint.getSignature().getName();
-		log.debug(methodName + "() ¸Ş¼Òµå ½ÃÀÛ!");
-		// ¸Ş¼Òµå ½ÇÇà ½Ã°£
+		log.debug(methodName + "() ë©”ì†Œë“œ ì‹œì‘!");
+		// ë©”ì†Œë“œ ì‹¤í–‰ ì‹œê°„
 		StopWatch stopWatch = new StopWatch();
 
 		stopWatch.start();
-		// return joinPoint.proceed();//ÀÌ·¸°Ô ¿©±â¼­ ¸·À¸¸é before¶û °°Àº°ÍÀÓ
+		// return joinPoint.proceed();//ì´ë ‡ê²Œ ì—¬ê¸°ì„œ ë§‰ìœ¼ë©´ beforeë‘ ê°™ì€ê²ƒì„
 
-		Object obj = joinPoint.proceed();// Àü&ÈÄ¸¦ ³ª´©´Â ±âÁØ, ÀÌ°Å µÇ´Â¼ø°£ ÈÄÃ³¸®·Î ¹Ù²î´Â°Å
-		// before ÄÚµå
+		Object obj = joinPoint.proceed();// ì „&í›„ë¥¼ ë‚˜ëˆ„ëŠ” ê¸°ì¤€, ì´ê±° ë˜ëŠ”ìˆœê°„ í›„ì²˜ë¦¬ë¡œ ë°”ë€ŒëŠ”ê±°
+		// before ì½”ë“œ
 		stopWatch.stop();
-		// stopWatch´Â ½ÃÀÛ°ú ³¡°ª ½Ã°£À» °®°í ÀÖÀ½
+		// stopWatchëŠ” ì‹œì‘ê³¼ ëê°’ ì‹œê°„ì„ ê°–ê³  ìˆìŒ
 
-		log.debug(methodName + "() ¼Ò¿ä½Ã°£ : " + stopWatch.getTotalTimeMillis() + " ÃÊ(ms) ");
+		log.debug(methodName + "() ì†Œìš”ì‹œê°„ : " + stopWatch.getTotalTimeMillis() + " ì´ˆ(ms) ");
 
 		return obj;
 	}

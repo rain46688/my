@@ -37,22 +37,22 @@ public class BoardServiceImpl implements BoardService {
 
 	@Override
 //	@Transactional
-	// Æ®·£Àè¼Ç Ã³¸® ¾î³ëÅ×ÀÌ¼Ç ¿¹¿Ü°¡ ¹ß»ıÇÏ¸é Æ®·£Àè¼ÇÀÌ Ã³¸®µÇ¼­ ·Ñ¹éµÊ
-	// @Transactional() °ıÈ£¿¡ ¿É¼ÇÀ» ³ÖÀ»¼öÀÖ´Ù!
+	// íŠ¸ëœì­ì…˜ ì²˜ë¦¬ ì–´ë…¸í…Œì´ì…˜ ì˜ˆì™¸ê°€ ë°œìƒí•˜ë©´ íŠ¸ëœì­ì…˜ì´ ì²˜ë¦¬ë˜ì„œ ë¡¤ë°±ë¨
+	// @Transactional() ê´„í˜¸ì— ì˜µì…˜ì„ ë„£ì„ìˆ˜ìˆë‹¤!
 	public int insertBoard(Board board, List<Attachment> files) throws RuntimeException {
 		// TODO Auto-generated method stub
 		log.debug(" ========== insertBoard service =========");
-		// inesrt µÎ°³ Ã³¸®
-		log.debug("boardNo°ª Àü: " + board.getBoardNo());
+		// inesrt ë‘ê°œ ì²˜ë¦¬
+		log.debug("boardNoê°’ ì „: " + board.getBoardNo());
 		int result = dao.insertBoard(session, board);
-		log.debug("boardNo°ª ÈÄ : " + board.getBoardNo());
+		log.debug("boardNoê°’ í›„ : " + board.getBoardNo());
 		if (result > 0) {
 			if (!files.isEmpty()) {
 				for (Attachment file : files) {
 					file.setBoardNo(board.getBoardNo());
 					result = dao.insertAttachment(session, file);
 					if (result == 0)
-						throw new RuntimeException("ÀÔ·Â¿À·ù");
+						throw new RuntimeException("ì…ë ¥ì˜¤ë¥˜");
 				}
 			}
 		}

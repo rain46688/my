@@ -13,10 +13,11 @@ import com.cms.common.exception.BoardPageNotFoundException;
 import com.cms.common.exception.IdPasswordNotMatchingException;
 import com.cms.common.exception.MemberInsertFailedException;
 import com.cms.model.dao.TestDao;
+import com.cms.model.vo.Alarm;
+import com.cms.model.vo.Comment;
 import com.cms.model.vo.Login;
 import com.cms.model.vo.Member;
 import com.cms.model.vo.SessionVo;
-import com.cms.model.vo.Comment;
 
 @Service("testService")
 public class TestServiceImpl implements TestService {
@@ -132,6 +133,31 @@ public class TestServiceImpl implements TestService {
 	public List<Comment> commentList(int cBoardId) throws Exception {
 		// TODO Auto-generated method stub
 		return testDAO.commentList(cBoardId);
+	}
+
+	@Override
+	public int insertAlarm(Alarm al) throws Exception {
+		// TODO Auto-generated method stub
+		return testDAO.insertAlarm(al);
+	}
+
+	@Override
+	public List<Alarm> selectAlarmList(int usid) throws Exception {
+		// TODO Auto-generated method stub
+		List<Alarm> list = testDAO.selectAlarmList(usid);
+		return list;
+	}
+
+	@Override
+	public String alarmCount(int usid) throws Exception {
+		// TODO Auto-generated method stub
+		return testDAO.alarmCount(usid);
+	}
+
+	@Override
+	public int alarmRead(int aid) throws Exception {
+		// TODO Auto-generated method stub
+		return testDAO.alarmRead(aid);
 	}
 
 }

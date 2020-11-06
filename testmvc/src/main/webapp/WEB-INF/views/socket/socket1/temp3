@@ -1,3 +1,5 @@
+webRtc3.jsp
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -7,7 +9,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>RTC ì‚½ì§ˆ</title>
+<title>RTC »ğÁú</title>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <!-- jQuery library -->
@@ -56,7 +58,7 @@ video {
 	color: yellow;
 	font-weight: bold;
 }
-/* ìŠ¤í¬ë¡¤ ë°” íˆ¬ëª…í•˜ê²Œ ë§Œë“¤ê¸° */
+/* ½ºÅ©·Ñ ¹Ù Åõ¸íÇÏ°Ô ¸¸µé±â */
 ::-webkit-scrollbar {
 	display: none;
 }
@@ -65,26 +67,25 @@ video {
 <body>
 	<section>
 		<section class="container">
-			<!-- muted="muted" ìƒíƒœê°€ ì•„ë‹ˆë©´ ì˜¤í†  í”Œë ˆì´ê°€ ë˜ì§€ì•ŠëŠ”ë‹¤! -->
+			<!-- muted="muted" »óÅÂ°¡ ¾Æ´Ï¸é ¿ÀÅä ÇÃ·¹ÀÌ°¡ µÇÁö¾Ê´Â´Ù! -->
 			<video id="video1" autoplay playsinline controls preload="metadata" muted="muted"></video>
 			<br> <br>
 			<c:if test="${loginnedMember.host == true}">
-				<button type="button" class="btn btn-outline-success my-2 my-sm-0" onclick='host();'>ë°©ì†¡ì‹œì‘</button>
-				<button type="button" class="btn btn-outline-success my-2 my-sm-0" onclick='exit();'>ì—°ê²° ëŠê¸°</button>
+				<button type="button" class="btn btn-outline-success my-2 my-sm-0" onclick='host();'>¹æ¼Û½ÃÀÛ</button>
+				<button type="button" class="btn btn-outline-success my-2 my-sm-0" onclick='exit();'>¿¬°á ²÷±â</button>
 			</c:if>
 			<br> <br>
 			<div id="board"></div>
 		</section>
 		<script>
 		
-			//---------------------------- ì„¤ì • -------------------------------------
+			//---------------------------- ¼³Á¤ -------------------------------------
 
 			'use strict';
 
-			//ë§ˆì´í¬ ë¹„ë””ì˜¤ ì„¤ì •
+			//¸¶ÀÌÅ© ºñµğ¿À ¼³Á¤
 			const video1 = document.getElementById('video1');
-			//ìˆ˜ì •
-			let pc = new Array();
+			let pc = null;
 			let localStream;
 			let remoteStream;
 			const configuration = {
@@ -100,51 +101,50 @@ video {
 						  ]
 				};
 
-			//---------------------------- signaling ì„œë²„ -------------------------------------
+			//---------------------------- signaling ¼­¹ö -------------------------------------
 
-			const conn = new WebSocket('wss://localhost/${path}/socketrtc');
+			const conn = new WebSocket('wss://192.168.219.105/socketrtc');
 
 			conn.onopen = function() {
-				printdiv("signaling server ì—°ê²°");
-				printdiv("ë‹‰ë„¤ì„ : ${loginnedMember.nickname}, ë°©ë²ˆí˜¸ : ${loginnedMember.curRoomBid}, ë°©ì¥ ì—¬ë¶€ : ${loginnedMember.host}");
+				printdiv("signaling server ¿¬°á");
+				printdiv("´Ğ³×ÀÓ : ${loginnedMember.nickname}, ¹æ¹øÈ£ : ${loginnedMember.curRoomBid}, ¹æÀå ¿©ºÎ : ${loginnedMember.host}");
 				if(${loginnedMember.host} === true){
 					gotStream();			
 				}
 			};
 
 			conn.onmessage = function(msg) {
-				printdiv("onmessage ì‹¤í–‰");
+				printdiv("onmessage ½ÇÇà");
 				let content = JSON.parse(msg.data);
 				printdiv("content : "+content.type);
 					 if(content.type  === 'offer'){
+						console.log("pc1 : "+pc);
 						 createPeerConnection();
-							for(var i=0;i<pc.length;i++){
-								 pc[i].setRemoteDescription(new RTCSessionDescription(content));
-							}
+						 pc.setRemoteDescription(new RTCSessionDescription(content));
 						 doAnswer();
 					 }else if(content.type  === 'answer'){
 						 try{
-							 for(var i=0;i<pc.length;i++){
-								 pc[i].setRemoteDescription(new RTCSessionDescription(content));
-							 }
+						console.log("pc2 : "+$(pc));
+						 pc.setRemoteDescription(new RTCSessionDescription(content));
 						 }catch(e){
 							 printdiv("e : "+e);
 						 }
 					 }else if(content.type  === 'candidate'){
+						 console.log("pc3 : "+pc);
 						  var candidate = new RTCIceCandidate({
 						        sdpMLineIndex: content.label,
 						        candidate: content.candidate
 						      });
-						  for(var i=0;i<pc.length;i++){
-							  pc[i].addIceCandidate(candidate);
-						  }
+						      pc.addIceCandidate(candidate);
 					 }else if(content.type  === 'bye'){
+						 console.log("pc4 : "+pc);
 					     handleRemoteHangup();
 					 }
+				 console.log("pc5 : "+pc);
 			};
 
 			conn.onclose = function() {
-				printdiv("onclose ì‹¤í–‰");
+				printdiv("onclose ½ÇÇà");
 				exit();
 			};
 
@@ -152,7 +152,7 @@ video {
 				conn.send(JSON.stringify(message));
 			};
 			
-			//---------------------------- ë¹„ë””ì˜¤ -------------------------------------
+			//---------------------------- ºñµğ¿À -------------------------------------
 			
 			const constraints = {
 			  video: {width: {exact: 1280}, height: {exact: 720}},
@@ -160,57 +160,51 @@ video {
 		};
 	
 		function gotStream(stream){
-		printdiv("ë¯¸ë””ì–´ ë¶ˆëŸ¬ì˜¤ê¸°");
+		printdiv("¹Ìµğ¾î ºÒ·¯¿À±â");
 		navigator.mediaDevices.getUserMedia(constraints)
 		.then(function(stream){
-			//ìŠ¤íŠ¸ë¦¼ ìš”ì²­ ì„±ê³µ
-			printdiv("ìŠ¤íŠ¸ë¦¼ íšë“ ì„±ê³µ");
+			//½ºÆ®¸² ¿äÃ» ¼º°ø
+			printdiv("½ºÆ®¸² È¹µæ ¼º°ø");
 			localStream = stream;
 			console.log("localStream : "+localStream);
 		})
-		  //ìŠ¤íŠ¸ë¦¼ ìš”ì²­ ì‹¤íŒ¨
+		  //½ºÆ®¸² ¿äÃ» ½ÇÆĞ
 		  .catch(function(e) { 
-				printdiv("ìŠ¤íŠ¸ë¦¼ íšë“ ì‹¤íŒ¨");
-			    alert('ì¹´ë©”ë¼ì™€ ë§ˆì´í¬ë¥¼ í—ˆìš©í•´ì£¼ì„¸ìš” / ì—ëŸ¬ : '+e.name);
+				printdiv("½ºÆ®¸² È¹µæ ½ÇÆĞ");
+			    alert('Ä«¸Ş¶ó¿Í ¸¶ÀÌÅ©¸¦ Çã¿ëÇØÁÖ¼¼¿ä / ¿¡·¯ : '+e.name);
 		    });
 		};
 
-			//---------------------------- P2P ì—°ê²° ë¡œì§ -------------------------------------
+			//---------------------------- P2P ¿¬°á ·ÎÁ÷ -------------------------------------
 			
 			function host(){
-				printdiv("host() ì‹¤í–‰");
+				printdiv("host() ½ÇÇà");
 				video1.srcObject = localStream;
 				createPeerConnection();
-				for(var i=0;i<pc.length;i++){
-					console.log("pc "+i+" : "+pc[i]);
-					pc[i].addStream(localStream);
-				}
+				pc.addStream(localStream);
 				doCall();
 			};
 	
 
 	function createPeerConnection(){
-		printdiv("createPeerConnection ì‹¤í–‰");
+		printdiv("createPeerConnection ½ÇÇà");
 		try{
-			//ìˆ˜ì •
-			pc.push(new RTCPeerConnection(configuration));
-			printdiv("PC ê°ì²´ ìƒì„± : "+pc.length);
-			for(var i=0;i<pc.length;i++){
-				pc[i].onicecandidate = handleIceCandidate;
-				pc[i].onaddstream = handleRemoteStreamAdded;
-			}
-			console.log(" RTCPeerConnection ìƒì„± ì™„ë£Œ ");
+			pc = new RTCPeerConnection(configuration);
+			printdiv("PC °´Ã¼ »ı¼º");
+			pc.onicecandidate = handleIceCandidate;
+			pc.onaddstream = handleRemoteStreamAdded;
+			console.log(" RTCPeerConnection »ı¼º ¿Ï·á ");
 		}catch(e){
-			printdiv("RTCPeerConnection ìƒì„± ì—ëŸ¬ë°œìƒ : "+e.message);
-			alert("RTCPeerConnection ì—ëŸ¬");
+			printdiv("RTCPeerConnection »ı¼º ¿¡·¯¹ß»ı : "+e.message);
+			alert("RTCPeerConnection ¿¡·¯");
 			return;
 		}
 	};
 	
 	function handleIceCandidate(event) {
-		printdiv("handleIceCandidate ì‹¤í–‰");
+		printdiv("handleIceCandidate ½ÇÇà");
 		  if (event.candidate) {
-				printdiv("event.candidate ë¶„ê¸°ë¬¸ ì§„ì…");
+				printdiv("event.candidate ºĞ±â¹® ÁøÀÔ");
 		    sendMessage({
 		      type: 'candidate',
 		      label: event.candidate.sdpMLineIndex,
@@ -218,83 +212,74 @@ video {
 		      candidate: event.candidate.candidate
 		    });
 		  } else {
-			printdiv("handleIceCandidate íƒìƒ‰ ì¢…ë£Œ");
+			printdiv("handleIceCandidate Å½»ö Á¾·á");
 		  }
 	};
 	
 	function handleRemoteStreamAdded(event){
-		//ì›ê²© ìŠ¤íŠ¸ë¦¼ì— ìŠ¤íŠ¸ë¦¼ì„ ë„£ì–´ì¤Œ
+		//¿ø°İ ½ºÆ®¸²¿¡ ½ºÆ®¸²À» ³Ö¾îÁÜ
 		remoteStream = event.stream;
 		video1.srcObject = remoteStream;
-		printdiv("ìŠ¤íŠ¸ë¦¼ ë°›ì•„ì™€ì„œ VIDEOì— ë„£ìŒ");
+		printdiv("½ºÆ®¸² ¹Ş¾Æ¿Í¼­ VIDEO¿¡ ³ÖÀ½");
 	};
 	
 	function doCall(){
-		printdiv("doCall ì‹¤í–‰");
-		for(var i=0;i<pc.length;i++){
-			pc[i].createOffer(setLocalAndSendMessage, handleCreateOfferError);
-		}
+		printdiv("doCall ½ÇÇà");
+		pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
 	};
 	
 	function doAnswer() {
-		printdiv("doAnswer ì‹¤í–‰");
-		
-		for(var i=0;i<pc.length;i++){
-		  pc[i].createAnswer().then(
+		printdiv("doAnswer ½ÇÇà");
+		  pc.createAnswer().then(
 		    setLocalAndSendMessage,
 		    onCreateSessionDescriptionError
 		  );
-		}
-		  
 		};
 	
 	function setLocalAndSendMessage(sessionDescription) {
-		printdiv("setLocalAndSendMessage ì‹¤í–‰");
+		printdiv("setLocalAndSendMessage ½ÇÇà");
 		printdiv("sessionDescription : "+sessionDescription);
-		for(var i=0;i<pc.length;i++){
-		  pc[i].setLocalDescription(sessionDescription);
-		}
+		  pc.setLocalDescription(sessionDescription);
 		  sendMessage(sessionDescription);
 		};
 	
 		
-		//ì—°ê²° ëŠê¸°
+		//¿¬°á ²÷±â
 			function handleRemoteHangup() {
-				printdiv("Session ì¢…ë£Œ");
+				printdiv("Session Á¾·á");
 				  stop();
 				  isInitiator = false;
 				};
 				
 		function exit() {
 			  stop();
-				printdiv("ì—°ê²° ì¢…ë£Œ ì‘ë‹µ ë³´ë‚´ê¸°");
+				printdiv("¿¬°á Á¾·á ÀÀ´ä º¸³»±â");
 			  sendMessage({type:'bye'});
 			};
 	
 		function stop() {
-			printdiv("ì—°ê²° ì¢…ë£Œ");
-				for(var i=0;i<pc.length;i++){
-					  pc[i].close();
-					  pc[i] = null;
-				}
+				printdiv("¿¬°á Á¾·á");
+			  isStarted = false;
+			  pc.close();
+			  pc = null;
 			};
 
-			//---------------------------- ì¡ -------------------------------------
+			//---------------------------- Àâ -------------------------------------
 			
 			
 		function handleCreateOfferError(event) {
-			printdiv("Offerë¶€ë¶„ ìƒì„± ì—ëŸ¬ error:"+event);
-		};	
+			printdiv("OfferºÎºĞ »ı¼º ¿¡·¯ error:"+event);
+			};	
 				
 		function onCreateSessionDescriptionError(error) {
-				printdiv("onCreateSessionDescriptionError ì—ëŸ¬ :"+ error.toString());
-			};
+				printdiv("onCreateSessionDescriptionError ¿¡·¯ :"+ error.toString());
+			}
 
 			function printdiv(msg) {
 				console.log(msg);
 				$("#board").append("<div>" + msg + "</div>");
 				$("#board").scrollTop($("#board")[0].scrollHeight);
-			};
+			}
 			
 			
 		</script>

@@ -13,8 +13,9 @@ import com.cms.model.vo.SessionVo;
 
 import lombok.extern.java.Log;
 
+//수정중!! 11 04
 @Log
-public class SocketHandler2 extends TextWebSocketHandler {
+public class SocketHandlerMulti extends TextWebSocketHandler {
 	// action-servlet.xml도 같이 수정해줘야됨!
 
 	List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();

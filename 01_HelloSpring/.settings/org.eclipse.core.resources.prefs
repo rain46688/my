@@ -1,2 +1,12 @@
 eclipse.preferences.version=1
-encoding//src/main/java/com/kh/spring/member/contoller/MemberController.java=UTF-8
+encoding//src/main/java/com/kh/spring/BeanTest.java=MS949
+encoding//src/main/java/com/kh/spring/HomeController.java=MS949
+encoding//src/main/java/com/kh/spring/common/interceptor/LoggerInterceptor.java=UTF-8
+encoding//src/main/java/com/kh/spring/demo/controller/DemoController.java=MS949
+encoding//src/main/java/com/kh/spring/demo/model/dao/DemoDao.java=MS949
+encoding//src/main/java/com/kh/spring/demo/model/dao/DemoDaoImpl.java=MS949
+encoding//src/main/java/com/kh/spring/demo/model/service/DemoService.java=MS949
+encoding//src/main/java/com/kh/spring/demo/model/service/DemoServiceImpl.java=MS949
+encoding//src/main/java/com/kh/spring/demo/model/vo/Demo.java=MS949
+encoding//src/main/java/com/kh/spring/member/model/dao/MemberDao.java=MS949
+encoding//src/main/java/com/kh/spring/memo/controller/MemoController.java=MS949

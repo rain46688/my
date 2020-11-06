@@ -40,7 +40,7 @@ h2 {
 	text-shadow: -1px 0 #BFBFBF, 0 0.5px #BFBFBF, 0.5px 0 #BFBFBF, 0 -1px #BFBFBF;
 }
 
-.divCell, .divTableHead {
+.divCell {
 	border-bottom: 1px #DEE2E6 solid;
 	display: table-cell;
 	padding: 25px 10px;

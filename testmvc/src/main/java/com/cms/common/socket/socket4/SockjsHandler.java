@@ -23,37 +23,37 @@ public class SockjsHandler extends TextWebSocketHandler {
 	private static Map<SessionVo, WebSocketSession> user = new HashMap<SessionVo, WebSocketSession>();
 	private static Logger log = LoggerFactory.getLogger(SockjsHandler.class);
 
-	// ¼­¹ö¿¡ Á¢¼ÓÀÌ ¼º°ø ÇßÀ»¶§
+	// ì„œë²„ì— ì ‘ì†ì´ ì„±ê³µ í–ˆì„ë•Œ
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		log.info(" === afterConnectionEstablished ½ÇÇà === ");
+		log.info(" === afterConnectionEstablished ì‹¤í–‰ === ");
 		Map<String, Object> map = session.getAttributes();
 		SessionVo sv = (SessionVo) map.get("loginnedMember");
-		log.info(" === ¿¬°áµÊ ¾ÆÀÌµğ : " + session.getId() + " À¯Àú ´Ğ³×ÀÓ : " + sv.getNickname() + " ÇöÀç ÀÔÀåÇÑ ¹æ : "
+		log.info(" === ì—°ê²°ë¨ ì•„ì´ë”” : " + session.getId() + " ìœ ì € ë‹‰ë„¤ì„ : " + sv.getNickname() + " í˜„ì¬ ì…ì¥í•œ ë°© : "
 				+ sv.getCurRoomBid());
 		if (sv != null)
 			user.put(sv, session);
 
 	}
 
-	// ¼ÒÄÏ¿¡ ¸Ş¼¼Áö¸¦ º¸³ÂÀ»¶§
+	// ì†Œì¼“ì— ë©”ì„¸ì§€ë¥¼ ë³´ëƒˆì„ë•Œ
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-		log.info("{}·Î ºÎÅÍ {} ¹ŞÀ½", session.getId(), message.getPayload());
-		log.info(" === handleTextMessage ½ÇÇà === ");
+		log.info("{}ë¡œ ë¶€í„° {} ë°›ìŒ", session.getId(), message.getPayload());
+		log.info(" === handleTextMessage ì‹¤í–‰ === ");
 		Message msg = objectMapper.readValue(message.getPayload(), Message.class);
 		log.info("msg : " + msg);
 
 		Iterator<SessionVo> it = user.keySet().iterator();
 		while (it.hasNext()) {
-			log.info("¿©±â ÁıÀÔÇÔ0");
+			log.info("ì—¬ê¸° ì§‘ì…í•¨0");
 			SessionVo key = it.next();
 			log.info("key.getCurRoomBid() : " + key.getCurRoomBid());
 			log.info("msg.getChat_board_id() : " + msg.getChat_board_id());
-			log.info("Âü°ÅÁş 1 : " + key.getCurRoomBid().equals("" + msg.getChat_board_id()));
-			log.info("Âü°ÅÁş 2 : " + !key.getCurRoomBid().equals(""));
-			// key.getCurRoomBid().equals("" + msg.getChat_board_id()) °ÅÁşÀÌ ³ª¿Â ÀÌÀ¯
-			// msg.getChat_board_id()ÀÌ°Ô Á¤¼öÇüÀÌ¶ó¼­ ±×·³ ""ºÙ¿©¼­ ¹®ÀÚ¿­·Î ¹Ù²ã¾ßµÊ ¤§¤§
+			log.info("ì°¸ê±°ì§“ 1 : " + key.getCurRoomBid().equals("" + msg.getChat_board_id()));
+			log.info("ì°¸ê±°ì§“ 2 : " + !key.getCurRoomBid().equals(""));
+			// key.getCurRoomBid().equals("" + msg.getChat_board_id()) ê±°ì§“ì´ ë‚˜ì˜¨ ì´ìœ 
+			// msg.getChat_board_id()ì´ê²Œ ì •ìˆ˜í˜•ì´ë¼ì„œ ê·¸ëŸ¼ ""ë¶™ì—¬ì„œ ë¬¸ìì—´ë¡œ ë°”ê¿”ì•¼ë¨ ã„·ã„·
 			if (!key.getCurRoomBid().equals("") && key.getCurRoomBid().equals("" + msg.getChat_board_id())) {
 				if (user.get(key) != null && user.get(key).isOpen()) {
 					user.get(key).sendMessage(new TextMessage(objectMapper.writeValueAsString(msg)));
@@ -62,10 +62,10 @@ public class SockjsHandler extends TextWebSocketHandler {
 		}
 	}
 
-	// ¼ÒÄÏÀÌ ²÷°åÀ»¶§
+	// ì†Œì¼“ì´ ëŠê²¼ì„ë•Œ
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		log.info(" === afterConnectionClosed ½ÇÇà === ");
+		log.info(" === afterConnectionClosed ì‹¤í–‰ === ");
 		List<SessionVo> keyList = new ArrayList<SessionVo>();
 		Set<SessionVo> set = user.keySet();
 		log.info("status : " + status);

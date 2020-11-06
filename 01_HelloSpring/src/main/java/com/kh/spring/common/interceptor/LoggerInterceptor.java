@@ -29,8 +29,7 @@ public class LoggerInterceptor extends HandlerInterceptorAdapter {
 			ModelAndView modelAndView) throws Exception {
 		// TODO Auto-generated method stub
 
-		log.debug(request.getRequestURI() + "½ÇÇà Á¾·á");
-		log.debug("¿¬°áÈ­¸é : " + modelAndView.getViewName());
+		log.debug(request.getRequestURI() + "ì‹¤í–‰ ì¢…ë£Œ");
 		log.debug(" =========== end =========== ");
 
 		super.postHandle(request, response, handler, modelAndView);

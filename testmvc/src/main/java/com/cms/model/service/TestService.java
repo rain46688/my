@@ -3,10 +3,11 @@ package com.cms.model.service;
 import java.util.List;
 import java.util.Map;
 
+import com.cms.model.vo.Alarm;
+import com.cms.model.vo.Comment;
 import com.cms.model.vo.Login;
 import com.cms.model.vo.Member;
 import com.cms.model.vo.SessionVo;
-import com.cms.model.vo.Comment;
 
 public interface TestService {
 
@@ -35,5 +36,13 @@ public interface TestService {
 	List<Integer> likeList(Map<String, Object> commandMap, SessionVo sv) throws Exception;
 
 	List<Comment> commentList(int cBoardId) throws Exception;
+
+	int insertAlarm(Alarm al) throws Exception;
+
+	List<Alarm> selectAlarmList(int usid) throws Exception;
+
+	String alarmCount(int usid) throws Exception;
+
+	int alarmRead(int aid) throws Exception;
 
 }

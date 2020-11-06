@@ -77,18 +77,20 @@
          the SSLImplementation selected. JSSE style configuration is used below.
     -->
 
-    <Connector SSLEnabled="true" maxThreads="150" port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol">
+    <Connector SSLEnabled="true" maxThreads="150" port="443" protocol="org.apache.coyote.http11.Http11NioProtocol">
 <!--         <SSLHostConfig>
             <Certificate certificateKeystoreFile="conf/localhost-rsa.jks"
                          type="RSA" />
         </SSLHostConfig> -->
         
         		<SSLHostConfig>
-            <Certificate certificateKeystoreFile="E:\apache-tomcat-8.5.57\conf\key\tomcat.keystore" certificateKeystorePassword="cms03080" certificateKeystoreType="JKS"/>
+            <Certificate certificateKeystoreFile="E:\projectjohn\JohnProject\src\main\webapp\WEB-INF\.keystore" certificateKeystorePassword="1234" certificateKeystoreType="JKS"/>
         </SSLHostConfig>
         
     </Connector>
 
+<!--             <Certificate certificateKeystoreFile="E:\apache-tomcat-8.5.57\conf\key\tomcat.keystore" certificateKeystorePassword="cms03080" certificateKeystoreType="JKS"/> -->
+ 
     <!-- Define an SSL/TLS HTTP/1.1 Connector on port 8443 with HTTP/2
          This connector uses the APR/native implementation which always uses
          OpenSSL for TLS.
@@ -157,7 +159,7 @@
              Note: The pattern used is equivalent to using pattern="common" -->
         <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs" pattern="%h %l %u %t &quot;%r&quot; %s %b" prefix="localhost_access_log" suffix=".txt"/>
 
-      <Context docBase="testmvc" path="/" reloadable="true" source="org.eclipse.jst.jee.server:testmvc"/><Context docBase="01_HelloSpring" path="/spring" reloadable="true" source="org.eclipse.jst.jee.server:01_HelloSpring"/></Host>
+      <Context docBase="JohnProject" path="/" reloadable="true" source="org.eclipse.jst.jee.server:JohnProject"/></Host>
     </Engine>
   </Service>
 </Server>

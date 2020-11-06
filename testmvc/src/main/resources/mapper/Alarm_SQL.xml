@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="alarm">
+	<insert id="insertAlarm" parameterType="com.cms.model.vo.Alarm" >
+	<![CDATA[INSERT INTO ALARM VALUES 
+	(SEQ_ALARM_NO.NEXTVAL,
+	#{receive_mem_usid},
+	#{send_mem_usid},
+	 #{alarm_content}, 
+	DEFAULT,
+	 DEFAULT, 
+	 #{send_mem_nickname},
+	 null)]]>
+	</insert>
+	<select id="selectAlarmList" parameterType="_int" resultType="com.cms.model.vo.Alarm"> 
+	<![CDATA[SELECT * FROM ALARM WHERE RECEIVE_MEM_USID = #{usid} AND ALARM_CHECK = 0]]>
+	</select>
+	<select id="selectAlarmCount" parameterType="_int" resultType="string"> 
+	<![CDATA[SELECT COUNT(*) FROM ALARM WHERE RECEIVE_MEM_USID = #{usid} AND ALARM_CHECK = 0]]>
+	</select>
+	
+	<update id="alarmRead" parameterType="_int">
+		UPDATE ALARM SET ALARM_CHECK = 1 WHERE ALARM_ID = #{aid}
+	</update>
+</mapper>

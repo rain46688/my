@@ -1,4 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<c:set var="path" value="${pageContext.request.contextPath }" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -61,6 +65,7 @@ video {
 <body>
 	<section>
 		<section class="container">
+		<p>패스 : "${path }"</p>
 			<video id="video1" autoplay playsinline controls preload="metadata"></video>
 			<br> <br>
 			<!-- <button type="button" class="btn btn-outline-success my-2 my-sm-0" onclick='host();'>방송시작</button> -->
@@ -97,7 +102,7 @@ video {
 	//---------------------------- signaling 서버 -------------------------------------
 
 
-const conn = new WebSocket('wss://localhost:8443/socketrtc');
+const conn = new WebSocket('wss://localhost/${path}/socketrtc');
 
 	conn.onopen = function() {
 		console.log("signaling server 연결");

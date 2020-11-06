@@ -76,39 +76,39 @@ public class BoardController {
 	}
 
 	@RequestMapping("/board/boardFormEnd.do")
-	// public ModelAndView boardFormEnd(MultipartFile upFile) {//´ÜÀÏÆÄÀÏÃ³¸®!
+	// public ModelAndView boardFormEnd(MultipartFile upFile) {//ë‹¨ì¼íŒŒì¼ì²˜ë¦¬!
 	public ModelAndView boardFormEnd(Board board, MultipartFile[] upFile, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("common/msg");
-		log.debug("=============== Ã¹¹øÂ° ÆÄÀÏ =================");
-		log.debug("ÆÄÀÏ¸í : " + upFile[0].getOriginalFilename());
-		log.debug("ÆÄÀÏÅ©±â : " + upFile[0].getSize());
-		log.debug("=============== µÎ¹øÂ° ÆÄÀÏ =================");
-		log.debug("ÆÄÀÏ¸í : " + upFile[1].getOriginalFilename());
-		log.debug("ÆÄÀÏÅ©±â : " + upFile[1].getSize());
+		log.debug("=============== ì²«ë²ˆì§¸ íŒŒì¼ =================");
+		log.debug("íŒŒì¼ëª… : " + upFile[0].getOriginalFilename());
+		log.debug("íŒŒì¼í¬ê¸° : " + upFile[0].getSize());
+		log.debug("=============== ë‘ë²ˆì§¸ íŒŒì¼ =================");
+		log.debug("íŒŒì¼ëª… : " + upFile[1].getOriginalFilename());
+		log.debug("íŒŒì¼í¬ê¸° : " + upFile[1].getSize());
 
-		// ÆÄÀÏ ¾÷·Îµå Ã³¸®ÇÏ±â
-		// 1. ¾÷·Îµå °æ·Î ºÒ·¯¿À±â
-		// 2. ÆÄÀÏ ¸®³×ÀÓ Ã³¸® ÈÄ ÆÄÀÏ ÀúÀåÇÏ±â
+		// íŒŒì¼ ì—…ë¡œë“œ ì²˜ë¦¬í•˜ê¸°
+		// 1. ì—…ë¡œë“œ ê²½ë¡œ ë¶ˆëŸ¬ì˜¤ê¸°
+		// 2. íŒŒì¼ ë¦¬ë„¤ì„ ì²˜ë¦¬ í›„ íŒŒì¼ ì €ì¥í•˜ê¸°
 
 		String saveDir = request.getServletContext().getRealPath("/resources/upload/board");
 		File dir = new File(saveDir);
 		if (!dir.exists()) {
-			// ÁöÁ¤µÈ °æ·ÎÀÇ Æú´õ°¡ ¾øÀ¸¸é
-			dir.mkdirs();// s³ÖÀ¸¸é Áß°£ °æ·Î ¾ø¾îµµ ¾Ë¾Æ¼­ ¸¸µé¾îÁÖ´Â°Í!!
+			// ì§€ì •ëœ ê²½ë¡œì˜ í´ë”ê°€ ì—†ìœ¼ë©´
+			dir.mkdirs();// së„£ìœ¼ë©´ ì¤‘ê°„ ê²½ë¡œ ì—†ì–´ë„ ì•Œì•„ì„œ ë§Œë“¤ì–´ì£¼ëŠ”ê²ƒ!!
 		}
 		List<Attachment> files = new ArrayList<Attachment>();
-		// ÆÄÀÏ ¾÷·Îµå ·ÎÁ÷ Ã³¸®ÇÏ±â
+		// íŒŒì¼ ì—…ë¡œë“œ ë¡œì§ ì²˜ë¦¬í•˜ê¸°
 		for (MultipartFile f : upFile) {
 			if (!f.isEmpty()) {
-				// Àü´ŞµÈ ÆÄÀÏÀÌ ÀÖÀ¸¸é... ÆÄÀÏ ¾÷·Îµå Ã³¸®
-				// ÆÄÀÏ ¸®³×ÀÓ Ã³¸® -> Áßº¹¹æÁö¸¦ À§ÇØ!
+				// ì „ë‹¬ëœ íŒŒì¼ì´ ìˆìœ¼ë©´... íŒŒì¼ ì—…ë¡œë“œ ì²˜ë¦¬
+				// íŒŒì¼ ë¦¬ë„¤ì„ ì²˜ë¦¬ -> ì¤‘ë³µë°©ì§€ë¥¼ ìœ„í•´!
 				String originalFileName = f.getOriginalFilename();
 				String ext = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HHmmssSSS");
 				int rndNum = (int) (Math.random() * 1000);
 				String renamedFileName = sdf.format(new Date(System.currentTimeMillis())) + "_" + rndNum + "." + ext;
 				try {
-					// renamedFileName À¸·Î ÆÄÀÏÀ» ÀúÀåÇÏ±â -> transferTo(ÆÄÀÏ)
+					// renamedFileName ìœ¼ë¡œ íŒŒì¼ì„ ì €ì¥í•˜ê¸° -> transferTo(íŒŒì¼)
 					f.transferTo(new File(saveDir + "/" + renamedFileName));
 				} catch (Exception e) {
 					// TODO: handle exception
@@ -123,13 +123,13 @@ public class BoardController {
 		int result = 0;
 		String error = "";
 		try {
-			// data DB ÀúÀåÇÏ±â
+			// data DB ì €ì¥í•˜ê¸°
 			result = service.insertBoard(board, files);
 		} catch (RuntimeException e) {
-			log.debug("ÀÔ·Â ½ÇÆĞ!");
+			log.debug("ì…ë ¥ ì‹¤íŒ¨!");
 			error = e + "";
 		}
-		mv.addObject("msg", result > 0 ? "µî·Ï¼º°ø" : "µî·Ï½ÇÆĞ");
+		mv.addObject("msg", result > 0 ? "ë“±ë¡ì„±ê³µ" : "ë“±ë¡ì‹¤íŒ¨");
 		mv.addObject("loc", "/board/boardList.do");
 
 		log.debug("board : " + board);
@@ -149,11 +149,11 @@ public class BoardController {
 	@RequestMapping("/board/fileDown.do")
 	public void fileDown(HttpServletRequest request, HttpServletResponse response, String oriName, String reName,
 			@RequestHeader(name = "user-agent") String header) {
-		// ÆÄÀÏ µğ·ºÅä¸® °¡Á®¿À±â
-		// ÆÄÀÏ ´Ù¿î·Îµå ·ÎÁ÷!
+		// íŒŒì¼ ë””ë ‰í† ë¦¬ ê°€ì ¸ì˜¤ê¸°
+		// íŒŒì¼ ë‹¤ìš´ë¡œë“œ ë¡œì§!
 		String path = request.getServletContext().getRealPath("/resources/upload/board");
 		File saveFile = new File(path + "/" + reName);
-		// ÀÔÃâ·Â ½ºÆ®¸² »ı¼º
+		// ì…ì¶œë ¥ ìŠ¤íŠ¸ë¦¼ ìƒì„±
 		BufferedInputStream bis = null;
 		ServletOutputStream sos = null;
 		try {

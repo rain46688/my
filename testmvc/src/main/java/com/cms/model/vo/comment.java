@@ -7,13 +7,13 @@ import lombok.Data;
 @Data
 public class Comment {
 
-	private int com_Id;// ´ñ±Û ½Äº°ÀÚ
-	private int cboard_Id;// ´ñ±Û ´Ş¸° °Ô½Ã¹° ¾ÆÀÌµğ
-	private String content;// ´ñ±Û ³»¿ë
-	private Date cenroll_Date;// ´ñ±Û ÀÛ¼º ³¯Â¥
-	private Boolean secret;// ºñ¹Ğ ´ñ±Û ¿©ºÎ
-	private String cwriter_Nickname;// ÀÛ¼ºÀÚ ´Ğ³×ÀÓ
-	private int com_Layer;// ´ë´ñ±Û ·¹º§
-	private String com_Profile;// ÇÁ·ÎÇÊ ÀÌ¹ÌÁö °æ·Î
-	private int com_Ref;// ´ñ±Û ÂüÁ¶°ª
+	private int com_Id;// ëŒ“ê¸€ ì‹ë³„ì
+	private int cboard_Id;// ëŒ“ê¸€ ë‹¬ë¦° ê²Œì‹œë¬¼ ì•„ì´ë””
+	private String content;// ëŒ“ê¸€ ë‚´ìš©
+	private Date cenroll_Date;// ëŒ“ê¸€ ì‘ì„± ë‚ ì§œ
+	private Boolean secret;// ë¹„ë°€ ëŒ“ê¸€ ì—¬ë¶€
+	private String cwriter_Nickname;// ì‘ì„±ì ë‹‰ë„¤ì„
+	private int com_Layer;// ëŒ€ëŒ“ê¸€ ë ˆë²¨
+	private String com_Profile;// í”„ë¡œí•„ ì´ë¯¸ì§€ ê²½ë¡œ
+	private int com_Ref;// ëŒ“ê¸€ ì°¸ì¡°ê°’
 }

@@ -12,26 +12,26 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import com.kh.spring.member.model.vo.Member;
 
-@Component // ºóµî·ÏÇÏ´Â°Å
+@Component // ë¹ˆë“±ë¡í•˜ëŠ”ê±°
 @Aspect
 public class LoginCheckAspect {
 
 	@Around("execution(* com.kh.spring.memo..insert*(..))")
 	public Object loginCheck(ProceedingJoinPoint join) throws Throwable {
 
-		// sessionÀÇ id°ªÀÌ adminÀÌ¸é ÁøÇàÇÏ°í ¾Æ´Ï¸é Â÷´Ü
+		// sessionì˜ idê°’ì´ adminì´ë©´ ì§„í–‰í•˜ê³  ì•„ë‹ˆë©´ ì°¨ë‹¨
 
-		// ÀÏ¹İ Å¬·¡½º¿¡¼­ session °¡Á®¿À±â
+		// ì¼ë°˜ í´ë˜ìŠ¤ì—ì„œ session ê°€ì ¸ì˜¤ê¸°
 		HttpSession session = (HttpSession) RequestContextHolder.currentRequestAttributes()
 				.resolveReference(RequestAttributes.REFERENCE_SESSION);
 		Member login = (Member) session.getAttribute("loginMember");
 		if (login == null || !login.getUserId().equals("admin")) {
-			// µî·Ï ·ÎÁ÷ Ãë¼Ò
-			// ¿¹¿Ü¸¦ ¹ß»ı½ÃÄÑ¼­ ¸ØÃã!
-			throw new LoginException("µî·Ï ±ÇÇÑÀÌ ¾ø½À´Ï´Ù.");
+			// ë“±ë¡ ë¡œì§ ì·¨ì†Œ
+			// ì˜ˆì™¸ë¥¼ ë°œìƒì‹œì¼œì„œ ë©ˆì¶¤!
+			throw new LoginException("ë“±ë¡ ê¶Œí•œì´ ì—†ìŠµë‹ˆë‹¤.");
 		}
 
-		return join.proceed();// ÀüÃ³¸®¸¸
+		return join.proceed();// ì „ì²˜ë¦¬ë§Œ
 	}
 
 }

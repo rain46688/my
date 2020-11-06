@@ -15,7 +15,7 @@ public class LoginLoggerInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		// TODO Auto-generated method stub
-		log.debug("·Î±×ÀÎ ¾ÆÀÌµğ : " + request.getParameter("userId"));
+		log.debug("ë¡œê·¸ì¸ ì•„ì´ë”” : " + request.getParameter("userId"));
 
 		return super.preHandle(request, response, handler);
 	}

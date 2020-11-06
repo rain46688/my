@@ -8,9 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.cms.model.vo.Alarm;
+import com.cms.model.vo.Comment;
 import com.cms.model.vo.Login;
 import com.cms.model.vo.Member;
-import com.cms.model.vo.Comment;
 
 @Repository("testDAO")
 public class TestDaoImpl extends AbstractDAO implements TestDao {
@@ -109,10 +110,36 @@ public class TestDaoImpl extends AbstractDAO implements TestDao {
 		return (List<Integer>) selectOne("board.likeList", commandMap);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Comment> commentList(int cBoardId) throws Exception {
 		// TODO Auto-generated method stub
 		return selectList("board.commentList", cBoardId);
+	}
+
+	@Override
+	public int insertAlarm(Alarm al) throws Exception {
+		// TODO Auto-generated method stub
+		return (int) insert("alarm.insertAlarm", al);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Alarm> selectAlarmList(int usid) throws Exception {
+		// TODO Auto-generated method stub
+		return selectList("alarm.selectAlarmList", usid);
+	}
+
+	@Override
+	public String alarmCount(int usid) throws Exception {
+		// TODO Auto-generated method stub
+		return (String) selectOne("alarm.selectAlarmCount", usid);
+	}
+
+	@Override
+	public int alarmRead(int aid) throws Exception {
+		// TODO Auto-generated method stub
+		return (int) update("alarm.alarmRead", aid);
 	}
 
 }

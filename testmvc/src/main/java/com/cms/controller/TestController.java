@@ -30,6 +30,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.ModelAndView;
@@ -38,6 +39,7 @@ import com.cms.common.exception.IdPasswordNotMatchingException;
 import com.cms.common.exception.MemberInsertFailedException;
 import com.cms.common.temp.AESCrypto;
 import com.cms.model.service.TestService;
+import com.cms.model.vo.Alarm;
 import com.cms.model.vo.Comment;
 import com.cms.model.vo.Login;
 import com.cms.model.vo.Member;
@@ -52,7 +54,7 @@ import lombok.extern.java.Log;
  */
 @Controller
 @Log
-@SessionAttributes(value = { "loginnedMember", "gname", "gprofile" }) // ¼¼¼Ç Ã³¸®
+@SessionAttributes(value = { "loginnedMember", "gname", "gprofile" }) // ì„¸ì…˜ ì²˜ë¦¬
 public class TestController {
 
 	private final int noticeNumPerPage = 5;
@@ -66,7 +68,7 @@ public class TestController {
 	 */
 	@RequestMapping(value = "/noticeTest")
 	public ModelAndView testNoticeList(Map<String, Object> commandMap, String cPage) throws Exception {
-		log.info(" ===== testNoticeList ½ÇÇà ===== ");
+		log.info(" ===== testNoticeList ì‹¤í–‰ ===== ");
 		ModelAndView mv = new ModelAndView("/notice/noticeList");
 		if (cPage == null)
 			cPage = "1";
@@ -82,7 +84,7 @@ public class TestController {
 	@RequestMapping(value = "/loginPage", method = RequestMethod.GET)
 	public ModelAndView loginForm(Login login, @CookieValue(value = "saveId", required = false) Cookie rememberMe)
 			throws Exception {
-		log.info(" ===== loginForm ½ÇÇà ===== ");
+		log.info(" ===== loginForm ì‹¤í–‰ ===== ");
 		if (rememberMe != null) {
 			login.setMemberId(rememberMe.getValue());
 			login.setRememberMe(true);
@@ -94,10 +96,10 @@ public class TestController {
 	@RequestMapping(value = "/loginPage", method = RequestMethod.POST)
 	public ModelAndView loginSuccess(@Valid Login login, BindingResult bindingResult, HttpSession session,
 			HttpServletResponse response, HttpServletRequest request) throws Exception {
-		log.info(" ===== loginSuccess ½ÇÇà ===== ");
+		log.info(" ===== loginSuccess ì‹¤í–‰ ===== ");
 
 		if (bindingResult.hasErrors()) {
-			log.info(" ===== vo ¿¡·¯³²! ===== ");
+			log.info(" ===== vo ì—ëŸ¬ë‚¨! ===== ");
 			ModelAndView mv = new ModelAndView("/member/loginPage");
 			return mv;
 		}
@@ -110,7 +112,7 @@ public class TestController {
 		}
 		SessionVo sv = null;
 		login.setMemberPw(request.getParameter("memberPw"));
-		// ÀÌ·¸°Ô ¹ŞÀ¸¸é ÂïÈû ´ë½Å name°ªÀÌ¶û vo ¸â¹öº¯¼ö¸íÀÌ¶û °°¾Æ¾ßµÊ!!
+		// ì´ë ‡ê²Œ ë°›ìœ¼ë©´ ì°í˜ ëŒ€ì‹  nameê°’ì´ë‘ vo ë©¤ë²„ë³€ìˆ˜ëª…ì´ë‘ ê°™ì•„ì•¼ë¨!!
 		log.info("login :  " + login.getMemberId() + " " + login.getMemberPw() + " " + login.isRememberMe());
 		try {
 			sv = testService.loginCheck(login);
@@ -128,52 +130,52 @@ public class TestController {
 			Cookie c = new Cookie("saveId", login.getMemberId());
 			c.setPath("/");
 			if (login.isRememberMe()) {
-				c.setMaxAge(7 * 24 * 60 * 60);// ÀÏÁÖÀÏ°£ ÀúÀåÇÒ°ÅÀÓ
+				c.setMaxAge(7 * 24 * 60 * 60);// ì¼ì£¼ì¼ê°„ ì €ì¥í• ê±°ì„
 			} else {
 				c.setMaxAge(0);
 			}
 			response.addCookie(c);
 
 		} catch (IdPasswordNotMatchingException e) {
-			log.info(" ===== loginSuccess ¿¡·¯ºÎºĞ ½ÇÇà ===== ");
+			log.info(" ===== loginSuccess ì—ëŸ¬ë¶€ë¶„ ì‹¤í–‰ ===== ");
 			ModelAndView mv = new ModelAndView("/member/loginPage");
-			bindingResult.rejectValue("memberPw", "notMatch", "¾ÆÀÌµğ È¤Àº ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö¾Ê½À´Ï´Ù. ");
-			log.info(" ===== ·Î±×ÀÎ ½ÇÆĞ ·Î±× ===== ");
+			bindingResult.rejectValue("memberPw", "notMatch", "ì•„ì´ë”” í˜¹ì€ ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ì§€ì•ŠìŠµë‹ˆë‹¤. ");
+			log.info(" ===== ë¡œê·¸ì¸ ì‹¤íŒ¨ ë¡œê·¸ ===== ");
 			return mv;
 		}
 
 		ModelAndView mv = new ModelAndView("/common/msg");
 		mv.addObject("loginnedMember", sv);
 		mv.addObject("loc", "/");
-		mv.addObject("msg", "·Î±×ÀÎ ¼º°ø");
-		log.info(" ===== ·Î±×ÀÎ ¼º°ø ·Î±× ===== ");
+		mv.addObject("msg", "ë¡œê·¸ì¸ ì„±ê³µ");
+		log.info(" ===== ë¡œê·¸ì¸ ì„±ê³µ ë¡œê·¸ ===== ");
 		return mv;
 	}
 
 	@RequestMapping(value = "/logout")
 	public ModelAndView logOut(HttpSession session, SessionStatus status) throws Exception {
-		log.info(" ===== logOut ½ÇÇà ===== ");
+		log.info(" ===== logOut ì‹¤í–‰ ===== ");
 //		session.invalidate();
 		if (!status.isComplete()) {
 			status.setComplete();
 		}
 		ModelAndView mv = new ModelAndView("/common/msg");
 		mv.addObject("loc", "/");
-		mv.addObject("msg", "·Î±×¾Æ¿ô µÇ¾ú½À´Ï´Ù.");
-		log.info(" ===== ·Î±×¾Æ¿ô ¼º°ø ·Î±× ===== ");
+		mv.addObject("msg", "ë¡œê·¸ì•„ì›ƒ ë˜ì—ˆìŠµë‹ˆë‹¤.");
+		log.info(" ===== ë¡œê·¸ì•„ì›ƒ ì„±ê³µ ë¡œê·¸ ===== ");
 		return mv;
 	}
 
 	@RequestMapping(value = "/msg")
 	public ModelAndView error() throws Exception {
-		log.info(" ===== error ½ÇÇà ===== ");
+		log.info(" ===== error ì‹¤í–‰ ===== ");
 		ModelAndView mv = new ModelAndView("/common/msg");
 		return mv;
 	}
 
 	@RequestMapping(value = "/joinPage", method = RequestMethod.GET)
 	public ModelAndView JoinForm(@Valid Member member, BindingResult bindingResult) throws Exception {
-		log.info(" ===== JoinForm ½ÇÇà ===== ");
+		log.info(" ===== JoinForm ì‹¤í–‰ ===== ");
 		ModelAndView mv = new ModelAndView("/member/joinPage");
 		return mv;
 	}
@@ -181,10 +183,10 @@ public class TestController {
 	@RequestMapping(value = "/joinPage", method = RequestMethod.POST)
 	public ModelAndView JoinEndForm(@Valid Member member, BindingResult bindingResult, String address1, String address2,
 			String year, String month, String date) throws Exception {
-		log.info(" ===== JoinEndForm ½ÇÇà ===== ");
+		log.info(" ===== JoinEndForm ì‹¤í–‰ ===== ");
 
 		if (bindingResult.hasErrors()) {
-			log.info("È¸¿ø °¡ÀÔ µµÁß ¿¡·¯¹ß»ı");
+			log.info("íšŒì› ê°€ì… ë„ì¤‘ ì—ëŸ¬ë°œìƒ");
 			return new ModelAndView("/member/joinPage");
 		}
 		String strbirthday = year + "-" + month + "-" + date;
@@ -197,7 +199,7 @@ public class TestController {
 			member.setPhone(AESCrypto.encrypt(member.getPhone()));
 			member.setAddress(AESCrypto.encrypt(member.getAddress()));
 		} catch (Exception e) {
-			log.info("È¸¿ø °¡ÀÔ ¾ÏÈ£È­ µµÁß ¿¡·¯¹ß»ı");
+			log.info("íšŒì› ê°€ì… ì•”í˜¸í™” ë„ì¤‘ ì—ëŸ¬ë°œìƒ");
 		}
 
 		log.info(member.toString());
@@ -206,20 +208,20 @@ public class TestController {
 		} catch (MemberInsertFailedException e) {
 			ModelAndView mv = new ModelAndView("/common/msg");
 			mv.addObject("loc", "/joinPage");
-			mv.addObject("msg", "È¸¿ø°¡ÀÔ ½ÇÆĞ");
-			log.info(" ===== È¸¿ø°¡ÀÔ ½ÇÆĞ ·Î±× ===== ");
+			mv.addObject("msg", "íšŒì›ê°€ì… ì‹¤íŒ¨");
+			log.info(" ===== íšŒì›ê°€ì… ì‹¤íŒ¨ ë¡œê·¸ ===== ");
 			return mv;
 		}
 		ModelAndView mv = new ModelAndView("/common/msg");
 		mv.addObject("loc", "/loginPage");
-		mv.addObject("msg", "È¸¿ø°¡ÀÔ ¼º°ø");
-		log.info(" ===== È¸¿ø°¡ÀÔ ¼º°ø ·Î±× ===== ");
+		mv.addObject("msg", "íšŒì›ê°€ì… ì„±ê³µ");
+		log.info(" ===== íšŒì›ê°€ì… ì„±ê³µ ë¡œê·¸ ===== ");
 		return mv;
 	}
 
 	@RequestMapping(value = "/certiEmail", method = RequestMethod.POST)
 	public ModelAndView CertiEmail(String email, HttpServletRequest request) throws Exception {
-		log.info(" ===== CertiEmail ½ÇÇà ===== " + email);
+		log.info(" ===== CertiEmail ì‹¤í–‰ ===== " + email);
 		String host = "smtp.gmail.com";
 		String user = "minsu87750@gmail.com";
 		String password = "alstn8775*";
@@ -255,8 +257,8 @@ public class TestController {
 			MimeMessage msg = new MimeMessage(session);
 			msg.setFrom(new InternetAddress(user, "nbbang"));
 			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-			msg.setSubject("nbbang °¡ÀÔÀ» À§ÇÑ ÀÎÁõ¹øÈ£¸¦ ´ãÀº ¸ŞÀÏÀÔ´Ï´Ù ^~^");
-			msg.setText("ÀÎÁõ ¹øÈ£´Â " + temp + "ÀÔ´Ï´Ù. ÀÎÁõ¹øÈ£ Ã¢¿¡ ÀÔ·ÂÇØÁÖ¼¼¿ä!");
+			msg.setSubject("nbbang ê°€ì…ì„ ìœ„í•œ ì¸ì¦ë²ˆí˜¸ë¥¼ ë‹´ì€ ë©”ì¼ì…ë‹ˆë‹¤ ^~^");
+			msg.setText("ì¸ì¦ ë²ˆí˜¸ëŠ” " + temp + "ì…ë‹ˆë‹¤. ì¸ì¦ë²ˆí˜¸ ì°½ì— ì…ë ¥í•´ì£¼ì„¸ìš”!");
 			Transport.send(msg);
 
 		} catch (Exception e) {
@@ -271,7 +273,7 @@ public class TestController {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "/board")
 	public ModelAndView boardList(Map<String, Object> commandMap, String cPage, String boardTitle) throws Exception {
-		log.info(" ===== boardList ½ÇÇà ===== ");
+		log.info(" ===== boardList ì‹¤í–‰ ===== ");
 		ModelAndView mv = new ModelAndView("/board/boardList");
 		if (cPage == null)
 			cPage = "1";
@@ -386,8 +388,8 @@ public class TestController {
 			// TODO Auto-generated catch block
 			ModelAndView mv = new ModelAndView("/common/msg");
 			mv.addObject("loc", "/");
-			mv.addObject("msg", "ÆäÀÌÁö¸¦ ºÒ·¯¿À´Âµ¥ ½ÇÆĞÇÏ¿´½À´Ï´Ù.");
-			log.info(" ===== »ó¼¼ ÆäÀÌÁö ÁøÀÔ ½ÇÆĞ ·Î±× ===== ");
+			mv.addObject("msg", "í˜ì´ì§€ë¥¼ ë¶ˆëŸ¬ì˜¤ëŠ”ë° ì‹¤íŒ¨í•˜ì˜€ìŠµë‹ˆë‹¤.");
+			log.info(" ===== ìƒì„¸ í˜ì´ì§€ ì§„ì… ì‹¤íŒ¨ ë¡œê·¸ ===== ");
 			return mv;
 		}
 
@@ -405,7 +407,7 @@ public class TestController {
 			mv.addObject("likelist", "0");
 			log.info("likelist null");
 		} else {
-			log.info("likelist null ¾Æ´Ô");
+			log.info("likelist null ì•„ë‹˜");
 			mv.addObject("likelist", "1");
 		}
 
@@ -415,7 +417,7 @@ public class TestController {
 
 	@RequestMapping("/board/commentList")
 	public void commentList(int cBoardId, HttpServletResponse response) {
-		log.info("commentList ½ÇÇà");
+		log.info("commentList ì‹¤í–‰");
 		try {
 			List<Comment> list = testService.commentList(cBoardId);
 			response.setContentType("application/json;charset=utf-8");
@@ -432,7 +434,7 @@ public class TestController {
 	@RequestMapping(value = "/chat/chatRoom")
 	public ModelAndView webRtc(String maxMems, String tradeStage, String writerUsid, String boardId, String boardTitle,
 			String memberPicture, HttpSession session) throws Exception {
-		log.info(" ===== webRtc ½ÇÇà ===== ");
+		log.info(" ===== webRtc ì‹¤í–‰ ===== ");
 		log.info("maxMems : " + maxMems + " tradeStage : " + tradeStage + " writerUsid : " + writerUsid + " boardId : "
 				+ boardId + " boardTitle : " + boardTitle + " memberPicture : " + memberPicture);
 
@@ -460,31 +462,37 @@ public class TestController {
 
 	@RequestMapping("/webrtc")
 	public String webrtcTest() {
-		log.info("webrtcTest ½ÇÇà");
+		log.info("webrtcTest ì‹¤í–‰");
 		return "socket/socket1/webRtc";
 	}
 
 	@RequestMapping("/webrtc2")
 	public String webrtcTest2() {
-		log.info("webrtcTest2 ½ÇÇà");
+		log.info("webrtcTest2 ì‹¤í–‰");
 		return "socket/socket1/webRtc2";
 	}
 
 	@RequestMapping("/webrtc3")
 	public String webrtcTest3() {
-		log.info("webrtcTest3 ½ÇÇà");
+		log.info("webrtcTest3 ì‹¤í–‰");
 		return "socket/socket1/webRtc3";
 	}
 
 	@RequestMapping("/webrtc4")
 	public String webrtcTest4() {
-		log.info("webrtcTest4 ½ÇÇà");
+		log.info("webrtcTest4 ì‹¤í–‰");
 		return "socket/socket1/webRtc4Set";
+	}
+
+	@RequestMapping("/webrtc5")
+	public String webrtcTest5() {
+		log.info("webrtcTest5 ì‹¤í–‰");
+		return "socket/socket1/webRtc5";
 	}
 
 	@RequestMapping("/webrtc4Set")
 	public ModelAndView webrtcTest4Set(String room, String flag, HttpSession session) {
-		log.info("webrtcTest4Set ½ÇÇà");
+		log.info("webrtcTest4Set ì‹¤í–‰");
 		ModelAndView mv = new ModelAndView();
 		log.info("room : " + room + " flag : " + flag);
 		mv.setViewName("socket/socket1/webRtc4");
@@ -501,7 +509,7 @@ public class TestController {
 
 	@RequestMapping("/glogin")
 	public String googleLogin(String gname, String gprofile, HttpSession session) {
-		log.info("googleLogin ½ÇÇà");
+		log.info("googleLogin ì‹¤í–‰");
 
 		log.info("gname : " + gname);
 		log.info("gprofile : " + gprofile);
@@ -514,16 +522,62 @@ public class TestController {
 
 	@RequestMapping("/glogout")
 	public ModelAndView googleLogout(SessionStatus status) {
-		log.info("googleLogout ½ÇÇà");
+		log.info("googleLogout ì‹¤í–‰");
 		if (!status.isComplete()) {
 			status.setComplete();
 		}
 
 		ModelAndView mv = new ModelAndView("/common/msg");
 		mv.addObject("loc", "/");
-		mv.addObject("msg", "·Î±×¾Æ¿ô µÇ¾ú½À´Ï´Ù.");
-		log.info(" ===== ±¸±Û ·Î±×¾Æ¿ô ¼º°ø ·Î±× ===== ");
+		mv.addObject("msg", "ë¡œê·¸ì•„ì›ƒ ë˜ì—ˆìŠµë‹ˆë‹¤.");
+		log.info(" ===== êµ¬ê¸€ ë¡œê·¸ì•„ì›ƒ ì„±ê³µ ë¡œê·¸ ===== ");
 		return mv;
+	}
+
+	@RequestMapping("/alarmList")
+	public ModelAndView alarmList(int usid) {
+		log.info("alarmCheck ì‹¤í–‰");
+
+		List<Alarm> list = null;
+		try {
+			list = testService.selectAlarmList(usid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		ModelAndView mv = new ModelAndView("/alarm/alarm");
+		mv.addObject("list", list);
+		return mv;
+	}
+
+	@ResponseBody
+	@RequestMapping("/alarmCount")
+	public String alarmCount(int usid) {
+		log.info("alarmCount ì‹¤í–‰");
+		String count = "0";
+		try {
+			count = "" + testService.alarmCount(usid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		log.info("count : " + count);
+		return count;
+	}
+
+	@ResponseBody
+	@RequestMapping("/alarmRead")
+	public int alarmRead(int aid) {
+		log.info("alarmRead ì‹¤í–‰");
+		int result = 0;
+		try {
+			result = testService.alarmRead(aid);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 }

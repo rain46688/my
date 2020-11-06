@@ -26,18 +26,18 @@ public class SocketHandler extends TextWebSocketHandler {
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		log.info("SocketHandler ½ÇÇà ½Ã±×³Î¸µ ¼­¹ö");
+		log.info("SocketHandler ì‹¤í–‰ ì‹œê·¸ë„ë§ ì„œë²„");
 		Map<String, Object> map = session.getAttributes();
 		SessionVo sv = (SessionVo) map.get("loginnedMember");
 		users.put(sv, session);
-		log.info("´Ğ³×ÀÓ : " + sv.getNickname());
+		log.info("ë‹‰ë„¤ì„ : " + sv.getNickname());
 
 	}
 
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message)
 			throws InterruptedException, IOException {
-		log.info("handleTextMessage ½ÇÇà ½Ã±×³Î¸µ ¼­¹ö");
+		log.info("handleTextMessage ì‹¤í–‰ ì‹œê·¸ë„ë§ ì„œë²„");
 
 		RtcMsg msg = objectMapper.readValue(message.getPayload(), RtcMsg.class);
 		log.info("sdp : " + msg.getSdp() + " type : " + msg.getType());
@@ -47,20 +47,20 @@ public class SocketHandler extends TextWebSocketHandler {
 		Iterator<SessionVo> it = users.keySet().iterator();
 		while (it.hasNext()) {
 			SessionVo key = it.next();
-			// °°Àº ¹æÀÇ ÀÎ¿ø¸¸
+			// ê°™ì€ ë°©ì˜ ì¸ì›ë§Œ
 			if (key.getCurRoomBid().equals(sv.getCurRoomBid())) {
 				if (sv.isHost()) {
-					// È£½ºÆ®ÀÎ °æ¿ì
-					log.debug("ÇöÀç ¼¼¼Ç È£½ºÆ®");
+					// í˜¸ìŠ¤íŠ¸ì¸ ê²½ìš°
+					log.debug("í˜„ì¬ ì„¸ì…˜ í˜¸ìŠ¤íŠ¸");
 					if (!key.isHost()) {
-						log.debug("ÇöÀç ¼¼¼Ç È£½ºÆ® ÀÌ´Ï±ñ Âü¿©ÀÚÇÑÅ× ¸Ş¼¼Áö º¸³¿");
+						log.debug("í˜„ì¬ ì„¸ì…˜ í˜¸ìŠ¤íŠ¸ ì´ë‹ˆê¹ ì°¸ì—¬ìí•œí…Œ ë©”ì„¸ì§€ ë³´ëƒ„");
 						users.get(key).sendMessage(message);
 					}
 				} else {
-					// È£½ºÆ®°¡ ¾Æ´Ñ°æ¿ì
-					log.debug("ÇöÀç ¼¼¼Ç Âü¿©ÀÚ");
+					// í˜¸ìŠ¤íŠ¸ê°€ ì•„ë‹Œê²½ìš°
+					log.debug("í˜„ì¬ ì„¸ì…˜ ì°¸ì—¬ì");
 					if (key.isHost()) {
-						log.debug("ÇöÀç ¼¼¼Ç È£½ºÆ® ¾Æ´Ï´Ï±ñ È£½ºÆ®ÇÑÅ× ¸Ş¼¼Áö º¸³¿");
+						log.debug("í˜„ì¬ ì„¸ì…˜ í˜¸ìŠ¤íŠ¸ ì•„ë‹ˆë‹ˆê¹ í˜¸ìŠ¤íŠ¸í•œí…Œ ë©”ì„¸ì§€ ë³´ëƒ„");
 						users.get(key).sendMessage(message);
 					}
 				}
@@ -72,7 +72,7 @@ public class SocketHandler extends TextWebSocketHandler {
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-		log.info(" === afterConnectionClosed ½ÇÇà === ");
+		log.info(" === afterConnectionClosed ì‹¤í–‰ === ");
 		List<SessionVo> keyList = new ArrayList<SessionVo>();
 		Iterator<SessionVo> it = users.keySet().iterator();
 		while (it.hasNext()) {

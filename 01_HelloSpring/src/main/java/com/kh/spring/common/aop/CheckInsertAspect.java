@@ -15,7 +15,7 @@ public class CheckInsertAspect {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void after(JoinPoint join) throws Exception {
-		System.out.println("CheckInsertAspect ½ÇÇàµÊ?");
+		System.out.println("CheckInsertAspect");
 		Map param = new HashMap();
 		Signature sig = join.getSignature();
 		param.put("uri", sig.getDeclaringTypeName() + "." + sig.getName() + "()");

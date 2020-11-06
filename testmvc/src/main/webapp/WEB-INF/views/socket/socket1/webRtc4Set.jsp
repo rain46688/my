@@ -11,7 +11,6 @@
 #content {
 	margin: 5em;
 }
-
 label, input {
 	max-width:200px;
 }
@@ -38,7 +37,6 @@ label, input {
 		console.log('클릭');
 		location.href="${path}/webrtc4Set?flag="+e+"&room="+$('input[name=room]').val();
 	};
-
 </script>
 </body>
 </html>

@@ -13,14 +13,14 @@ public class StringArrayTypeHandler implements TypeHandler<String[]> {
 	@Override
 	public void setParameter(PreparedStatement ps, int i, String[] parameter, JdbcType jdbcType) throws SQLException {
 		// TODO Auto-generated method stub
-		// demo-mapper.xml¿¡¼­ °ªÀ»³ÖÀ»¶§ ÀÌ ¸Ş¼Òµå°¡ ½ÇÇàµÊ ±×°Å¸¦ ÀçÁ¤ÀÇÇØ¼­ ÀÓ¸À´ë·Î ¹Ù²Ù´Â°Í
-		System.out.println(" === setParameter ½ÇÇà === ");
+		// demo-mapper.xmlì—ì„œ ê°’ì„ë„£ì„ë•Œ ì´ ë©”ì†Œë“œê°€ ì‹¤í–‰ë¨ ê·¸ê±°ë¥¼ ì¬ì •ì˜í•´ì„œ ì„ë§›ëŒ€ë¡œ ë°”ê¾¸ëŠ”ê²ƒ
+		System.out.println(" === setParameter ì‹¤í–‰ === ");
 		if (parameter != null) {
 			String param = String.join(",", parameter);
 			ps.setString(i, param);
 		} else {
 			ps.setString(i, "");
-			// ¾Æ¹«°Íµµ ¼±ÅÃ¾ÈÇÏ¸é ºó°ªÀ» ³ÖÀ½
+			// ì•„ë¬´ê²ƒë„ ì„ íƒì•ˆí•˜ë©´ ë¹ˆê°’ì„ ë„£ìŒ
 		}
 
 	}

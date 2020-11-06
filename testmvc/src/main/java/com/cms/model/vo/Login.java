@@ -16,11 +16,11 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class Login {
 
-	@NotEmpty(message = "¾ÆÀÌµğ¸¦ Á¤È®È÷ ÀÔ·ÂÇØÁÖ¼¼¿ä.")
+	@NotEmpty(message = "ì•„ì´ë””ë¥¼ ì •í™•íˆ ì…ë ¥í•´ì£¼ì„¸ìš”.")
 	@Size(min = 4, max = 16)
 	private String memberId;
 
-	@NotEmpty(message = "ºñ¹Ğ¹øÈ£¸¦ Á¤È®È÷ ÀÔ·ÂÇØÁÖ¼¼¿ä.")
+	@NotEmpty(message = "ë¹„ë°€ë²ˆí˜¸ë¥¼ ì •í™•íˆ ì…ë ¥í•´ì£¼ì„¸ìš”.")
 	@Size(min = 4, max = 16)
 	private String memberPw;
 
